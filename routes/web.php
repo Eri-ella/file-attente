@@ -2,13 +2,17 @@
  
 use Illuminate\Support\Facades\Route;
  
+// Client
+Route::get('/', function () {
+    return view('client.index');
+})->name('acceuil');
  
-#Administrateur
+// Administrateur
 Route::get('/admin', function () {
     return view('admin.connexionAdmin');
 })->name('connexionAdmin');
  
-#Client
+// Client côté administrateur
 Route::get('/listeclient', function () {
     return view('admin.listeclient.liste');
 });

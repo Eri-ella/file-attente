@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+    --primary-color: #222D52;
+    --blue-gradient-color: #4C65B8;
+    --highlight-color: #D2B589;
+    --bg-color: #F9F8F5;
+    --white-color: #FDFFFF;  
+    background-color: var(--bg-color)
+}
+
+/* tailwind classes */
+.btn-primary {
+    @apply text-(--white-color) bg-(--primary-color) px-10 py-1 rounded-tl-lg rounded-br-lg cursor-pointer;
+}
+.btn-secondary {
+    @apply text-(--white-color) bg-(--highlight-color) px-3 py-1 rounded-tl-lg rounded-br-lg cursor-pointer;
+}
+
+/* container */
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 150px);
+    grid-template-rows: repeat(2, 150px);
+    gap: 10px;
+}
+.car1, .car2, .car3, .car4 {
+    background-color: #4f629d;
+}
+.car1 {
+    width: 120px;
+    height: 120px;
+    border-radius: 100% 0 0 0;
+    place-self: end;
+}
+.car2 {
+    width: 150px;
+    height: 150px;
+    border-radius: 0 100% 0 0;
+}
+.car3 {
+    width: 150px;
+    height: 150px;
+    border-radius: 0 0 0 100%;
+}
+.car4 {
+    width: 120px;
+    height: 120px;
+    border-radius: 0 0 100% 0;
+}
+
+/* circle animation */
+.progress-circle{
+    position: relative;
+}
+.gray-circle, .ticket-icon, .timer {
+    position: absolute;
+}
+.blue-circle {
+    position: absolute;
+    stroke-linecap: round;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    animation: filling 2.5s ease-in-out forwards;
+    transition: stroke-dashoffset 7s ease-in-out, stroke 0.3s;
+}
+@keyframes filling {
+    to {
+        stroke-dashoffset: 150;
+    }
+}
+.blue-circle:hover {
+    stroke: aliceblue;
+}
+.timer {
+    top: 45%;
+    left: 50%;
+}
+.ticket-icon {
+    top: 35%;
+    left: 55%;
+}
+
+/* time animation */
+.progress-time {
+    position: relative;
+}
+.little-circle, .big-circle, .hour-line, .minute-line {
+    position: absolute;
+}
+.hour-line {
+    transform-origin: center;
+    animation: rotation 30s infinite;
+    animation-timing-function: steps(60, end);
+}
+.minute-line {
+    transform-origin: center;
+    animation: rotation 7s infinite linear;
+}
+@keyframes rotation{
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(360deg);
+    }
+}
+
+/* scroll animation */
+.card {
+    translate: -50%;
+    transition: 600ms ease;
+}
+.card.show{
+    translate: 0;
+}
+
+.card2 {
+    opacity: 0;
+    transition: 600ms ease;
+}
+.card2.show{
+    opacity: 1;
+}

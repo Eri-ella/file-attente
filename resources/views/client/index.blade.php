@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceuil</title>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <script type="module" src="/src/main.js"></script>
+    @vite(['public/js/client.js'])
 </head>
 <body>
     <header class="flex items-center justify-between bg-(--primary-color) w-[100%] px-10">
-        <a href="/index.html"><img class="w-35" src="/assets/smart-queue-light.png" alt="smart queue logo"></a>
+        <a href="/index.html"><img class="w-35" src={{ asset('assets/smart-queue-light.png') }} alt="smart queue logo"></a>
         <ul class="flex justify-between gap-5 text-(--white-color)">
             <li><a href="/index.html">Acceuil</a></li>
             <li><a href="/tousServices.html">Services</a></li>
