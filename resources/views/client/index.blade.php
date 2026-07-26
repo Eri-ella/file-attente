@@ -9,14 +9,14 @@
 </head>
 <body>
     <header class="flex items-center justify-between bg-(--primary-color) w-[100%] px-10">
-        <a href="/index.html"><img class="w-35" src={{ asset('assets/smart-queue-light.png') }} alt="smart queue logo"></a>
+        <a href="{{  route('acceuil') }}"><img class="w-35" src={{ asset('assets/smart-queue-light.png') }} alt="smart queue logo"></a>
         <ul class="flex justify-between gap-5 text-(--white-color)">
-            <li><a href="/index.html">Acceuil</a></li>
-            <li><a href="/tousServices.html">Services</a></li>
-            <li><a href="/commentCaMarche.html">Contacts</a></li>
+            <li><a href="{{  route('acceuil') }}">Acceuil</a></li>
+            <li><a href="{{ route('tousServices') }}">Services</a></li>
+            <li><a href="{{ route('information') }}">Contacts</a></li>
         </ul>
         <div>
-            <button class="btn-secondary"><a href="/connexion.html">Se connecter</a></button>
+            <button class="btn-secondary"><a href="{{ route('connexion') }}">Se connecter</a></button>
         </div>
     </header>
 
@@ -27,8 +27,8 @@
                     <h2 class="text-4xl font-medium">Votre place dans la file d'attente, directement dans votre poche.</h2>
                     <p class="">Trouvez vos établissements favoris, estimez votre temps d'attente grâce à notre algorithme en direct et payez vos services en un clic. L'application indispensable pour ne plus jamais perdre une minute dans un hall d'accueil.</p>
                     <div class="flex items-center justify-center gap-10">
-                        <button class="btn-secondary"><a href="/commentCaMarche.html">Apprendre à réserver</a></button>
-                        <button class="btn-secondary"><a href="/ticket.html">Voir mes tickets</a></button>
+                        <button class="btn-secondary"><a href="{{ route('information') }}">Apprendre à réserver</a></button>
+                        <button class="btn-secondary"><a href="{{ route('ticket') }}">Voir mes tickets</a></button>
                     </div>
                 </div>
                 <div>
@@ -110,178 +110,11 @@
                             <p class="text-xs">Durée moy. 10min</p>
                         </span>
                         <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
+                            <button><a href="{{ route('tousServices') }}">Lire la suite</a></button>
                         </span>
                     </div>
                 </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-red-100 rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-yellow-200 rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-blue-100 rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-red-100 rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-yellow-200 rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-blue-100 rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 flex items-center justify-center text-5xl">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
-                        </div>
-                        <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
-                    </div>
-                    <div>
-                        <span></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span>
-                            <p class="text-xs">Durée moy. 10min</p>
-                        </span>
-                        <span class="btn-secondary">
-                            <button><a href="">Lire la suite</a></button>
-                        </span>
-                    </div>
-                </div>
+                
                 
             </div>
         </section>
@@ -345,7 +178,7 @@
                 </div>
             </div>
             <div>
-                <button class="btn-secondary"><a href="/tousServices.html">Explorer les services</a></button>
+                <button class="btn-secondary"><a href="{{ route('tousServices') }}">Explorer les services</a></button>
             </div>
         </section>
 
@@ -380,7 +213,7 @@
             <div>
                 <h4 class="text-xl font-medium mb-5">COMPTE</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a href="/connexion.html">Se connecter</a></li>
+                    <li><a href="{{ route('connexion') }}">Se connecter</a></li>
                     <li><a href="/inscription.html">Créer un compte</a></li>
                     <li><a href="/mdpOublie.html">Mot de passe oublié ?</a></li>
                 </ul>
@@ -388,8 +221,8 @@
             <div>
                 <h4 class="text-xl font-medium mb-5">AIDE</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a href="/commentCaMarche.html">Comment ça marche ?</a></li>
-                    <li><a href="/commentCaMarche.html">Contacts</a></li>
+                    <li><a href="{{ route('information') }}">Comment ça marche ?</a></li>
+                    <li><a href="{{ route('information') }}">Contacts</a></li>
                     <li><a href="#">Mentions légales</a></li>
                 </ul>
             </div>

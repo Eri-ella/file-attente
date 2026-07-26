@@ -1,12 +1,21 @@
 <?php
  
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Front\AcceuilController;
  
 // Client
-Route::get('/', function () {
-    return view('client.index');
-})->name('acceuil');
+
+Route::get('/', [AcceuilController::class, 'index'])->name('acceuil');
  
+Route::get('/tousServices', [AcceuilController::class, 'tousServices'])->name('tousServices');
+
+Route::get('/information', [AcceuilController::class, 'information'])->name('information');
+
+Route::get('/connexion', [AcceuilController::class , 'connexion'])->name('connexion');
+ 
+Route::get('/ticket', [AcceuilController::class, 'ticket'])->name('ticket');
+
+
 // Administrateur
 Route::get('/admin', function () {
     return view('admin.connexionAdmin');
