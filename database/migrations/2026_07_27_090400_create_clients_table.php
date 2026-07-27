@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use PharIo\Manifest\Email;
 
 return new class extends Migration
 {
@@ -11,17 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('administrateurs
-        ', function (Blueprint $table) {
-            $table->id();
-            $table->string('nom');
-            $table->string('prenom');
-            $table->integer('age');
-            $table->date('date_de_naissance');
-            $table->string('sexe', 1);
+        Schema::create('clients', function (Blueprint $table) {
             $table->string('email', 191)->unique();
-            $table->string('mot_de_passe');
-            $table->string('numero', 20);
             $table->timestamps();
         });
     }
@@ -31,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('administrateur');
+        Schema::dropIfExists('client');
     }
 };

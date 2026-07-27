@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 return new class extends Migration
 {
@@ -12,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mairie', function (Blueprint $table) {
+        Schema::create('superclients', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->string('adresse');
-            $table->string('telephone');
-            $table->string('mail');
-            $table->time('heure_ouvert_matin');
-            $table->time('heure_ouvert_soir');
-            $table->time('heure_ferme_matin');
-            $table->time('heure_ferme_soir');
+            $table->string('prenom');
+            $table->integer('age');
+            $table->date('date_de_naissance');
+            $table->string('sexe', 1);
+            $table->string('email', 191)->unique();
+            $table->string('mot_de_passe');
+            $table->string('numero', 20);
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mairie');
+        Schema::dropIfExists('superclient');
     }
 };

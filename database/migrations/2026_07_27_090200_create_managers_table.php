@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service', function (Blueprint $table) {
+        Schema::create('managers', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->enum('categorie', ['État Civil & Citoyenneté', 'Foncier & Urbanisme', 'Économie & Commerce']);
-            $table->enum('profil_usager', ['Particuliers', 'Entreprises']);
-            $table->enum('criter_technique', ['Gratuit', 'Payant']);
-            $table->time('duree');
-            $table->integer('cout');
+            $table->string('prenom');
+            $table->integer('age');
+            $table->date('date_de_naissance');
+            $table->string('sexe', 1);
+            $table->string('email', 191)->unique();
+            $table->string('mot_de_passe');
+            $table->string('numero', 20);
+
             $table->foreignId('mairie_id')->constrained('mairie')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
@@ -29,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service');
+        Schema::dropIfExists('manager');
     }
 };
