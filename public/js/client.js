@@ -141,7 +141,7 @@ function changeProfil (page) {
     let profil_historique = document.getElementById('profil_historique');
     let profil_infos = document.getElementById('profil_infos');
 
-    let profileTab = [profil_infos, profil_historique];
+    let profilTab = [profil_infos, profil_historique];
 
     profilTab.forEach(element => {
         if(element) {
@@ -163,13 +163,13 @@ function initProfil () {
 
     if (info_click) {
         info_click.addEventListener("click",() => {
-            changeProfil('info_click');
+            changeProfil('profil_infos');
         });
     }
 
     if (histo_click) {
         histo_click.addEventListener("click",() => {
-            changeProfil('histo_click');
+            changeProfil('profil_historique');
         });
     }
 }
