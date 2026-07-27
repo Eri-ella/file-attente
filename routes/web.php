@@ -2,7 +2,9 @@
  
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\AcceuilController;
- 
+use App\Http\Controllers\Front\ServiceController;
+use App\Http\Controllers\Front\ProfilController;
+
 // Client
 
 // Client -> acceuil
@@ -22,7 +24,16 @@ Route::get('/inscription', [AcceuilController::class, 'inscription'])->name('ins
 Route::get('/passe', [AcceuilController::class, 'passe'])->name('passe');
 
 // Client -> service
+Route::get('/service', [ServiceController::class, 'show'])->name('service');
 
+Route::get('/reservation', [ServiceController::class, 'reservation'])->name('reservation');
+
+// Client -> profil
+Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+
+Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
+
+Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
 
 
 // Administrateur

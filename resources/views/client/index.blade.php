@@ -110,7 +110,7 @@
                             <p class="text-xs">Durée moy. 10min</p>
                         </span>
                         <span class="btn-secondary">
-                            <button><a href="{{ route('tousServices') }}">Lire la suite</a></button>
+                            <button><a href="{{ route('service') }}">Lire la suite</a></button>
                         </span>
                     </div>
                 </div>

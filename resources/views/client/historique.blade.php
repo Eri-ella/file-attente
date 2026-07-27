@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique</title>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <script type="module" src="/src/main.js"></script>
+    @vite(['public/js/client.js'])
 </head>
 <body>
     <div class="min-h-screen flex flex-col justify-evenly items-center text-(--primary-color)">

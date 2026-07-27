@@ -135,16 +135,47 @@ function newServ () {
 
 
 // profil
-function initProfile() {
+
+function changeProfil (page) {
+    
+    let profil_historique = document.getElementById('profil_historique');
+    let profil_infos = document.getElementById('profil_infos');
+
+    let profileTab = [profil_infos, profil_historique];
+
+    profilTab.forEach(element => {
+        if(element) {
+            if(element.id === page){
+                element.classList.add('flex');
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+                element.classList.remove('flex');
+            }    
+        }
+    });
+}
+
+function initProfil () {
+
     let info_click = document.getElementById("info_click");
     let histo_click = document.getElementById("histo_click");
 
-    info_click.addEventListener("click", () => {document.getElementById("frame_profil").src="profilInfos.html"});
-    histo_click.addEventListener("click", () => {document.getElementById("frame_profil").src="historique.html"});
+    if (info_click) {
+        info_click.addEventListener("click",() => {
+            changeProfil('info_click');
+        });
+    }
+
+    if (histo_click) {
+        histo_click.addEventListener("click",() => {
+            changeProfil('histo_click');
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     newServ();
-    initProfile();
+    initProfil();
 });
 

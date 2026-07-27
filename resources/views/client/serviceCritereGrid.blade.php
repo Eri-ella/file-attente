@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <script type="module" src="src/main.js"></script>
-</head>
-<body>
-    <section class="bg-red-500">
+@extends('layouts.client_service')
+
+@section('service')
+    <section class="bg-red-100">
         <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 overflow-hidden text-(--primary-color)">
             <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg">
                 <div class="flex items-center gap-5">
@@ -108,5 +101,4 @@
             </div>
         </div>
     </section>
-</body>
-</html>
+@endsection
