@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification', function (Blueprint $table) {
+        Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->time('heure');
-            $table->foreignId('client_id')->constrained('client');
-            $table->foreignId('superclient_id')->constrained('super_client');
+            $table->string('numero');
+            $table->enum('statut', ['en_attente', 'en_cours', 'termine', 'annule'])->default('en_attente');
+            $table->foreignId('superclient_id')->constrained('superclient')->nullable();
+            $table->foreignId('service_id')->constrained('service');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notification');
+        Schema::dropIfExists('ticket');
     }
 };
