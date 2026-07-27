@@ -10,6 +10,9 @@ class Administrateur extends Model
         'prenom',
         'age',
         'date_de_naissance',
+        'sexe',
+        'email',
+        'mot_de_passe',
         'numero'];
 
     protected $hidden = ['mot_de_passe'];
