@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('numero');
             $table->enum('statut', ['en_attente', 'en_cours', 'termine', 'annule'])->default('en_attente');
-            $table->foreignId('superclient_id')->constrained('superclient')->nullable();
-            $table->foreignId('service_id')->constrained('service');
+            $table->foreignId('superclient_id')->constrained('superclients')->nullable();
+            $table->foreignId('service_id')->constrained('services');
             $table->timestamps();
         });
     }

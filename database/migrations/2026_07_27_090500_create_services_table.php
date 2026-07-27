@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('criter_technique', ['Gratuit', 'Payant']);
             $table->time('duree');
             $table->integer('cout');
-            $table->foreignId('mairie_id')->constrained('mairie')->onDelete('cascade');
+            $table->foreignId('mairie_id')->constrained('mairies')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->time('heure');
-            $table->foreignId('client_id')->constrained('client');
-            $table->foreignId('superclient_id')->constrained('super_client');
+            $table->foreignId('superclient_id')->constrained('superclients');
             $table->timestamps();
         });
     }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('mot_de_passe');
             $table->string('numero', 20);
 
-            $table->foreignId('mairie_id')->constrained('mairie')->onDelete('cascade');
+           $table->foreignId('mairie_id')->constrained('mairies')->onDelete('cascade');
 
             $table->timestamps();
         });
