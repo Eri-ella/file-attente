@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('prenom');
-            $table->string('age')->nullable();
-            $table->string('date_de_naissance');
-            $table->string('sex');
+            $table->integer('age');
+            $table->date('date_de_naissance');
+            $table->string('sexe', 1);
             $table->string('email')->unique();
             $table->string('mot_de_passe');
-            $table->string('numero')->nullable();
+            $table->string('numero', 20);
             $table->timestamps();
         });
     }

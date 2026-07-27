@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('superclient', function (Blueprint $table) {
-           $table->id();
+            $table->id();
             $table->string('nom');
             $table->string('prenom');
+            $table->integer('age');
+            $table->date('date_de_naissance');
+            $table->string('sexe', 1);
             $table->string('email')->unique();
             $table->string('mot_de_passe');
-            $table->string('numero');
-            $table->date('date_de_naissance')->nullable();
-            $table->enum('sexe', ['M', 'F']);
-            $table->unsignedTinyInteger('age')->nullable();
+            $table->string('numero', 20);
             $table->timestamps();
         });
     }
