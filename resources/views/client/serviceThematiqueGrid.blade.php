@@ -1,6 +1,4 @@
-@extends('layouts.client_service')
 
-@section('service')
     <section>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 overflow-hidden text-(--primary-color)">
             <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg">
@@ -126,4 +124,3 @@
         // document.addEventListener('DOMContentLoaded', initServices());
 
     </script>
-@endsection
