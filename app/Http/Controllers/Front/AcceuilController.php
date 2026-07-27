@@ -26,4 +26,12 @@ class AcceuilController extends Controller
     public function ticket () {
         return view('client.ticket');
     }
+
+    public function inscription () {
+        return view('client.inscription');
+    }
+
+    public function passe () {
+        return view('client.mdpOublie');
+    }
 }

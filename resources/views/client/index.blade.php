@@ -195,10 +195,10 @@
                 <img class="w-40" src="/assets/smart-queue-light.png" alt="smart queue logo">
                 <p class="max-w-100 mb-5">Prenez votre ticket où que vous soyez, et laissez l'algorithme gérer votre place dans la file.</p>
                 <div class="flex gap-5 text-2xl">
-                    <iconify-icon icon="ion:logo-facebook"></iconify-icon>
-                    <iconify-icon icon="ion:social-github"></iconify-icon>
-                    <iconify-icon icon="ion:social-whatsapp"></iconify-icon>
-                    <iconify-icon icon="ion:mail-sharp"></iconify-icon>
+                    <a href="#"><iconify-icon icon="ion:logo-facebook"></iconify-icon><a>
+                    <a href="#"><iconify-icon icon="ion:social-github"></iconify-icon><a>
+                    <a href="#"><iconify-icon icon="ion:social-whatsapp"></iconify-icon><a>
+                    <a href="#"><iconify-icon icon="ion:mail-sharp"></iconify-icon><a>
                 </div>
             </div>
             <div>
@@ -230,6 +230,6 @@
         <span class="flex w-[80%] h-px bg-gray-100 place-self-center my-10"></span>
         <p class="place-self-end">© 2026 Smart queue</p>
     </footer>
-    <script src="src/main.js"></script>
+    @vite(['public/js/client.js'])
 </body>
 </html> 

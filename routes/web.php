@@ -5,6 +5,8 @@ use App\Http\Controllers\Front\AcceuilController;
  
 // Client
 
+// Client -> acceuil
+
 Route::get('/', [AcceuilController::class, 'index'])->name('acceuil');
  
 Route::get('/tousServices', [AcceuilController::class, 'tousServices'])->name('tousServices');
@@ -14,6 +16,13 @@ Route::get('/information', [AcceuilController::class, 'information'])->name('inf
 Route::get('/connexion', [AcceuilController::class , 'connexion'])->name('connexion');
  
 Route::get('/ticket', [AcceuilController::class, 'ticket'])->name('ticket');
+
+Route::get('/inscription', [AcceuilController::class, 'inscription'])->name('inscription');
+
+Route::get('/passe', [AcceuilController::class, 'passe'])->name('passe');
+
+// Client -> service
+
 
 
 // Administrateur

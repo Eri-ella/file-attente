@@ -16,12 +16,17 @@ function changeTime() {
         }
     }
 
-    setInterval ( () => {
-        increase(minute, 59, "00")
-    }, 134);
-    setInterval ( () => {
-        increase(hour, 7, "7")
-    }, 1000);
+    if (minute) {
+        setInterval ( () => {
+            increase(minute, 59, "00")
+        }, 134);
+    }
+    if (hour) {
+        setInterval ( () => {
+            increase(hour, 7, "7")
+        }, 1000);    
+    }
+    
 
 }
 
@@ -79,40 +84,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // service
 
-function changeSrc(src1, src2){
-    let frame_list = document.getElementById("frame_list");
-    let frame_grid = document.getElementById("frame_grid");
+function changeService (page) {
+    
+    let thematique = document.getElementById('thematique');
+    let profil = document.getElementById('profil');
+    let critere = document.getElementById('critere');
 
-    if (frame_list && frame_grid) {
-        frame_list.src = src1;
-        frame_grid.src = src2;
-    }
+    let serviceTab = [thematique, profil, critere];
+
+    serviceTab.forEach(element => {
+        if(element) {
+            if(element.id === page){
+                element.classList.add('flex');
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+                element.classList.remove('flex');
+            }    
+        }
+        
+    });
+
 }
 
-function initServices () {
+function newServ () {
+
     let service_thematique = document.getElementById("service_thematique");
     let service_profil = document.getElementById("service_profil");
     let service_critere = document.getElementById("service_critere");
 
+
     if (service_thematique) {
         service_thematique.addEventListener("click",() => {
-            changeSrc("serviceThematiqueList.html", "serviceThematiqueGrid.html");
+            changeService('thematique');
         });
     }
 
     if (service_profil) {
         service_profil.addEventListener("click",() => {
-            changeSrc("serviceProfilList.html", "serviceProfilGrid.html");
-            
+            changeService('profil');            
         });
     }
 
     if (service_critere) {
         service_critere.addEventListener("click",() => {
-            changeSrc("serviceCritereList.html", "serviceCritereGrid.html");
+            changeService('critere');
         });
     }
-
 }
 
 
@@ -126,7 +144,7 @@ function initProfile() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    initServices();
+    newServ();
     initProfile();
 });
 
