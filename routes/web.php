@@ -5,7 +5,13 @@ use App\Http\Controllers\Front\AcceuilController;
 use App\Http\Controllers\Front\ServiceController;
 use App\Http\Controllers\Front\ProfilController;
 
+
+use  App\Http\Controllers\Back\ConnexionController;
+use  App\Http\Controllers\Back\DashboardController;
+
+// ***
 // Client
+// ***
 
 // Client -> acceuil
 
@@ -24,11 +30,13 @@ Route::get('/inscription', [AcceuilController::class, 'inscription'])->name('ins
 Route::get('/passe', [AcceuilController::class, 'passe'])->name('passe');
 
 // Client -> service
+
 Route::get('/service', [ServiceController::class, 'show'])->name('service');
 
 Route::get('/reservation', [ServiceController::class, 'reservation'])->name('reservation');
 
 // Client -> profil
+
 Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
 
 Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
@@ -36,72 +44,47 @@ Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('prof
 Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
 
 
-// Administrateur
-Route::get('/admin', function () {
-    return view('admin.connexionAdmin');
-})->name('connexionAdmin');
+// ***
+// Administrateur 
+// ***
+
+
+Route::get('/admin', [ConnexionController::class, 'connexionAdmin'])->name('connexionAdmin');
  
 // Client côté administrateur
-Route::get('/listeclient', function () {
-    return view('admin.listeclient.liste');
-});
+Route::get('/listeclient', [DashboardController::class, 'listClient']);
  
 
-Route::get('/admin/listeclient/droitecli', function () {
-    return view('admin.listeclient.droitecli');
-})->name('admin.listeclient.droitecli');
+Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
  
-Route::get('/admin/listeclient/droitema', function () {
-    return view('admin.listeclient.droitema');
-})->name('admin.listeclient.droitema');
+Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
 
-
+// ***
 // Manager
-Route::get('/connexionmanager', function () {
-    return view('manager.connexionmanager.connexionManager'); 
-});
+// ***
 
-Route::get('/manager/connexionmanager/droitetableau', function () {
-    return view('manager.connexionmanager.droitetableau');
-})->name('manager.connexionmanager.droitetableau');
+Route::get('/manager', [ConnexionController::class, 'connexionManager'])->name('pageManager');
 
-Route::get('/manager/connexionmanager/droiteprofil', function () {
-    return view('manager.connexionmanager.droiteprofil');
-})->name('manager.connexionmanager.droiteprofil');
 
-Route::get('/manager/connexionmanager/droiteservice', function () {
-    return view('manager.connexionmanager.droiteservice');
-})->name('manager.connexionmanager.droiteservice');
 
-Route::get('/manager/connexionmanager/droitefile', function () {
-    return view('manager.connexionmanager.droitefile');
-})->name('manager.connexionmanager.droitefile');
+Route::get('/manager/connexionmanager/service/modifier', [DashboardController::class, 'droiteModifierService'])->name('manager.connexionmanager.modifierservice');
 
-Route::get('/manager/connexionmanager/droiteusager', function () {
-    return view('manager.connexionmanager.droiteusager');
-})->name('manager.connexionmanager.droiteusager');
+Route::get('/connexionmanager', [DashboardController::class, 'connexionManager']);
 
-Route::get('/manager/connexionmanager/droitecategorie', function () {
-    return view('manager.connexionmanager.droitecategorie');
-})->name('manager.connexionmanager.droitecategorie');
+Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
 
-Route::get('/manager/connexionmanager/droitehistorique', function () {
-    return view('manager.connexionmanager.droitehistorique');
-})->name('manager.connexionmanager.droitehistorique');
+Route::get('/manager/connexionmanager/droiteprofil', [DashboardController::class, 'droiteProfil'])->name('manager.connexionmanager.droiteprofil');
 
-Route::get('/manager/connexionmanager/droiteconnexion', function () {
-    return view('manager.connexionmanager.droiteconnexion');
-})->name('manager.connexionmanager.droiteconnexion');
+Route::get('/manager/connexionmanager/droiteservice', [DashboardController::class, 'droiteService'])->name('manager.connexionmanager.droiteservice');
 
-Route::get('/manager', function () {
-    return view('manager.pageManager'); 
-})->name('pageManager');
+Route::get('/manager/connexionmanager/droitefile', [DashboardController::class, 'droiteFile'])->name('manager.connexionmanager.droitefile');
 
-Route::get('/pageManager', function () {
-    return view('pageManager');
-})->name('pageManager');
+Route::get('/manager/connexionmanager/droiteusager', [DashboardController::class, 'droiteUsager'])->name('manager.connexionmanager.droiteusager');
 
-Route::get('/manager/connexionmanager/service/modifier', function () {
-    return view('manager.connexionmanager.modifierservice');
-})->name('manager.connexionmanager.modifierservice');
+Route::get('/manager/connexionmanager/droitecategorie', [DashboardController::class, 'droiteCategorie'])->name('manager.connexionmanager.droitecategorie');
+
+Route::get('/manager/connexionmanager/droitehistorique', [DashboardController::class, 'droiteHistorique'])->name('manager.connexionmanager.droitehistorique');
+
+Route::get('/manager/connexionmanager/droiteconnexion', [DashboardController::class, 'droiteConnexion'])->name('manager.connexionmanager.droiteconnexion');
+
 
