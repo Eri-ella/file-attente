@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->text('description');
             $table->enum('categorie', ['État Civil & Citoyenneté', 'Foncier & Urbanisme', 'Économie & Commerce']);
-            $table->enum('profil_usager', ['Particuliers', 'Entreprises']);
             $table->enum('critere_technique', ['Gratuit', 'Payant']);
             $table->time('duree');
             $table->integer('cout');
             $table->foreignId('mairie_id')->constrained('mairies')->onDelete('cascade');
+            $table->foreignId('profil_id')->constrained('profil_usagers')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service');
+        Schema::dropIfExists('services');
     }
 };

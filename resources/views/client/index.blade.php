@@ -72,6 +72,7 @@
             </div>
         </section>
 
+        
         <section class="flex flex-col text-(--primary-color) gap-6 p-10 mt-5 mb-10">
             <h2 class="text-4xl font-medium">Services</h2>
             <div class="flex items-center justify-between">
@@ -90,13 +91,14 @@
                 </div>
             </div>
             <div class="grid grid-flow-col gap-5 overflow-hidden" id="slidedContainer">
+                @foreach ($services as $service)
                 <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
                     <div class="flex items-center gap-5">
                         <div class="w-20 h-20 flex items-center justify-center text-5xl">
                             <iconify-icon icon="mdi:car"></iconify-icon>
                         </div>
                         <div>
-                            <h4 class="font-medium">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
+                            <h4 class="font-medium uppercase">{{ $service->nom}}</h4>
                         </div>
                     </div>
                     <div>
@@ -114,8 +116,7 @@
                         </span>
                     </div>
                 </div>
-                
-                
+                @endforeach
             </div>
         </section>
 

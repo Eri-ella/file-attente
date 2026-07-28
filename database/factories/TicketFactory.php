@@ -19,7 +19,7 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'numero' => $this->faker->e164PhoneNumber(),
+            'numero' => $this->faker->bothify('??-####'),
             'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
             'superclient_id' => Superclient::first()?->id ?? Superclient::factory(),
             'service_id' => Service::first()?->id ?? Service::factory(),

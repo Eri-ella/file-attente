@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Service;
 
 class AcceuilController extends Controller
 {
     public function index () {
-        return view('client.index');
+        $services = Service::all();
+
+        return view('client.index', ['services' => $services]);
     }
 
     public function tousServices () {
