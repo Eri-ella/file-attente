@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nom');
             $table->enum('categorie', ['État Civil & Citoyenneté', 'Foncier & Urbanisme', 'Économie & Commerce']);
             $table->enum('profil_usager', ['Particuliers', 'Entreprises']);
-            $table->enum('criter_technique', ['Gratuit', 'Payant']);
+            $table->enum('critere_technique', ['Gratuit', 'Payant']);
             $table->time('duree');
             $table->integer('cout');
             $table->foreignId('mairie_id')->constrained('mairies')->onDelete('cascade');
