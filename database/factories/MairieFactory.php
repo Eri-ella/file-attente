@@ -26,6 +26,9 @@ class MairieFactory extends Factory
             'heure_ouvert_soir' => '14:00:00',
             'heure_ferme_matin' => '12:30:00',
             'heure_ferme_soir' => '17:00:00',
+
+            
         ];
+        
     }
 }

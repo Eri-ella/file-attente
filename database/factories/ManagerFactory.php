@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Manager;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Mairie;
 
 /**
  * @extends Factory<Manager>
@@ -27,6 +28,8 @@ class ManagerFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'mot_de_passe' => Hash::make('password'), 
             'numero' => fake()->numerify('01########'),
+
+            'mairie_id' => Mairie::factory(), 
         ];
     }
 }
