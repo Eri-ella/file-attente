@@ -1,13 +1,4 @@
 @php
-    $services = [
-        ['nom' => 'Acte de naissance', 'categorie' => 'Etat Civil, Citoyenneté et Identité', 'duree' => '20 minutes', 'cout' => '500', 'profil' => 'Tout public', 'statut' => 'actif', 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-        ['nom' => 'CIP', 'categorie' => 'Renouvellemnt de carte CIP', 'duree' => '20 minutes', 'cout' => '500', 'profil' => 'Tout public', 'statut' => 'actif', 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-        ['nom' => 'Acte de naissance', 'categorie' => 'Etat Civil, Citoyenneté et Identité', 'duree' => '20 minutes', 'cout' => '500', 'profil' => 'Tout public', 'statut' => 'actif', 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-        ['nom' => 'Acte de naissance', 'categorie' => 'Etat Civil, Citoyenneté et Identité', 'duree' => '20 minutes', 'cout' => '500', 'profil' => 'Tout public', 'statut' => 'actif', 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-        ['nom' => 'Acte de naissance', 'categorie' => 'Etat Civil, Citoyenneté et Identité', 'duree' => '20 minutes', 'cout' => '500', 'profil' => 'Tout public', 'statut' => 'actif', 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-        ['nom' => 'Acte de naissance', 'categorie' => 'Etat Civil, Citoyenneté et Identité', 'duree' => '20 minutes', 'cout' => '500', 'profil' => 'Tout public', 'statut' => 'actif', 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-    ];
- 
     // Liste des catégories uniques, pour remplir le menu déroulant automatiquement
     $categories = collect($services)->pluck('categorie')->unique();
 @endphp
@@ -80,7 +71,7 @@
                                 <td class="py-3 text-gray-800">{{ $service['categorie'] }}</td>
                                 <td class="py-3 text-gray-800">{{ $service['duree'] }}</td>
                                 <td class="py-3 text-gray-800">{{ $service['cout'] }}</td>
-                                <td class="py-3 text-gray-800">{{ $service['profil'] }}</td>
+                                <td class="py-3 text-gray-800">{{ $service['profil_usager'] }}</td>
                                 <td class="py-3">
                                     <span class="bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded">{{ $service['statut'] }}</span>
                                 </td>

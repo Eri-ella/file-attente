@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('numero', 191)->unique();
-            $table->enum('statut', ['en_attente', 'en_cours', 'termine', 'annule'])->default('en_attente');
-            $table->foreignId('superclient_id')->constrained('superclients')->nullable();
-            $table->foreignId('service_id')->constrained('services');
+            $table->string('nom');
+            $table->string('statut',['actif','inactif']);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ticket');
+        Schema::dropIfExists('categories');
     }
 };

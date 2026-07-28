@@ -7,7 +7,7 @@
     </head>
     <body class="h-full flex flex-col">
         <main class="flex-1 bg-[#F9F8F5] p-10 overflow-auto border border-[#222D52]/50"> 
-            <h1 class="text-2xl font-medium text-[#222D52] mb-8">Liste des profils usager</h1>
+            <h1 class="text-2xl font-medium text-[#222D52] mb-8">Profil de la mairie</h1>
 
             
             <form method="POST" action="#" class="space-y-5 max-w-md">
