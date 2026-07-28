@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Mairie;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Mairie;
+
 
 class MairieSeeder extends Seeder
 {
@@ -13,6 +14,6 @@ class MairieSeeder extends Seeder
      */
     public function run(): void
     {
-        Mairie::factory()->count(2)->create();
+        Mairie::factory()->count(1)->create();
     }
 }

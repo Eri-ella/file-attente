@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SuperClient extends Model
 {
     use HasFactory;
+
+    protected $table = 'superclients';
  
     protected $fillable = [
         'nom', 
