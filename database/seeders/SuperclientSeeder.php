@@ -4,15 +4,15 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Ticket;
+use App\Models\SuperClient;
 
-class TicketSeeder extends Seeder
+class SuperclientSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Ticket::factory()->count(2)->create();
+        SuperClient::factory()->count(6)->create();
     }
 }
