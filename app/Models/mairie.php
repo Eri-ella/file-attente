@@ -1,25 +1,32 @@
 <?php
-
+ 
 namespace App\Models;
-
+ 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+ 
 class Mairie extends Model
 {
     protected $fillable = [
         'nom',
         'adresse',
         'telephone',
-        'main',
+        'mail',
         'heure_ouvert_matin',
         'heure_ouvert_soir',
         'heure_ferme_matin',
         'heure_ferme_soir',
     ];
-
-     public function managers(): HasMany
+ 
+    public function managers(): HasOne
     {
-        return $this->hasMany(manager::class);
+        return $this->hasOne(Manager::class);
+    }
+
+    public function services(): HasMany
+    {
+        return $this->hasMany(Service::class);
     }
 }
