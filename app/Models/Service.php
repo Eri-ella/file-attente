@@ -13,7 +13,7 @@ class Service extends Model
     protected $fillable = [
         'nom', 
         'categorie',
-        'profil_usager',
+        'description',
         'critere_technique',
         'duree',
         'cout'];

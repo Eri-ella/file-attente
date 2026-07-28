@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('profil_usagers', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->time('heure');
-            $table->foreignId('superclient_id')->constrained('superclients');
+            $table->string('nom');
+            $table->enum('statut', ['actif', 'inactif']);
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('profil_usagers');
     }
 };

@@ -18,9 +18,9 @@ class ServiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'nom' => $this->faker->name(),
+            'nom' => $this->faker->sentence(),
             'categorie' => $this->faker->randomElement(['État Civil & Citoyenneté', 'Foncier & Urbanisme', 'Économie & Commerce']),
-            'profil_usager' => $this->faker->randomElement(['Particuliers', 'Entreprises']),
+            'description' => $this->faker->text(),
             'critere_technique' => $this->faker->randomElement(['Gratuit', 'Payant']),
             'duree' => $this->faker->numberbetween(10, 45),
             'cout' => $this->faker->numberbetween(500, 2000),
