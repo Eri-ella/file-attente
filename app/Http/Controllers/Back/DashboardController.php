@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Service;
 
 class DashboardController extends Controller
 {
@@ -32,11 +33,13 @@ class DashboardController extends Controller
     }
 
     public function droiteProfil () {
+        
         return view('manager.connexionmanager.droiteprofil');
     }
 
-    public function droiteService () {
-        return view('manager.connexionmanager.droiteservice');
+    public function droiteService () { 
+        $services= Service::all();
+        return view('manager.connexionmanager.droiteservice',['services'=>$services]);
     }
 
     public function droiteModifierService () {
