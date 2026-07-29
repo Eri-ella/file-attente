@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('numero', 191)->unique();
             $table->enum('statut', ['en_attente', 'en_cours', 'termine', 'annule'])->default('en_attente');
-            $table->foreignId('superclient_id')->constrained('superclients')->nullable();
-            $table->foreignId('client_id')->constrained('clients')->nullable();
+            $table->foreignId('superclient_id')->nullable()->constrained('superclients');
+            $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->foreignId('service_id')->constrained('services');
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE tickets ADD CONSTRAINT chk_unique_valeur CHECK (superclient_id IS NULL OR client_id IS NULL)');
+
     }
 
     /**

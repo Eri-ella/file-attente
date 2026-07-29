@@ -20,7 +20,7 @@ class ManagerFactory extends Factory
     public function definition(): array
     {
         return [
-             'nom' => fake()->lastName(),
+            'nom' => fake()->lastName(),
             'prenom' => fake()->firstName(),
             'age' => fake()->numberBetween(25, 60),
             'date_de_naissance' => fake()->date(),
