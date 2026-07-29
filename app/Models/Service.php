@@ -12,7 +12,6 @@ class Service extends Model
     use HasFactory;
     protected $fillable = [
         'nom', 
-        'categorie',
         'description',
         'critere_technique',
         'duree',
@@ -24,5 +23,13 @@ class Service extends Model
 
     public function mairie(): BelongsTo {
         return $this->BelongsTo(Mairie::class);
+    }
+
+    public function profil_usager(): BelongsTo {
+        return $this->BelongsTo(ProfilUsager::class);
+    }
+
+    public function categorie(): BelongsTo {
+        return $this->BelongsTo(Categorie::class);
     }
 }

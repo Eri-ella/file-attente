@@ -50,41 +50,45 @@ Route::get('/historique', [ProfilController::class, 'historique'])->name('histor
 
 
 Route::get('/admin', [ConnexionController::class, 'connexionAdmin'])->name('connexionAdmin');
+Route::post('/admin/login', [ConnexionController::class, 'loginAdmin'])->name('admin.login');
  
 // Client côté administrateur
-Route::get('/listeclient', [DashboardController::class, 'listClient']);
- 
+Route::middleware('auth:admin')->group(function () {
+    Route::post('/admin/logout', [ConnexionController::class, 'logoutAdmin'])->name('admin.logout');
 
-Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
- 
-Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
-
+    Route::get('/listeclient', [DashboardController::class, 'listClient']);
+    Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
+    Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
+});
 // ***
 // Manager
 // ***
 
 Route::get('/manager', [ConnexionController::class, 'connexionManager'])->name('pageManager');
+Route::post('/manager/login', [ConnexionController::class, 'loginManager'])->name('manager.login');
 
 
+Route::middleware('auth:manager')->group(function () {
+    Route::post('/manager/logout', [ConnexionController::class, 'logoutManager'])->name('manager.logout');
 
-Route::get('/manager/connexionmanager/service/modifier', [DashboardController::class, 'droiteModifierService'])->name('manager.connexionmanager.modifierservice');
+    Route::get('/manager/connexionmanager/service/modifier', [DashboardController::class, 'droiteModifierService'])->name('manager.connexionmanager.modifierservice');
 
-Route::get('/connexionmanager', [DashboardController::class, 'connexionManager']);
+    Route::get('/connexionmanager', [DashboardController::class, 'connexionManager']);
 
-Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
+    Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
 
-Route::get('/manager/connexionmanager/droiteprofil', [DashboardController::class, 'droiteProfil'])->name('manager.connexionmanager.droiteprofil');
+    Route::get('/manager/connexionmanager/droiteprofil', [DashboardController::class, 'droiteProfil'])->name('manager.connexionmanager.droiteprofil');
 
-Route::get('/manager/connexionmanager/droiteservice', [DashboardController::class, 'droiteService'])->name('manager.connexionmanager.droiteservice');
+    Route::get('/manager/connexionmanager/droiteservice', [DashboardController::class, 'droiteService'])->name('manager.connexionmanager.droiteservice');
 
-Route::get('/manager/connexionmanager/droitefile', [DashboardController::class, 'droiteFile'])->name('manager.connexionmanager.droitefile');
+    Route::get('/manager/connexionmanager/droitefile', [DashboardController::class, 'droiteFile'])->name('manager.connexionmanager.droitefile');
 
-Route::get('/manager/connexionmanager/droiteusager', [DashboardController::class, 'droiteUsager'])->name('manager.connexionmanager.droiteusager');
+    Route::get('/manager/connexionmanager/droiteusager', [DashboardController::class, 'droiteUsager'])->name('manager.connexionmanager.droiteusager');
 
-Route::get('/manager/connexionmanager/droitecategorie', [DashboardController::class, 'droiteCategorie'])->name('manager.connexionmanager.droitecategorie');
+    Route::get('/manager/connexionmanager/droitecategorie', [DashboardController::class, 'droiteCategorie'])->name('manager.connexionmanager.droitecategorie');
 
-Route::get('/manager/connexionmanager/droitehistorique', [DashboardController::class, 'droiteHistorique'])->name('manager.connexionmanager.droitehistorique');
+    Route::get('/manager/connexionmanager/droitehistorique', [DashboardController::class, 'droiteHistorique'])->name('manager.connexionmanager.droitehistorique');
 
-Route::get('/manager/connexionmanager/droiteconnexion', [DashboardController::class, 'droiteConnexion'])->name('manager.connexionmanager.droiteconnexion');
+    Route::get('/manager/connexionmanager/droiteconnexion', [DashboardController::class, 'droiteConnexion'])->name('manager.connexionmanager.droiteconnexion');
 
-
+});

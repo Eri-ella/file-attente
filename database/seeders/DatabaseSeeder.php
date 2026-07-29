@@ -6,17 +6,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\MairieSeeder;
-use Database\Seeders\AdministrateurSeeder;
-use Database\Seeders\ClientSeeder;
-use Database\Seeders\NotificationSeeder;
-use Database\Seeders\ManagerSeeder;
-use Database\Seeders\SuperclientSeeder;
-use Database\Seeders\TicketSeeder;
-use Database\Seeders\ServiceSeeder;
-use Database\Seeders\ReservationSeeder;
-use Database\Seeders\ProfilUsagerSeeder;
-use Database\Seeders\CategorieSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,15 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-          $this->call([
+        $this->call([
         CategorieSeeder::class,
         ProfilUsagerSeeder::class,
         MairieSeeder::class,
-        ManagerSeeder::class,
         AdministrateurSeeder::class,
-        NotificationSeeder::class,
+        ManagerSeeder::class,
         ClientSeeder::class,
         SuperclientSeeder::class,
+        NotificationSeeder::class,
         ServiceSeeder::class,
         TicketSeeder::class,
         ReservationSeeder::class,
