@@ -6,17 +6,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\MairieSeeder;
-use Database\Seeders\AdministrateurSeeder;
-use Database\Seeders\ClientSeeder;
-use Database\Seeders\NotificationSeeder;
-use Database\Seeders\ManagerSeeder;
-use Database\Seeders\SuperclientSeeder;
-use Database\Seeders\TicketSeeder;
-use Database\Seeders\ServiceSeeder;
-use Database\Seeders\ReservationSeeder;
-use Database\Seeders\ProfilUsagerSeeder;
-use Database\Seeders\CategorieSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,10 +20,14 @@ class DatabaseSeeder extends Seeder
         CategorieSeeder::class,
         ProfilUsagerSeeder::class,
         MairieSeeder::class,
-        ManagerSeeder::class,
         AdministrateurSeeder::class,
+<<<<<<< HEAD
+=======
+        ManagerSeeder::class,
+>>>>>>> 5c540678827b9ce02e7fa85008a4dc2e1573d8f3
         ClientSeeder::class,
         SuperclientSeeder::class,
+        NotificationSeeder::class,
         ServiceSeeder::class,
         TicketSeeder::class,
         NotificationSeeder::class,
