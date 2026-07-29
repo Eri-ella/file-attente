@@ -2,12 +2,12 @@
  
 namespace App\Models;
  
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
  
-class Manager extends Model
+class Manager extends Authenticatable
 {
     use HasFactory;
  
@@ -25,6 +25,11 @@ class Manager extends Model
  
     protected $hidden = ['mot_de_passe'];
  
+    public function getAuthPassword()
+    {
+        return $this->mot_de_passe;
+    }
+    
     public function mairie(): BelongsTo
     {
         return $this->belongsTo(Mairie::class);

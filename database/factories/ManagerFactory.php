@@ -29,7 +29,7 @@ class ManagerFactory extends Factory
             'mot_de_passe' => Hash::make('password'), 
             'numero' => fake()->numerify('01########'),
 
-            'mairie_id' => Mairie::factory(), 
+            'mairie_id' => fn () => Mairie::inRandomOrder()->first()?->id ?? Mairie::factory(),
         ];
     }
 }

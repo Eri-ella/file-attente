@@ -11,7 +11,7 @@
                         Identifiez-vous pour accéder à l'espace admin
                     </p>
 
-                    <form method="POST" action="">
+                    <form method="POST" action="{{ route('admin.login') }}">
                         @csrf
                         <label for="email" class="text-[#222D52] font-medium ">Identifiants</label>
                         <input
