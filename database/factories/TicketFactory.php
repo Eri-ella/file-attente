@@ -18,20 +18,18 @@ class TicketFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
-        // On choisit au hasard si le ticket va à un superclient ou à un client classique
-        $estSuperClient = $this->faker->boolean();
+        public function definition(): array
+        {
+            $estSuperClient = $this->faker->boolean();
 
-        return [
-            'numero' => $this->faker->unique()->bothify('??-####'),
-            'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
-            'service_id' => Service::first()?->id ?? Service::factory(),
-            
-            // 🌟 AJOUT : Attribution exclusive pour respecter la contrainte CHECK de votre BDD
-            'superclient_id' => $estSuperClient ? (Superclient::first()?->id ?? Superclient::factory()) : null,
-            'client_mail' => !$estSuperClient ? (Client::first()?->mail ?? Client::factory()) : null,
-        ];
-    }
+            return [
+                'numero' => $this->faker->unique()->bothify('??-####'),
+                'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
+                'service_id' => \App\Models\Service::inRandomOrder()->first()?->id ?? \App\Models\Service::factory(),
+                'superclient_id' => $estSuperClient ? (\App\Models\Superclient::inRandomOrder()->first()?->id ?? \App\Models\Superclient::factory()) : null,
+                'client_mail' => !$estSuperClient ? (\App\Models\Client::inRandomOrder()->first()?->mail ?? \App\Models\Client::factory()) : null,
+            ];
+        }
+
 }
 

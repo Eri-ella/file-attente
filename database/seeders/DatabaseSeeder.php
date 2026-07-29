@@ -27,17 +27,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-          $this->call([
+        $this->call([
         CategorieSeeder::class,
         ProfilUsagerSeeder::class,
         MairieSeeder::class,
         ManagerSeeder::class,
         AdministrateurSeeder::class,
-        NotificationSeeder::class,
         ClientSeeder::class,
         SuperclientSeeder::class,
         ServiceSeeder::class,
         TicketSeeder::class,
+        NotificationSeeder::class,
         ReservationSeeder::class,
         ]);
     }

@@ -17,25 +17,16 @@ class ReservationFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
-        
-        // On décide aléatoirement si la réservation appartient à un client classique ou un superclient
-        $estSuperClient = $this->faker->boolean();
+        public function definition(): array
+        {
+            $estSuperClient = $this->faker->boolean();
 
-        return [
-            'date' => $this->faker->date(),
-            'heure_souhaite' => $this->faker->time(),
+            return [
+                'date' => $this->faker->date(),
+                'heure_souhaite' => $this->faker->time(),
+                'superclient_id' => $estSuperClient ? (\App\Models\Superclient::inRandomOrder()->first()?->id ?? \App\Models\Superclient::factory()) : null,
+                'client_mail' => !$estSuperClient ? (\App\Models\Client::inRandomOrder()->first()?->mail ?? \App\Models\Client::factory()) : null,
+            ];
+        }
 
-            // Si c'est un superclient, on crée un superclient_id, sinon on laisse NULL
-            'superclient_id' => $estSuperClient ? Superclient::first()?->id ?? Superclient::factory() : null,
-
-            // CORRECTION : Remplacement de client_id par client_mail
-            // Si ce n'est pas un superclient, on lui attribue le mail d'un client classique, sinon NULL
-            'client_mail' => !$estSuperClient ? Client::first()?->mail ?? Client::factory() : null,
-        ];
-    
-
-        
-    }
 }
