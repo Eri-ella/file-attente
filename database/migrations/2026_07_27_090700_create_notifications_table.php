@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->time('heure');
-            $table->foreignId('superclient_id')->constrained('superclients');
+            $table->foreignId('client_id')->nullable()->constrained('clients');
+            $table->foreignId('superclient_id')->nullable()->constrained('superclients');
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE notifications ADD CONSTRAINT chk_unique_destination CHECK (superclient_id IS NULL OR client_id IS NULL)');
+
     }
 
     /**

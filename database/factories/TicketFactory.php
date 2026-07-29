@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\SuperClient;
+use App\Models\Client;
 use App\Models\Service;
 /**
  * @extends Factory<Ticket>
@@ -21,7 +22,7 @@ class TicketFactory extends Factory
         return [
             'numero' => $this->faker->bothify('??-####'),
             'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
-            'superclient_id' => Superclient::first()?->id ?? Superclient::factory(),
+            
             'service_id' => Service::first()?->id ?? Service::factory(),
 
         ];

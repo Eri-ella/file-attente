@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profil_usagers', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
+            $table->enum('nom', ['Foncier & Urbanisme', 'Économie & Commerce', 'État Civil & Citoyenneté'])->unique();
             $table->enum('statut', ['actif', 'inactif']);
             $table->timestamps();
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profil_usagers');
+        Schema::dropIfExists('categories');
     }
 };
