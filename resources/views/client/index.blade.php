@@ -91,32 +91,33 @@
                 </div>
             </div>
             <div class="grid grid-flow-col gap-5 overflow-hidden" id="slidedContainer">
-                @foreach ($services as $service)
-                <div class="flex flex-col w-75 h-75 gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
+                @for ($i = 0; $i < 7; $i++)
+                <div class="flex flex-col w-75 h-75 justify-between gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
                     <div class="flex items-center gap-5">
                         <div class="w-20 h-20 flex items-center justify-center text-5xl">
                             <iconify-icon icon="mdi:car"></iconify-icon>
                         </div>
                         <div>
-                            <h4 class="font-medium uppercase">{{ $service->nom}}</h4>
+                            <h4 class="font-medium uppercase">{{ $services[$i]->nom}}</h4>
                         </div>
                     </div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In quia voluptatibus culpa explicabo eum voluptate fuga perferendis accusamus suscipit aperiam sequ</p>
+                    <div class="h-30 overflow-hidden">
+                        <p>{{ $services[$i]->description }}</p>
                     </div>
+                    <span>. . .</span>
                     <div>
                         <span></span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span>
-                            <p class="text-xs">Durée moy. 10min</p>
+                            <p class="text-xs">Durée moy. {{ $services[$i]->duree}} min</p>
                         </span>
                         <span class="btn-secondary">
                             <button><a href="{{ route('service') }}">Lire la suite</a></button>
                         </span>
                     </div>
                 </div>
-                @endforeach
+                @endfor
             </div>
         </section>
 
@@ -146,14 +147,14 @@
                     <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--white-color) rounded-full">
                         <iconify-icon icon="mdi:car"></iconify-icon>
                     </div>
-                    <h4 class="font-medium max-w-50">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
+                    <h4 class="font-medium max-w-50">{{ $services[1]->nom}}</h4>
                 </div>
                 <div class="flex flex-col justify-center items-center bg-(--white-color) px-2 py-5 min-h-100 mb-5 shadow-lg rounded-tl-lg rounded-br-lg card2">
                     <div class="flex flex-col items-center justify-center text-center">
                         <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--bg-color) rounded-full mb-5">
                             <iconify-icon icon="mdi:car"></iconify-icon>
                         </div>
-                        <h4 class="font-medium max-w-50">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
+                        <h4 class="font-medium max-w-50">{{ $services[2]->nom}}</h4>
                     </div>
                     <div class="grid grid-cols-3 text-(--primary-color) p-10 divide-x-1 divide-(--primary-color)">
                         <span class="w-full flex flex-col items-center justify-center p-1">
@@ -169,13 +170,13 @@
                             <p class="text-xs">à dépenser</p>
                         </span>
                     </div>
-                    <p class="text-xs">Durée moy. 10min</p>
+                    <p class="text-xs">Durée moy. {{ $services[2]->duree}} min</p>
                 </div>
                 <div class="flex flex-col items-center justify-center text-center card2">
                     <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--white-color) rounded-full">
                         <iconify-icon icon="mdi:car"></iconify-icon>
                     </div>
-                    <h4 class="font-medium max-w-50">DEMANDE DE CARTE DE STATIONNEMENT RESIDENTIEL.</h4>
+                    <h4 class="font-medium max-w-50">{{ $services[3]->nom}}</h4>
                 </div>
             </div>
             <div>

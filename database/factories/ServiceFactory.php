@@ -22,7 +22,7 @@ class ServiceFactory extends Factory
     {
         return [
             'nom' => $this->faker->sentence(),
-            'description' => $this->faker->text(),
+            'description' => $this->faker->text(300),
             'critere_technique' => $this->faker->randomElement(['Gratuit', 'Payant']),
             'duree' => $this->faker->numberbetween(10, 45),
             'cout' => $this->faker->numberbetween(500, 2000),
