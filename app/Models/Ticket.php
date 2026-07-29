@@ -13,15 +13,12 @@ class Ticket extends Model
         'numero',
         'statut'];
 
-    public function client(): BelongsTo {
-        return $this->BelongsTo(Client::class);
+    public function reservation(): BelongsTo {
+        return $this->BelongsTo(Reservation::class);
     }
 
     public function service(): BelongsTo {
         return $this->BelongsTo(Service::class);
     }
 
-    public function super_client(): BelongsTo {
-        return $this->BelongsTo(Superclient::class);
-    }
 }
