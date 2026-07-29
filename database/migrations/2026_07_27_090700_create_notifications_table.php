@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -15,14 +16,18 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->time('heure');
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('superclient_id')->nullable()->constrained('superclients');
+            $table->string('client_mail', 191)->nullable(); 
+            $table->foreignId('superclient_id')->nullable()->constrain('superclients')->onDelete('cascade');
+
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE notifications ADD CONSTRAINT chk_unique_destination CHECK (superclient_id IS NULL OR client_id IS NULL)');
-
+        
+        Schema::table('notifications', function (Blueprint $table) {
+            $table->foreign('client_mail')->references('mail')->on('clients')->onDelete('cascade');
+        });
     }
+
 
     /**
      * Reverse the migrations.

@@ -4,9 +4,10 @@ namespace Database\Factories;
 
 use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\SuperClient;
-use App\Models\Client;
 use App\Models\Service;
+use App\Models\Superclient;
+use App\Models\Client;
+
 /**
  * @extends Factory<Ticket>
  */
@@ -19,12 +20,18 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'numero' => $this->faker->bothify('??-####'),
-            'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
-            
-            'service_id' => Service::first()?->id ?? Service::factory(),
+        // On choisit au hasard si le ticket va à un superclient ou à un client classique
+        $estSuperClient = $this->faker->boolean();
 
+        return [
+            'numero' => $this->faker->unique()->bothify('??-####'),
+            'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
+            'service_id' => Service::first()?->id ?? Service::factory(),
+            
+            // 🌟 AJOUT : Attribution exclusive pour respecter la contrainte CHECK de votre BDD
+            'superclient_id' => $estSuperClient ? (Superclient::first()?->id ?? Superclient::factory()) : null,
+            'client_mail' => !$estSuperClient ? (Client::first()?->mail ?? Client::factory()) : null,
         ];
     }
 }
+

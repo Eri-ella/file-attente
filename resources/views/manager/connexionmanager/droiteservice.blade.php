@@ -71,7 +71,7 @@
                                 <td class="py-3 text-gray-800">{{ $service['categorie'] }}</td>
                                 <td class="py-3 text-gray-800">{{ $service['duree'] }}</td>
                                 <td class="py-3 text-gray-800">{{ $service['cout'] }}</td>
-                                <td class="py-3 text-gray-800">{{ $service['profil_usager'] }}</td>
+                                <td class="py-3 text-gray-800">{{ $service['profil_usagers'] }}</td>
                                 <td class="py-3">
                                     <span class="bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded">{{ $service['statut'] }}</span>
                                 </td>

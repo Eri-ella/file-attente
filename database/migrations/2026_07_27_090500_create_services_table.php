@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->text('description');
-            $table->enum('categorie', ['État Civil & Citoyenneté', 'Foncier & Urbanisme', 'Économie & Commerce']);
             $table->enum('critere_technique', ['Gratuit', 'Payant']);
             $table->time('duree');
             $table->integer('cout');
@@ -24,6 +23,7 @@ return new class extends Migration
             $table->foreignId('categorie_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
         });
+        
     }
 
     /**
