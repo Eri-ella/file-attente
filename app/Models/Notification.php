@@ -13,11 +13,11 @@ class Notification extends Model
         'date',
         'heure'];
 
-    public function client(): BelongsTo {
+    public function clients(): BelongsTo {
         return $this->BelongsTo(Client::class);
     }
 
-    public function super_client(): BelongsTo {
+    public function super_clients(): BelongsTo {
         return $this->BelongsTo(Superclient::class);
     }
 }
