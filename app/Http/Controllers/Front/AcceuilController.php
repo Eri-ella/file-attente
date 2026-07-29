@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Models\Categorie;
+use App\Models\ProfilUsager;
 
 class AcceuilController extends Controller
 {
@@ -15,7 +17,11 @@ class AcceuilController extends Controller
     }
 
     public function tousServices () {
-        return view('client.tousServices');
+        $services = Service::all();
+        $categories = Categorie::all();
+        $profils = ProfilUsager::all();
+        
+        return view('client.tousServices', ['services' => $services], ['categories' => $categories], ['profils' => $profils]);
     }
 
     public function information () {
