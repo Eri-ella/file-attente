@@ -13,10 +13,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->string('email', 191)->unique();
+            // Force la colonne mail en texte de taille 191 et crée l'index unique indispensable
+            $table->string('mail', 191)->unique();
+            
+            // Vos autres colonnes existantes (nom, prenom...)
+            // ...
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

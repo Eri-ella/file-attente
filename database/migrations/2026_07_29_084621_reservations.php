@@ -12,20 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->time('heure');
-            $table->string('client_mail', 191)->nullable(); 
-            $table->foreignId('superclient_id')->nullable()->constrain('superclients')->onDelete('cascade');
-
+            $table->time('heure_souhaite');
+            $table->foreignId('superclient_id')->nullable()->constrained('superclients')->onDelete('cascade');
+            $table->string('client_mail', 191)->nullable();
+            
             $table->timestamps();
         });
 
         
-        Schema::table('notifications', function (Blueprint $table) {
+        Schema::table('reservations', function (Blueprint $table) {
             $table->foreign('client_mail')->references('mail')->on('clients')->onDelete('cascade');
         });
+
+        DB::statement('ALTER TABLE reservations ADD CONSTRAINT chk_reservation_valeur CHECK (superclient_id IS NULL OR client_mail IS NULL)');
     }
 
 
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('reservations');
     }
 };

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -16,14 +17,23 @@ return new class extends Migration
             $table->string('numero', 191)->unique();
             $table->enum('statut', ['en_attente', 'en_cours', 'termine', 'annule'])->default('en_attente');
             $table->foreignId('superclient_id')->nullable()->constrained('superclients');
-            $table->foreignId('client_id')->nullable()->constrained('clients');
+            
+            // Force exactement la même taille (191) et autorise le NULL
+            $table->string('client_mail', 191)->nullable();
+            
             $table->foreignId('service_id')->constrained('services');
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE tickets ADD CONSTRAINT chk_unique_valeur CHECK (superclient_id IS NULL OR client_id IS NULL)');
+        // Écrit explicitement la clé étrangère en dehors pour éviter les conflits de création d'index concurrents
+        Schema::table('tickets', function (Blueprint $table) {
+            $table->foreign('client_mail')->references('mail')->on('clients')->onDelete('cascade');
+        });
 
+        // Votre contrainte d'exclusion intelligente
+        DB::statement('ALTER TABLE tickets ADD CONSTRAINT chk_unique_valeur CHECK (superclient_id IS NULL OR client_mail IS NULL)');
     }
+
 
     /**
      * Reverse the migrations.
@@ -33,3 +43,4 @@ return new class extends Migration
         Schema::dropIfExists('tickets');
     }
 };
+

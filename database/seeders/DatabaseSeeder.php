@@ -14,6 +14,9 @@ use Database\Seeders\ManagerSeeder;
 use Database\Seeders\SuperclientSeeder;
 use Database\Seeders\TicketSeeder;
 use Database\Seeders\ServiceSeeder;
+use Database\Seeders\ReservationSeeder;
+use Database\Seeders\ProfilUsagerSeeder;
+use Database\Seeders\CategorieSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,6 +38,7 @@ class DatabaseSeeder extends Seeder
         SuperclientSeeder::class,
         ServiceSeeder::class,
         TicketSeeder::class,
+        ReservationSeeder::class,
         ]);
     }
 }

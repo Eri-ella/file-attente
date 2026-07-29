@@ -30,15 +30,13 @@ class SuperClient extends Model
         return $this->mot_de_passe;
     }
  
-    public function tickets(): HasMany
+    public function reservation(): HasMany
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Reservation::class);
     }
 
-    public function notifications(): HasMany
+    public function notification(): HasMany
     {
         return $this->hasMany(Notification::class);
     }
-
-  
 }
