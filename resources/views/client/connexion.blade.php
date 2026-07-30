@@ -7,7 +7,7 @@
             <p class="text-(--highlight-color)">BON RETOUR</p>
             <h2 class="text-(--white-color) text-4xl font-medium">Retrouvez vos tickets et votre historique en un instant.</h2>
         </div>
-        <form class="flex flex-col items-start justify-center w-1/2 min-h-screen gap-2 px-10 text-(--primary-color)" action="{{ route('inscription.store') }}" method="POST">
+        <form class="flex flex-col items-start justify-center w-1/2 min-h-screen gap-2 px-10 text-(--primary-color)" action="{{ route('connexion.store') }}" method="POST">
             @csrf
             <p class="text-(--highlight-color)">ESPACE CLIENT</p>
             <h3 class="text-4xl font-medium">Se connecter</h3>
@@ -16,7 +16,7 @@
                 <label class="text-xl font-medium">Adresse e-mail</label>
                 <input class="border-1 border-w-full p-2 rounded-tl-lg rounded-br-lg bg-(--white-color)" type="text" name="email" id="" placeholder="jeandev@gmail.com" required value="{{ old('email') }}"> 
                 <label class="text-xl font-medium relative">Mot de passe<br>
-                <input class="border-1 border-w-full p-2 w-full rounded-tl-lg rounded-br-lg bg-(--white-color) password" type="password" name="" id="" required placeholder="••••••••">                 
+                <input class="border-1 border-w-full p-2 w-full rounded-tl-lg rounded-br-lg bg-(--white-color) password" type="password" name="pass" id="" required placeholder="••••••••">                 
                     <span class="password-icon absolute right-10 top-10">
                         <i data-feather="eye" class="absolute"></i>
                         <i data-feather="eye-off" class="absolute"></i>

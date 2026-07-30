@@ -28,41 +28,7 @@ class AcceuilController extends Controller
         return view('client.commentCaMarche');
     }
 
-    public function connexion () {
-        return view('client.connexion');
-    }
-    public function connexion_success(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|unique:users,email',
-            'pass' => 'required|min:8',
-        ]);
-
-        return view('client.profil');
-    }
-
     public function ticket () {
         return view('client.ticket');
-    }
-
-    public function inscription () {
-        return view('client.inscription');
-    }
-
-    public function inscription_success(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'telephone' => 'required',
-            'pass' => 'required|min:8',
-        ]);
-
-        return view('client.profil');
-    }
-
-
-    public function passe () {
-        return view('client.mdpOublie');
     }
 }

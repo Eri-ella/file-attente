@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\AcceuilController;
 use App\Http\Controllers\Front\ServiceController;
 use App\Http\Controllers\Front\ProfilController;
+use App\Http\Controllers\Front\ConnexionClientController;
 
 
 use  App\Http\Controllers\Back\ConnexionController;
@@ -21,29 +22,34 @@ Route::get('/tousServices', [AcceuilController::class, 'tousServices'])->name('t
 
 Route::get('/information', [AcceuilController::class, 'information'])->name('information');
 
-Route::get('/connexion', [AcceuilController::class , 'connexion'])->name('connexion');
-Route::post('/connexion', [AcceuilController::class , 'connexion_success'])->name('connexion.store');
-
 Route::get('/ticket', [AcceuilController::class, 'ticket'])->name('ticket');
 
-Route::get('/inscription', [AcceuilController::class, 'inscription'])->name('inscription');
-Route::post('/inscription', [AcceuilController::class, 'inscription_success'])->name('inscription.store');
+Route::get('/connexion', [ConnexionClientController::class, 'connexion'])->name('connexion');
+Route::post('/connexion', [ConnexionClientController::class, 'login'])->name('connexion.store');
 
-Route::post('/passe', [AcceuilController::class, 'passe'])->name('passe');
+Route::get('/inscription', [ConnexionClientController::class, 'inscription'])->name('inscription');
+Route::post('/inscription', [ConnexionClientController::class, 'register'])->name('inscription.store');
 
+Route::get('/passe', [ConnexionClientController::class, 'passe'])->name('passe');
+Route::post('/passe', [ConnexionClientController::class, 'sendResetLink'])->name('passe.send');
+
+Route::get('/reinitialiser-mot-de-passe/{token}', [ConnexionClientController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reinitialiser-mot-de-passe', [ConnexionClientController::class, 'resetPassword'])->name('password.update');
+
+Route::post('/logout-client', [ConnexionClientController::class, 'logout'])
+    ->middleware('auth:superclient')
+    ->name('client.logout');
+
+Route::middleware('auth:superclient')->group(function () {
+    Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+    Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
+    Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
+});
 // Client -> service
 
 Route::get('/service', [ServiceController::class, 'show'])->name('service');
 
 Route::get('/reservation', [ServiceController::class, 'reservation'])->name('reservation');
-
-// Client -> profil
-
-Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
-
-Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
-
-Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
 
 
 // ***
