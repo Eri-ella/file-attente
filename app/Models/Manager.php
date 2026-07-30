@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
  
 class Manager extends Authenticatable
 {
@@ -33,5 +32,10 @@ class Manager extends Authenticatable
     public function mairie(): BelongsTo
     {
         return $this->belongsTo(Mairie::class);
+    }
+
+    public function getAuthIdentifierName()
+    {
+        return 'id';
     }
 }

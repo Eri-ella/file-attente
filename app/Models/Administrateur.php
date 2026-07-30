@@ -26,4 +26,9 @@ class Administrateur extends Authenticatable
     {
         return $this->mot_de_passe;
     }
+
+    public function getAuthIdentifierName()
+    {
+        return 'id';
+    }
 }

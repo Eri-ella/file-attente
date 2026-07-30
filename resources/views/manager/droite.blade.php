@@ -10,30 +10,38 @@
             Identifiez-vous pour accéder à l'espace admin
         </p>
 
-        <form method="POST" action="{{ route('manager.login') }}">
+        <form method="POST" action="{{ route('manager.login') }}" autocomplete="off">
             @csrf
-            <label for="email" class="text-[#222D52] font-medium ">Identifiants</label>
+            
+            <label for="email" class="text-[#222D52] font-medium">Identifiants</label>
             <input
                 type="email"
                 id="email"
                 name="email"
-                placeholder="manager@mairie-virtu3ll3"
-                class="w-full  border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3" 
+                class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3" 
+                autocomplete="new-password"
                 required
             >
 
-            <label for="password" class="text-[#222D52] font-medium ">Mot de passe</label>
+            <label for="password" class="text-[#222D52] font-medium">Mot de passe</label>
             <input
                 type="password"
                 id="password"
                 name="password"
-                placeholder="••••••••"
-                class="w-full  border border-gray-300 px-3 py-2 mb-5 text-sm text-gray-800 mt-3" 
+                class="w-full border border-gray-300 px-3 py-2 mb-2 text-sm text-gray-800 mt-3" 
+                autocomplete="new-password"
                 required
             >
 
-            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5"> Se connecter</button>
-            
+            <!-- SECTION DU MESSAGE D'ERREUR -->
+            @error('login_error')
+                <p class="text-xs text-red-600 font-medium mb-4">
+                    {{ $message }}
+                </p>
+            @enderror
+
+            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] text-white font-medium py-3.5 mt-5">Se connecter</button>
         </form>
+
     </div>
 </div>
