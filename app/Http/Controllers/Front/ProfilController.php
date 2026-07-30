@@ -62,3 +62,4 @@ class ProfilController extends Controller
 
         return redirect()->route('inscription')->with('success', 'Votre compte a été supprimé');
     }
+}
