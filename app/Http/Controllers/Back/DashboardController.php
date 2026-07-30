@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Back;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -33,8 +34,39 @@ class DashboardController extends Controller
     }
 
     public function droiteProfil () {
-        
-        return view('manager.connexionmanager.droiteprofil');
+        $manager = Auth::guard('manager')->user();
+        return view('manager.connexionmanager.droiteprofil', compact('manager'));
+    }
+
+    public function updateProfil(Request $request)
+    {
+        $manager = Auth::guard('manager')->user();
+
+        $data = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email'],
+            'numero' => ['required', 'string'],
+        ]);
+
+        $manager->update($data);
+
+        return redirect()->route('manager.connexionmanager.droiteprofil')->with('success', 'Profil mis à jour avec succès');
+    }
+
+    public function deleteProfil(Request $request)
+    {
+        $manager = Auth::guard('manager')->user();
+
+        // Supprimer le compte
+        $manager->delete();
+
+        // Déconnecter l'utilisateur
+        Auth::guard('manager')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('pageManager')->with('success', 'Votre compte a été supprimé');
     }
 
     public function droiteService () { 

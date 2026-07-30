@@ -90,6 +90,8 @@ Route::middleware('auth:manager')->group(function () {
     Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
 
     Route::get('/manager/connexionmanager/droiteprofil', [DashboardController::class, 'droiteProfil'])->name('manager.connexionmanager.droiteprofil');
+    Route::post('/manager/profil/update', [DashboardController::class, 'updateProfil'])->name('manager.profil.update');
+    Route::post('/manager/profil/delete', [DashboardController::class, 'deleteProfil'])->name('manager.profil.delete');
 
     Route::get('/manager/connexionmanager/droiteservice', [DashboardController::class, 'droiteService'])->name('manager.connexionmanager.droiteservice');
 
