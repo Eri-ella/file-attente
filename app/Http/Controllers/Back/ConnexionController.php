@@ -16,6 +16,10 @@ class ConnexionController extends Controller
     {
         return view('admin.connexionAdmin');
     }
+    public function mdpAdmin()
+    {
+        return view('admin.mdpOublieAdmin');
+    }
 
     public function loginAdmin(Request $request)
     {
@@ -50,6 +54,10 @@ class ConnexionController extends Controller
     {
         return view('manager.pageManager');
     }
+    public function mdpManager()
+    {
+        return view('manager.mdpOublieManager');
+    }
 
     public function loginManager(Request $request)
     {
@@ -60,7 +68,7 @@ class ConnexionController extends Controller
 
         if (Auth::guard('manager')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/connexionmanager/droitetableau');
+            return redirect()->intended('/connexionmanager');
         }
 
         return back()->withErrors([
