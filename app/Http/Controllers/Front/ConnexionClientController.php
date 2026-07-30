@@ -64,7 +64,6 @@ class ConnexionClientController extends Controller
             'telephone' => ['required', 'string'],
             'pass' => ['required', 'min:8'],
         ]);
-        dd($data);
 
         $superclient = SuperClient::create([
             'nom' => $data['nom'],
