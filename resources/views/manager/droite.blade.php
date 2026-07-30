@@ -19,9 +19,10 @@
                 id="email"
                 name="email"
                 placeholder="manager@mairie-virtu3ll3"
-                class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
+                class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg"
                 autocomplete="new-password"
                 required
+                value="{{ old('email') }}"
             >
 
             <!-- CORRECTION : Un conteneur parent 'relative' dédié uniquement au champ password et son icône -->
@@ -32,7 +33,7 @@
                     id="password"
                     name="password"
                     placeholder="••••••••"
-                    class="w-full border border-gray-300 px-3 py-2 text-sm text-gray-800 mt-3 rounded-lg pr-10" 
+                    class="w-full border border-gray-300 px-3 py-2 text-sm text-gray-800 mt-3 rounded-lg pr-10"
                     autocomplete="new-password"
                     required
                 >
@@ -66,5 +67,3 @@
     feather.replace();
 </script>
 @vite(['public/js/manager.js'])
-
-
