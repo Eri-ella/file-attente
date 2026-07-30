@@ -5,9 +5,9 @@
     <main class="flex text-(--primary-color) w-full min-h-screen">
         <div class="w-1/5 flex flex-col justify-center">
             <div class="flex flex-col items-center mb-5">
-                <span class="text-(--highlight-color) bg-(--primary-color) size-20 rounded-full flex items-center justify-center text-3xl">JH</span>
-                <p class="text-xl font-medium">Jean Houessou</p>
-                <p class="text-xs">JeanDev@gmail.com</p>
+                <span class="text-(--highlight-color) bg-(--primary-color) size-20 rounded-full flex items-center justify-center text-3xl">{{ strtoupper(substr($superclient->prenom, 0, 1)) }}{{ strtoupper(substr($superclient->nom, 0, 1)) }}</span>
+                <p class="text-xl font-medium">{{ $superclient->prenom }} {{ $superclient->nom }}</p>
+                <p class="text-xs">{{ $superclient->email }}</p>
             </div>
             <div class="grid grid-rows-3 divide-y-1 divide-(--primary-color) gap-5 px-5">
                 <p id="info_click" class="cursor-pointer">Mes informations</p>
