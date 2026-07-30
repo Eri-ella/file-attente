@@ -16,6 +16,10 @@ class ConnexionController extends Controller
     {
         return view('admin.connexionAdmin');
     }
+    public function mdpAdmin()
+    {
+        return view('admin.mdpOublieAdmin');
+    }
 
     public function loginAdmin(Request $request)
     {
@@ -56,6 +60,10 @@ class ConnexionController extends Controller
        public function connexionManager()
     {
         return view('manager.pageManager');
+    }
+    public function mdpManager()
+    {
+        return view('manager.mdpOublieManager');
     }
 
     public function loginManager(Request $request)

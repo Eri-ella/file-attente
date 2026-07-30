@@ -10,11 +10,11 @@
             Identifiez-vous pour accéder à l'espace admin
         </p>
 
-        
+        <!-- AJOUT : autocomplete="off" pour empêcher le navigateur de tricher -->
         <form method="POST" action="{{ route('admin.login') }}" autocomplete="off">
             @csrf
             <label for="email" class="text-[#222D52] font-medium ">Identifiants</label>
-            
+            <!-- AJOUT : autocomplete="new-password" pour bloquer le re-remplissage automatique -->
             <input
                 type="email"
                 id="email"
@@ -36,6 +36,7 @@
                 required
             >
 
+            <!-- AJOUT : La section du message d'erreur en rouge sous le mot de passe -->
             @error('login_error')
                 <p class="text-xs text-red-600 font-medium mb-4">
                     {{ $message }}
@@ -43,8 +44,14 @@
             @enderror
 
             <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5"> Se connecter</button>
+            
         </form>
-
     </div>
 </div>
+
+<script src="https://unpkg.com/feather-icons"></script>
+<script>
+    feather.replace();
+</script>
+@vite(['public/js/admin.js'])
 

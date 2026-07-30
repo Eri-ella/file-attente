@@ -179,3 +179,27 @@ document.addEventListener('DOMContentLoaded', function() {
     initProfil();
 });
 
+// profil connexion 
+function togglePassword() {
+    const eye = document.querySelector('.feather-eye');
+    const eyeOff = document.querySelector('.feather-eye-off');
+    const password = document.querySelector('.password');
+
+    if (eye && eyeOff && password) {
+        eye.addEventListener("click", () => {
+        eye.style.display = "none";
+        eyeOff.style.display = "block";
+        password.type = "text";
+        });
+
+        eyeOff.addEventListener("click", () => {
+        eyeOff.style.display = "none";
+        eye.style.display = "block";
+        password.type = "password";
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    togglePassword();
+});
