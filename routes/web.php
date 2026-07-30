@@ -22,12 +22,14 @@ Route::get('/tousServices', [AcceuilController::class, 'tousServices'])->name('t
 Route::get('/information', [AcceuilController::class, 'information'])->name('information');
 
 Route::get('/connexion', [AcceuilController::class , 'connexion'])->name('connexion');
- 
+Route::post('/connexion', [AcceuilController::class , 'connexion_success'])->name('connexion.store');
+
 Route::get('/ticket', [AcceuilController::class, 'ticket'])->name('ticket');
 
 Route::get('/inscription', [AcceuilController::class, 'inscription'])->name('inscription');
+Route::post('/inscription', [AcceuilController::class, 'inscription_success'])->name('inscription.store');
 
-Route::get('/passe', [AcceuilController::class, 'passe'])->name('passe');
+Route::post('/passe', [AcceuilController::class, 'passe'])->name('passe');
 
 // Client -> service
 
@@ -51,6 +53,7 @@ Route::get('/historique', [ProfilController::class, 'historique'])->name('histor
 
 Route::get('/admin', [ConnexionController::class, 'connexionAdmin'])->name('connexionAdmin');
 Route::post('/admin/login', [ConnexionController::class, 'loginAdmin'])->name('admin.login');
+Route::get('/admin/motdepasse', [ConnexionController::class, 'mdpAdmin'])->name('admin.motdepasse');
  
 // Client côté administrateur
 Route::middleware('auth:admin')->group(function () {
@@ -66,6 +69,7 @@ Route::middleware('auth:admin')->group(function () {
 
 Route::get('/manager', [ConnexionController::class, 'connexionManager'])->name('pageManager');
 Route::post('/manager/login', [ConnexionController::class, 'loginManager'])->name('manager.login');
+Route::get('/manager/motdepasse', [ConnexionController::class, 'mdpManager'])->name('manager.motdepasse');
 
 
 Route::middleware('auth:manager')->group(function () {

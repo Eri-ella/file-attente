@@ -1,0 +1,19 @@
+@import "tailwindcss";
+:root {
+    --primary-color: #222D52;
+    --blue-gradient-color: #4C65B8;
+    --highlight-color: #D2B589;
+    --bg-color: #F9F8F5;
+    --white-color: #FDFFFF;  
+    background-color: var(--bg-color)
+}
+
+/* tailwind classes */
+.btn-primary {
+    @apply text-(--white-color) bg-(--primary-color) px-10 py-1 rounded-tl-lg rounded-br-lg cursor-pointer;
+}
+
+.mail-input {
+    border-width: 1px;
+    border-color: rgba(128, 128, 128, 0.301);
+}
