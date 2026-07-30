@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         NotificationSeeder::class,
         ServiceSeeder::class,
         TicketSeeder::class,
+        NotificationSeeder::class,
         ReservationSeeder::class,
         ]);
     }

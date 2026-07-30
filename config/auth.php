@@ -45,12 +45,12 @@ return [
 
         'admin' => [
             'driver' => 'session',
-            'provider' => 'admins',
+            'provider' => 'administrateurs',
         ],
 
         'manager' => [
-            'driver' => 'session',
-            'provider' => 'managers',
+        'driver' => 'session',
+        'provider' => 'managers', 
         ],
     ],
 
@@ -77,14 +77,14 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        'admins' => [
+        'administrateurs' => [
             'driver' => 'eloquent',
             'model' => App\Models\Administrateur::class,
         ],
 
         'managers' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Manager::class,
+        'driver' => 'eloquent',
+        'model' => App\Models\Manager::class, 
         ],
     ],
 

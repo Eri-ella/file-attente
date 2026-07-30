@@ -3,46 +3,67 @@
         <p class="text-xs tracking-widest text-[#D2B589] mb-5">
             GESTION
         </p>
-         <h2 class="text-2xl  text-[#222D52] font-medium mb-2">
+        <h2 class="text-2xl text-[#222D52] font-medium mb-2">
             Connexion manager
         </h2>
-         <p class="text-sm text-gray-600 mb-6">
+        <p class="text-sm text-gray-600 mb-6">
             Identifiez-vous pour accéder à l'espace admin
         </p>
 
-        <form method="POST" action="{{ route('manager.login') }}">
+        <form method="POST" action="{{ route('manager.login') }}" autocomplete="off">
             @csrf
-            <label for="email" class="text-[#222D52] font-medium ">Identifiants</label>
+            
+            <label for="email" class="text-[#222D52] font-medium">Identifiants</label>
             <input
                 type="email"
                 id="email"
                 name="email"
                 placeholder="manager@mairie-virtu3ll3"
-                class="w-full  border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
+                class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg"
+                autocomplete="new-password"
                 required
                 value="{{ old('email') }}"
             >
-            <label for="password" class="text-[#222D52] font-medium relative">Mot de passe
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                class="w-full  border border-gray-300 px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
-                required
-            >
-            <span class="password-icon absolute right-10 top-10">
-                <i data-feather="eye" class="absolute"></i>
-                <i data-feather="eye-off" class="absolute"></i>
-            </span>
-            </label>
-            <script src="https://unpkg.com/feather-icons"></script>
-            <script>
-            feather.replace();
-            </script>
-            <p class="cursor-pointer place-self-end text-[#222D52]/50 hover:text-[#222D52]"><a href="{{ route('manager.motdepasse') }}"> Mot de passe oublié ?</a></p>
-            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg"> Se connecter</button>
+
+            <!-- CORRECTION : Un conteneur parent 'relative' dédié uniquement au champ password et son icône -->
+            <div class="relative w-full mb-2">
+                <label for="password" class="text-[#222D52] font-medium block">Mot de passe</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    class="w-full border border-gray-300 px-3 py-2 text-sm text-gray-800 mt-3 rounded-lg pr-10"
+                    autocomplete="new-password"
+                    required
+                >
+                <!-- CORRECTION : Positionnement chirurgical de l'icône par rapport au champ de saisie -->
+                <span class="password-icon absolute right-3 bottom-3 cursor-pointer text-gray-400">
+                    <i data-feather="eye" class="w-5 h-5"></i>
+                </span>
+            </div>
+
+            <!-- SECTION DU MESSAGE D'ERREUR PLACÉE IDÉALEMENT -->
+            @error('login_error')
+                <p class="text-xs text-red-600 font-medium mb-4 mt-1">
+                    {{ $message }}
+                </p>
+            @enderror
+
+            <p class="cursor-pointer text-right text-[#222D52]/50 hover:text-[#222D52] mb-4 text-sm mt-2">
+                <a href="{{ route('manager.motdepasse') }}">Mot de passe oublié ?</a>
+            </p>
+
+            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg transition-colors">
+                Se connecter
+            </button>
         </form>
+
     </div>
 </div>
+
+<script src="https://unpkg.com/feather-icons"></script>
+<script>
+    feather.replace();
+</script>
 @vite(['public/js/manager.js'])

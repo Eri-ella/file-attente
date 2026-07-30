@@ -23,10 +23,16 @@ class ConnexionController extends Controller
 
     public function loginAdmin(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
+        // Rappel : Laravel exige la clé 'password' ici pour faire sa magie
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
@@ -34,7 +40,7 @@ class ConnexionController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Identifiants incorrects.',
+        'login_error' => 'Identifiant ou mot de passe incorrect.',
         ])->onlyInput('email');
     }
 
@@ -46,11 +52,12 @@ class ConnexionController extends Controller
         return redirect()->route('connexionAdmin');
     }
 
+
     // ==========================
     // MANAGER
     // ==========================
 
-    public function connexionManager()
+       public function connexionManager()
     {
         return view('manager.pageManager');
     }
@@ -61,10 +68,16 @@ class ConnexionController extends Controller
 
     public function loginManager(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
+        // CORRECTION 1 : Utilisation obligatoire de la clé anglaise 'password' pour Laravel
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
 
         if (Auth::guard('manager')->attempt($credentials)) {
             $request->session()->regenerate();
@@ -72,8 +85,8 @@ class ConnexionController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Identifiants incorrects.',
-        ])->onlyInput('email');
+            'login_error' => 'Identifiant ou mot de passe incorrect.',
+        ]);
     }
 
     public function logoutManager(Request $request)
@@ -83,4 +96,5 @@ class ConnexionController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('pageManager');
     }
+
 }
