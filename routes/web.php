@@ -44,6 +44,8 @@ Route::middleware('auth:superclient')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
     Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
+    Route::post('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
+    Route::post('/profil/delete', [ProfilController::class, 'delete'])->name('profil.delete');
 });
 // Client -> service
 

@@ -22,4 +22,43 @@ class ProfilController extends Controller
         $superclient = Auth::guard('superclient')->user();
         return view('client.historique', compact('superclient'));
     }
-}
+
+    public function update(Request $request)
+    {
+        $superclient = Auth::guard('superclient')->user();
+
+        $data = $request->validate([
+            'nom_complet' => ['required', 'string', 'max:255'],
+            'telephone' => ['required', 'string'],
+            'email' => ['required', 'email'],
+        ]);
+
+        // Séparer nom et prénom depuis le champ nom_complet
+        $nomParts = explode(' ', $data['nom_complet'], 2);
+        $prenom = $nomParts[0] ?? '';
+        $nom = $nomParts[1] ?? '';
+
+        $superclient->update([
+            'nom' => $nom,
+            'prenom' => $prenom,
+            'numero' => $data['telephone'],
+            'email' => $data['email'],
+        ]);
+
+        return redirect()->route('profil')->with('success', 'Profil mis à jour avec succès');
+    }
+
+    public function delete(Request $request)
+    {
+        $superclient = Auth::guard('superclient')->user();
+
+        // Supprimer le compte
+        $superclient->delete();
+
+        // Déconnecter l'utilisateur
+        Auth::guard('superclient')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('inscription')->with('success', 'Votre compte a été supprimé');
+    }
