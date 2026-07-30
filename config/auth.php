@@ -52,6 +52,11 @@ return [
             'driver' => 'session',
             'provider' => 'managers',
         ],
+
+        'superclient' => [
+            'driver' => 'session',
+            'provider' => 'superclients',
+        ],
     ],
 
     /*
@@ -86,6 +91,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Manager::class,
         ],
+
+        'superclients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\SuperClient::class,
+        ],
     ],
 
     /*
@@ -112,6 +122,15 @@ return [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
+            'throttle' => 60,
+        ],
+    ],
+
+    'passwords' => [
+        'superclients' => [
+            'provider' => 'superclients',
+            'table' => 'password_reset_tokens', // table déjà créée par défaut dans Laravel
+            'expire' => 60, // le lien expire après 60 minutes
             'throttle' => 60,
         ],
     ],
