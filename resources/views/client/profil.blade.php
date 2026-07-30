@@ -12,10 +12,6 @@
             <div class="grid grid-rows-3 divide-y-1 divide-(--primary-color) gap-5 px-5">
                 <p id="info_click" class="cursor-pointer">Mes informations</p>
                 <p id="histo_click" class="cursor-pointer">Historique</p>
-                <form action="{{ route('profil.delete') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');" style="display:inline;">
-                    @csrf
-                    <button type="submit" class="cursor-pointer text-red-600 hover:text-red-700">Supprimer mon compte</button>
-                </form>
             </div>
         </div>
         <div class="w-4/5 min-h-screen flex flex-col" id="profil_infos">
