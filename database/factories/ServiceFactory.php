@@ -27,7 +27,7 @@ class ServiceFactory extends Factory
             'duree' => $this->faker->numberbetween(10, 45),
             'cout' => $this->faker->numberbetween(500, 2000),
             
-            'profil_id' => ProfilUsager::first()?->id ?? ProfilUsager::factory(),
+            'profil_usager_id' => ProfilUsager::first()?->id ?? ProfilUsager::factory(),
             'categorie_id' => Categorie::first()?->id ?? Categorie::factory(),
             'mairie_id' => Mairie::first()?->id ?? Mairie::factory(),
         ];

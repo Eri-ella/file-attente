@@ -10,8 +10,13 @@ class ServiceController extends Controller
 {
     public function show () {
         $services = Service::all();
+        $categories = Categorie::with('services')->get();
+        $profils = ProfilUsager::with('services')->get();
 
-        return view('client.service', ['services'=> $services]);
+        return view('client.service', [
+            'services'=> $services, 
+            'profils' => $profils,
+            'categories' => $categories,]);
     }
 
     public function reservation () {

@@ -18,10 +18,13 @@ class AcceuilController extends Controller
 
     public function tousServices () {
         $services = Service::all();
-        $categories = Categorie::all();
-        $profils = ProfilUsager::all();
+        $categories = Categorie::with('services')->get();
+        $profils = ProfilUsager::with('services')->get();
         
-        return view('client.tousServices', ['services' => $services], ['categories' => $categories], ['profils' => $profils]);
+        return view('client.tousServices', [
+            'services'=> $services, 
+            'profils' => $profils,
+            'categories' => $categories,]);
     }
 
     public function information () {

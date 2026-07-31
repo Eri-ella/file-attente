@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('duree');
             $table->integer('cout');
             $table->foreignId('mairie_id')->constrained('mairies')->onDelete('cascade');
-            $table->foreignId('profil_id')->constrained('profil_usagers')->onDelete('cascade');
+            $table->foreignId('profil_usager_id')->constrained('profil_usagers')->onDelete('cascade');
             $table->foreignId('categorie_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
         });
