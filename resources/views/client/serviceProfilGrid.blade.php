@@ -23,7 +23,9 @@
                             <p class="text-xs">Durée moy. {{ $service->duree}} min</p>
                         </span>
                         <span class="btn-secondary">
-                            <button><a href="{{ route('service') }}">Lire la suite</a></button>
+                            <button>   
+                                <a href="{{ route('service.show', $service->id) }}" class="btn-secondary">Lire la suite</a>
+                            </button>
                         </span>
                     </div>
                 </div>

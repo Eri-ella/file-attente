@@ -11,11 +11,20 @@ use App\Models\ProfilUsager;
 
 class ServiceController extends Controller
 {
-    // CORRECTION : On accepte le modèle Service en paramètre pour recevoir le bon élément cliqué
-    public function show(Service $service) 
-    {
-        // On envoie la variable spécifique '$service' à la vue
-        return view('client.service', compact('service'));
+    // CORRECTION : Ajout du paramètre $id pour récupérer le service sélectionné
+    public function show ($id) {
+        // Récupère le service unique correspondant à l'URL ou renvoie une erreur 404 si introuvable
+        $service = Service::findOrFail($id);
+        
+        $categories = Categorie::with('services')->get();
+        $profils = ProfilUsager::with('services')->get();
+
+        // CORRECTION : Transmission de la variable '$service' au singulier à la vue
+        return view('client.service', [
+            'service'    => $service, 
+            'profils'    => $profils,
+            'categories' => $categories,
+        ]);
     }
 }
 

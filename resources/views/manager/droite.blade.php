@@ -26,12 +26,15 @@
                 id="email"
                 name="email"
                 placeholder="manager@mairie-virtu3ll3"
+
                 class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
                 autocomplete="new-password"
+
+                class="w-full  border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
+
                 required
                 value="{{ old('email') }}"
             >
-
             <!-- CORRECTION : Un conteneur parent 'relative' dédié uniquement au champ password et son icône -->
             <div class="relative w-full mb-2">
                 <label for="password" class="text-[#222D52] font-medium block">Mot de passe</label>
@@ -66,6 +69,8 @@
             </button>
         </form>
 
+        </form>
+
     </div>
 </div>
 
@@ -74,5 +79,6 @@
     feather.replace();
 </script>
 @vite(['public/js/manager.js'])
+
 
 
