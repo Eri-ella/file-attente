@@ -26,17 +26,15 @@
                 id="email"
                 name="email"
                 placeholder="manager@mairie-virtu3ll3"
-<<<<<<< HEAD
+
                 class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
                 autocomplete="new-password"
-=======
+
                 class="w-full  border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
->>>>>>> main
+
                 required
                 value="{{ old('email') }}"
             >
-<<<<<<< HEAD
-
             <!-- CORRECTION : Un conteneur parent 'relative' dédié uniquement au champ password et son icône -->
             <div class="relative w-full mb-2">
                 <label for="password" class="text-[#222D52] font-medium block">Mot de passe</label>
@@ -66,36 +64,15 @@
                 <a href="{{ route('manager.motdepasse') }}">Mot de passe oublié ?</a>
             </p>
 
-            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg transition-colors">
+            <button type="submit" class="w-full block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg transition-colors">
                 Se connecter
             </button>
-=======
-            <label for="password" class="text-[#222D52] font-medium relative">Mot de passe
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                class="w-full  border border-gray-300 px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
-                required
-            >
-            <span class="password-icon absolute right-10 top-10">
-                <i data-feather="eye" class="absolute"></i>
-                <i data-feather="eye-off" class="absolute"></i>
-            </span>
-            </label>
-            <script src="https://unpkg.com/feather-icons"></script>
-            <script>
-            feather.replace();
-            </script>
-            <p class="cursor-pointer place-self-end text-[#222D52]/50 hover:text-[#222D52]"><a href="{{ route('manager.motdepasse') }}"> Mot de passe oublié ?</a></p>
-            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg"> Se connecter</button>
->>>>>>> main
+        </form>
+
         </form>
 
     </div>
 </div>
-<<<<<<< HEAD
 
 <script src="https://unpkg.com/feather-icons"></script>
 <script>
@@ -104,6 +81,4 @@
 @vite(['public/js/manager.js'])
 
 
-=======
-@vite(['public/js/manager.js'])
->>>>>>> main
+

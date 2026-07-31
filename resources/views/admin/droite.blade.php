@@ -29,7 +29,7 @@
                 id="password"
                 name="password"
                 placeholder="••••••••"
-                class="w-full border border-gray-300 px-3 py-2 mb-2 text-sm text-gray-800 mt-3" 
+                class="w-full border border-gray-300 px-3 py-2 mb-2 text-sm text-gray-800 mt-3 rounded-lg" 
                 autocomplete="new-password"
                 required
             >
@@ -41,7 +41,7 @@
                 </p>
             @enderror
 
-            <button type="submit" class="block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5"> Se connecter</button>
+            <button type="submit" class="w-full block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg"> Se connecter</button>
             
         </form>
     </div>
