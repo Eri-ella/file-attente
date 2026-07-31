@@ -46,9 +46,8 @@ Route::middleware('auth:superclient')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
     Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
-
-    Route::put('/profil', [ConnexionClientController::class, 'updateProfil'])->name('profil.update');
-    Route::delete('/profil', [ConnexionClientController::class, 'deleteAccount'])->name('profil.delete');
+    Route::post('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
+    Route::post('/profil/delete', [ProfilController::class, 'delete'])->name('profil.delete');
 });
 
 // Client -> service (Route dynamique avec paramètre)
@@ -106,6 +105,8 @@ Route::middleware('auth:manager')->group(function () {
     Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
 
     Route::get('/manager/connexionmanager/droiteprofil', [DashboardController::class, 'droiteProfil'])->name('manager.connexionmanager.droiteprofil');
+    Route::post('/manager/profil/update', [DashboardController::class, 'updateProfil'])->name('manager.profil.update');
+    Route::post('/manager/profil/delete', [DashboardController::class, 'deleteProfil'])->name('manager.profil.delete');
 
     Route::get('/manager/connexionmanager/droiteservice', [DashboardController::class, 'droiteService'])->name('manager.connexionmanager.droiteservice');
 
