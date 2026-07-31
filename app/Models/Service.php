@@ -10,26 +10,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Service extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'nom', 
         'description',
         'critere_technique',
         'duree',
-        'cout'];
+        'cout',
+        'mairie_id',       
+        'profil_id',      
+        'categorie_id',   
+    ];
 
     public function tickets(): HasMany {
         return $this->hasMany(Ticket::class);
     }
 
     public function mairie(): BelongsTo {
-        return $this->BelongsTo(Mairie::class);
+        return $this->belongsTo(Mairie::class); 
     }
 
     public function profil_usager(): BelongsTo {
-        return $this->BelongsTo(ProfilUsager::class);
+        return $this->belongsTo(ProfilUsager::class); 
     }
 
     public function categorie(): BelongsTo {
-        return $this->BelongsTo(Categorie::class);
+        return $this->belongsTo(Categorie::class); 
     }
 }

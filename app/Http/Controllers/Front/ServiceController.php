@@ -8,14 +8,13 @@ use App\Models\Service;
 
 class ServiceController extends Controller
 {
-    public function show () {
-        $services = Service::all();
-
-        return view('client.service', ['services'=> $services]);
+    // CORRECTION : On accepte le modèle Service en paramètre pour recevoir le bon élément cliqué
+    public function show(Service $service) 
+    {
+        // On envoie la variable spécifique '$service' à la vue
+        return view('client.service', compact('service'));
     }
-
-    public function reservation () {
-        return view('client.reservation');
-    }
-
 }
+
+
+

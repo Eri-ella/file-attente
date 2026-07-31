@@ -6,9 +6,11 @@ use App\Http\Controllers\Front\ServiceController;
 use App\Http\Controllers\Front\ProfilController;
 use App\Http\Controllers\Front\ConnexionClientController;
 
+// CORRECTION : Importation du bon chemin pour le contrôleur de réservation
+use App\Http\Controllers\Front\ReservationController;
 
-use  App\Http\Controllers\Back\ConnexionController;
-use  App\Http\Controllers\Back\DashboardController;
+use App\Http\Controllers\Back\ConnexionController;
+use App\Http\Controllers\Back\DashboardController;
 
 // ***
 // Client
@@ -48,11 +50,13 @@ Route::middleware('auth:superclient')->group(function () {
     Route::put('/profil', [ConnexionClientController::class, 'updateProfil'])->name('profil.update');
     Route::delete('/profil', [ConnexionClientController::class, 'deleteAccount'])->name('profil.delete');
 });
-// Client -> service
 
-Route::get('/service', [ServiceController::class, 'show'])->name('service');
+// Client -> service (Route dynamique avec paramètre)
+Route::get('/service/{service}', [ServiceController::class, 'show'])->name('service.show');
 
-Route::get('/reservation', [ServiceController::class, 'reservation'])->name('reservation');
+// Reservation (CORRECTION : Utilisation du chemin exact incluant le dossier \Front\)
+Route::get('/reservation/{service}', [ReservationController::class, 'create'])->name('reservation.create');
+Route::post('/reservation/{service}', [ReservationController::class, 'store'])->name('reservation.store');
 
 
 // ***
@@ -130,3 +134,5 @@ Route::middleware('auth:manager')->group(function () {
 Route::post('/manager/motdepasse', [ConnexionController::class, 'sendResetLinkManager'])->name('manager.motdepasse.send');
 Route::get('/manager/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormManager'])->name('manager.password.reset');
 Route::post('/manager/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordManager'])->name('manager.password.update');
+
+
