@@ -17,9 +17,9 @@ class Service extends Model
         'critere_technique',
         'duree',
         'cout',
-        'mairie_id',
-        'profil_id',
-        'categorie_id',
+        'mairie_id', 
+        'profil_usager_id',       
+        'categorie_id',    
     ];
 
     public function tickets(): HasMany
