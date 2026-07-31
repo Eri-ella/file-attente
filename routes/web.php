@@ -46,9 +46,8 @@ Route::middleware('auth:superclient')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
     Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
-
-    Route::put('/profil', [ConnexionClientController::class, 'updateProfil'])->name('profil.update');
-    Route::delete('/profil', [ConnexionClientController::class, 'deleteAccount'])->name('profil.delete');
+    Route::post('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
+    Route::post('/profil/delete', [ProfilController::class, 'delete'])->name('profil.delete');
 });
 
 // Client -> service (Route dynamique avec paramètre)
@@ -75,10 +74,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/listeclient', [DashboardController::class, 'listClient']);
     Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
     Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
+    Route::get('/admin/listeclient/droitepro', [DashboardController::class, 'droiteProfilAdmin'])->name('admin.listeclient.droitepro');
 
-     Route::get('/admin/profil', function () {
-        return view('admin.profil');
-    })->name('admin.profil');
     Route::put('/admin/profil', [ConnexionController::class, 'updateProfilAdmin'])->name('admin.profil.update');
     Route::delete('/admin/profil', [ConnexionController::class, 'deleteAccountAdmin'])->name('admin.profil.delete');
 });
@@ -108,6 +105,8 @@ Route::middleware('auth:manager')->group(function () {
     Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
 
     Route::get('/manager/connexionmanager/droiteprofil', [DashboardController::class, 'droiteProfil'])->name('manager.connexionmanager.droiteprofil');
+    Route::post('/manager/profil/update', [DashboardController::class, 'updateProfil'])->name('manager.profil.update');
+    Route::post('/manager/profil/delete', [DashboardController::class, 'deleteProfil'])->name('manager.profil.delete');
 
     Route::get('/manager/connexionmanager/droiteservice', [DashboardController::class, 'droiteService'])->name('manager.connexionmanager.droiteservice');
 

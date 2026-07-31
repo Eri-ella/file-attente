@@ -2,29 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nom', 
+        'nom',
         'description',
         'critere_technique',
         'duree',
         'cout',
-        'mairie_id',       
-        'profil_id',      
-        'categorie_id',   
+        'mairie_id', 
+        'profil_usager_id',       
+        'categorie_id',    
     ];
 
-    public function tickets(): HasMany {
+    public function tickets(): HasMany
+    {
         return $this->hasMany(Ticket::class);
     }
+
+
 
     public function mairie(): BelongsTo {
         return $this->belongsTo(Mairie::class); 
