@@ -14,15 +14,18 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
+
             $table->date('date');
             $table->time('heure_souhaite');
+
             $table->foreignId('superclient_id')->nullable()->constrained('superclients')->onDelete('cascade');
             $table->string('client_mail', 191)->nullable();
-            
+
             $table->timestamps();
         });
 
-        
         Schema::table('reservations', function (Blueprint $table) {
             $table->foreign('client_mail')->references('mail')->on('clients')->onDelete('cascade');
         });
