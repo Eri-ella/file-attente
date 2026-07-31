@@ -59,6 +59,11 @@
         </form>
 
     </div>
+    @if(request()->query('deleted'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
+            Votre compte a bien été supprimé.
+        </div>
+    @endif
 </div>
 
 <script src="https://unpkg.com/feather-icons"></script>

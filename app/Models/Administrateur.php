@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash; 
+use Illuminate\Notifications\Notifiable;
 
 class Administrateur extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'nom',
@@ -36,5 +38,10 @@ class Administrateur extends Authenticatable
     {
         $url = route('admin.password.reset', ['token' => $token, 'email' => $this->email]);
         $this->notify(new \App\Notifications\ResetPasswordLink($url, 'administrateur'));
+    }
+
+    public function setMotDePasseAttribute($value)
+    {
+        $this->attributes['mot_de_passe'] = Hash::make($value);
     }
 }

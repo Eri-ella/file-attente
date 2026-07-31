@@ -121,9 +121,7 @@ class ConnexionClientController extends Controller
         $status = Password::broker('superclients')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (SuperClient $superclient, string $password) {
-                $superclient->forceFill([
-                    'mot_de_passe' => Hash::make($password),
-                ])->save();
+                $superclient->forceFill(['mot_de_passe' => $password])->save();
             }
         );
 

@@ -83,7 +83,7 @@ class ConnexionController extends Controller
         $status = Password::broker('admins')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (Administrateur $admin, string $password) {
-                $admin->forceFill(['mot_de_passe' => Hash::make($password)])->save();
+                $admin->forceFill(['mot_de_passe' => $password])->save();
             }
         );
 
@@ -91,7 +91,7 @@ class ConnexionController extends Controller
             ? redirect()->route('connexionAdmin')->with('status', 'Mot de passe réinitialisé, vous pouvez vous connecter.')
             : back()->withErrors(['email' => __($status)]);
     }
-
+    
     public function updateProfilAdmin(Request $request)
     {
         $admin = Auth::guard('admin')->user();
@@ -180,7 +180,7 @@ class ConnexionController extends Controller
         Auth::guard('manager')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('pageManager');
+        return redirect()->to('/manager'); // ou route('pageManager')
     }
 
     public function sendResetLinkManager(Request $request)
@@ -210,7 +210,8 @@ class ConnexionController extends Controller
         $status = Password::broker('managers')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (Manager $manager, string $password) {
-                $manager->forceFill(['mot_de_passe' => Hash::make($password)])->save();
+                // Pas de Hash::make ici, le mutateur s'en charge
+                $manager->forceFill(['mot_de_passe' => $password])->save();
             }
         );
 
@@ -254,7 +255,7 @@ class ConnexionController extends Controller
         $manager = Auth::guard('manager')->user();
 
         if (!Hash::check($request->password, $manager->getAuthPassword())) {
-            return back()->withErrors(['password' => 'Mot de passe incorrect.']);
+            return response()->json(['errors' => ['password' => 'Mot de passe incorrect.']], 422);
         }
 
         Auth::guard('manager')->logout();
@@ -263,6 +264,9 @@ class ConnexionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('pageManager')->with('status', 'Votre compte a été supprimé.');
+        return response()->json([
+            'success' => true,
+            'redirect' => route('pageManager')
+        ]);
     }
 }

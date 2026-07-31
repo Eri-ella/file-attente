@@ -10,7 +10,7 @@
 </head>
 <body >
 
-    @include('admin.entete')
+    @include('manager.entete')
 
     <main class="flex w-full">
         <div class="flex flex-col items-start justify-center w-1/2 min-h-screen bg-(--primary-color) gap-5 px-10">
