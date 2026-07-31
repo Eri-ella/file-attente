@@ -30,32 +30,4 @@
             @endforeach
         </div>
     </section>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll(".service_button").forEach(btn => {
-            btn.addEventListener("click", function() {
-                if (window.parent && window.parent.changeSrc) {
-                    window.parent.changeSrc("serviceCritereList.html", "serviceCritereGrid.html");
-                }
-            });
-        });
-    });
-
-    // function changeSrc(src1){
-    //         let frame_grid = document.getElementById("frame_grid");
-
-    //         if (frame_grid) {
-    //             frame_grid.src = src1;
-    //         }
-    //     }
-
-        // function initServices () {
-        //     document.querySelector(".service_btn").forEach(btn => {
-        //         btn.addEventListener("click", () => {
-        //             changeSrc("service.html");
-        //         });
-        //     })
-        // }
-        // document.addEventListener('DOMContentLoaded', initServices());
-
-    </script>
+    

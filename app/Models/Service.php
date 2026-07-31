@@ -18,7 +18,7 @@ class Service extends Model
         'duree',
         'cout',
         'mairie_id', 
-        'profil_id',       
+        'profil_usager_id',       
         'categorie_id',    
     ];
 

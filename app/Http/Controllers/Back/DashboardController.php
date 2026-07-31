@@ -74,7 +74,7 @@ class DashboardController extends Controller
     }
 
     public function droiteService () { 
-        $services= Service::all();
+        $services = Service::with(['categorie', 'profil_usager'])->get();
         return view('manager.connexionmanager.droiteservice',['services'=>$services]);
     }
 

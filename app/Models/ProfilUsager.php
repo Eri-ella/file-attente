@@ -15,7 +15,7 @@ class ProfilUsager extends Model
         'statut',
     ];
  
-    public function mairie(): HasMany
+    public function services(): HasMany
     {
         return $this->hasMany(Service::class);
     }
