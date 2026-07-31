@@ -255,7 +255,7 @@ class ConnexionController extends Controller
         $manager = Auth::guard('manager')->user();
 
         if (!Hash::check($request->password, $manager->getAuthPassword())) {
-            return response()->json(['errors' => ['password' => 'Mot de passe incorrect.']], 422);
+            return back()->withErrors(['password' => 'Mot de passe incorrect.']);
         }
 
         Auth::guard('manager')->logout();
@@ -264,9 +264,6 @@ class ConnexionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'success' => true,
-            'redirect' => route('pageManager')
-        ]);
+        return redirect()->route('pageManager', ['deleted' => 1]);
     }
 }
