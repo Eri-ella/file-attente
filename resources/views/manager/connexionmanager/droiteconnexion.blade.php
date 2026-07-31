@@ -129,17 +129,17 @@
 
         {{-- Suppression du compte --}}
         <div class="mt-8 max-w-md">
+            <div class="my-4">
+                <button type="button" onclick="deleteManagerAccount()"
+                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-medium px-6 py-2.5 rounded">
+                    Supprimer mon compte
+                </button>
+            </div>
             <div>
                 <label for="delete_password" class="block text-sm text-gray-500 mb-1">Confirmez avec votre mot de passe actuel</label>
                 <input type="password" id="delete_password" name="password"
                     class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]" required>
                 <div id="delete_error" class="text-red-600 text-sm mt-2 hidden"></div>
-            </div>
-            <div class="mt-4">
-                <button type="button" onclick="deleteManagerAccount()"
-                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-medium px-6 py-2.5 rounded">
-                    Supprimer mon compte
-                </button>
             </div>
         </div>
 

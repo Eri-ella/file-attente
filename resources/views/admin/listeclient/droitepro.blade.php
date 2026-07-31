@@ -8,14 +8,9 @@
     @vite(['public/js/admin.js'])
 </head>
 <body>
-    @include('admin.entete')
 
-    <main class="flex w-full">
-        <div class="flex flex-col items-start justify-center w-1/2 min-h-screen bg-(--primary-color) gap-5 px-10">
-            <p class="text-(--highlight-color) text-xs tracking-widest mb-4">MON COMPTE</p>
-            <h2 class="text-(--white-color) text-xl md:text-4xl">Gérez vos informations personnelles.</h2>
-        </div>
-        <div class="flex flex-col items-start justify-center w-1/2 min-h-screen gap-2 text-(--primary-color) px-35">
+    <main class="flex w-full py-10">
+        <div class="flex flex-col items-start justify-center min-h-screen gap-2 text-(--primary-color) px-35">
             @php $admin = auth()->guard('admin')->user(); @endphp
             <form action="{{ route('admin.profil.update') }}" method="POST" class="w-full">
                 @csrf
@@ -59,9 +54,9 @@
             <form action="{{ route('admin.profil.delete') }}" method="POST" onsubmit="return confirm('Supprimer votre compte ? Cette action est définitive.');" class="mt-10">
                 @csrf
                 @method('DELETE')
+                <button type="submit" class="block mx-auto w-[280px] bg-red-600 hover:bg-red-500 text-white font-medium text-base py-3.5 mt-5 rounded-lg cursor-pointer">Supprimer mon compte</button></br>
                 <label class="text-[#222D52] font-medium">Confirmez avec votre mot de passe actuel</label>
                 <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color) w-full" type="password" name="password" required placeholder="••••••••">
-                <button type="submit" class="mt-3 text-red-600 hover:text-red-800 font-medium">Supprimer mon compte</button>
             </form>
         </div>
     </main>
