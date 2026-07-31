@@ -64,7 +64,6 @@ class ConnexionClientController extends Controller
             'telephone' => ['required', 'string'],
             'pass' => ['required', 'min:8'],
         ]);
-        dd($data);
 
         $superclient = SuperClient::create([
             'nom' => $data['nom'],
@@ -122,14 +121,59 @@ class ConnexionClientController extends Controller
         $status = Password::broker('superclients')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (SuperClient $superclient, string $password) {
-                $superclient->forceFill([
-                    'mot_de_passe' => Hash::make($password),
-                ])->save();
+                $superclient->forceFill(['mot_de_passe' => $password])->save();
             }
         );
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('connexion')->with('status', 'Mot de passe réinitialisé, vous pouvez vous connecter.')
             : back()->withErrors(['email' => __($status)]);
+    }
+
+    public function updateProfil(Request $request)
+{
+    $client = Auth::guard('superclient')->user();
+
+    $data = $request->validate([
+        'nom' => ['required', 'string', 'max:255'],
+        'prenom' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'unique:superclients,email,' . $client->id],
+        'telephone' => ['required', 'string', 'max:20'],
+        'pass' => ['nullable', 'min:8', 'confirmed'],
+    ]);
+
+    $client->fill([
+        'nom' => $data['nom'],
+        'prenom' => $data['prenom'],
+        'email' => $data['email'],
+        'numero' => $data['telephone'],
+    ]);
+
+    if (!empty($data['pass'])) {
+        $client->mot_de_passe = Hash::make($data['pass']);
+    }
+
+    $client->save();
+
+    return back()->with('status', 'Profil mis à jour avec succès.');
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $request->validate(['pass' => ['required']]);
+
+        $client = Auth::guard('superclient')->user();
+
+        if (!Hash::check($request->pass, $client->getAuthPassword())) {
+            return back()->withErrors(['pass' => 'Mot de passe incorrect.']);
+        }
+
+        Auth::guard('superclient')->logout();
+        $client->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('connexion')->with('status', 'Votre compte a été supprimé.');
     }
 }

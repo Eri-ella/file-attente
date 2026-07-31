@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pageManager</title>
+    <title>Connexion Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['public/js/manager.js'])
 </head>
-<body class="h-screen flex flex-col">
-
+<body>
     @include('manager.entete')
 
-    <div class="flex flex-1 flex-col md:flex-row">
+    <main class="flex w-full h-screen">
         @include('manager.gauche')
         @include('manager.droite')
-    </div>
-    
+    </main>
 </body>
 </html>
