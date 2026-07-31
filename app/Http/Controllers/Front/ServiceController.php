@@ -11,19 +11,22 @@ use App\Models\ProfilUsager;
 
 class ServiceController extends Controller
 {
-    public function show () {
-        $services = Service::all();
+    // CORRECTION : Ajout du paramètre $id pour récupérer le service sélectionné
+    public function show ($id) {
+        // Récupère le service unique correspondant à l'URL ou renvoie une erreur 404 si introuvable
+        $service = Service::findOrFail($id);
+        
         $categories = Categorie::with('services')->get();
         $profils = ProfilUsager::with('services')->get();
 
+        // CORRECTION : Transmission de la variable '$service' au singulier à la vue
         return view('client.service', [
-            'services'=> $services, 
-            'profils' => $profils,
-            'categories' => $categories,]);
+            'service'    => $service, 
+            'profils'    => $profils,
+            'categories' => $categories,
+        ]);
     }
-
-    public function reservation () {
-        return view('client.reservation');
-    }
-
 }
+
+
+

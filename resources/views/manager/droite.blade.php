@@ -26,12 +26,15 @@
                 id="email"
                 name="email"
                 placeholder="manager@mairie-virtu3ll3"
+
                 class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
                 autocomplete="new-password"
+
+                class="w-full  border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
+
                 required
                 value="{{ old('email') }}"
             >
-
             <!-- CORRECTION : Un conteneur parent 'relative' dédié uniquement au champ password et son icône -->
             <div class="relative w-full mb-2">
                 <label for="password" class="text-[#222D52] font-medium block">Mot de passe</label>
@@ -64,6 +67,8 @@
             <button type="submit" class="w-full block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg transition-colors">
                 Se connecter
             </button>
+        </form>
+
         </form>
 
     </div>
