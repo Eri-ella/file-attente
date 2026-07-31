@@ -81,4 +81,3 @@
 @vite(['public/js/manager.js'])
 
 
-
