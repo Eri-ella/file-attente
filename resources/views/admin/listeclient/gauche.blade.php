@@ -17,6 +17,12 @@
             Manager
         </a>
 
+        <a id="profils" href="{{ route('admin.listeclient.droitepro') }}" target="tableau"
+        onclick="marquerBoutonActif('profils')"
+        class="px-6 py-3 text-sm text-white">
+            Profil
+        </a>
+
         <a href="{{route('connexionAdmin')}}" class="px-6 py-3 text-sm text-red-400 hover:bg-red-500/10">
             Déconnexion
         </a>
@@ -27,6 +33,7 @@
     function marquerBoutonActif(idBouton) {
         document.getElementById("clients").classList.remove("actif");
         document.getElementById("managers").classList.remove("actif");
+        document.getElementById("profils").classList.remove("actif");
         document.getElementById(idBouton).classList.add("actif");
     }
 </script>

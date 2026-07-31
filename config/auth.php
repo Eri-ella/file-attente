@@ -124,9 +124,19 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-    ],
-
-    'passwords' => [
+    
+        'admins' => [
+            'provider' => 'administrateurs',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'managers' => [
+            'provider' => 'managers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
         'superclients' => [
             'provider' => 'superclients',
             'table' => 'password_reset_tokens', // table déjà créée par défaut dans Laravel

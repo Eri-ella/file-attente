@@ -1,7 +1,7 @@
 @extends('layouts.client')
 
 @section('client-content')
-
+    @php $user = auth()->guard('superclient')->user(); @endphp
     <main class="flex text-(--primary-color) w-full min-h-screen">
         <div class="w-1/5 flex flex-col justify-center">
             <div class="flex flex-col items-center mb-5">
@@ -25,5 +25,4 @@
             </div>
         </div>
     </main>
-
 @endsection

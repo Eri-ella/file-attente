@@ -23,6 +23,32 @@
             <div>
                 <input class="btn-primary" type="submit" value="Enregistrer les modifications">
             </div>
+            <div class="flex gap-10">
+                <div class="flex flex-col gap-5">
+                    <label class="text-xl font-medium">Nouveau mot de passe (facultatif)</label>
+                    <input class="border-1 border-w-full p-2 rounded-tl-lg rounded-br-lg bg-(--white-color)" type="password" name="pass">
+                </div>
+                <div class="flex flex-col gap-5">
+                    <label class="text-xl font-medium">Confirmer le mot de passe</label>
+                    <input class="border-1 border-w-full p-2 rounded-tl-lg rounded-br-lg bg-(--white-color)" type="password" name="pass_confirmation">
+                </div>
+            </div>
+        </div>
+
+        @if ($errors->any())
+            <div class="text-red-500 text-sm w-full text-center">
+                @foreach ($errors->all() as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+        @if (session('status'))
+            <p class="text-green-600 text-sm">{{ session('status') }}</p>
+        @endif
+
+        <div>
+            <input class="btn-primary" type="submit" value="Enregistrer les modifications">
+        </div>
     </form>
 
     <div class="flex justify-center mt-5">

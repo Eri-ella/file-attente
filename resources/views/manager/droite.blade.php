@@ -1,5 +1,13 @@
 <div class="md:w-[50%] bg-[#F9F8F5] px-10 py-16 md:px-16 flex items-center justify-center border border-[#222D52]/50">
     <div class="w-full max-w-md">
+         @if(request()->query('deleted'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
+                Votre compte a bien été supprimé.
+            </div>
+            <script>
+                alert('Votre compte a été supprimé avec succès.');
+            </script>
+        @endif
         <p class="text-xs tracking-widest text-[#D2B589] mb-5">
             GESTION
         </p>
@@ -12,7 +20,6 @@
 
         <form method="POST" action="{{ route('manager.login') }}" autocomplete="off">
             @csrf
-            
             <label for="email" class="text-[#222D52] font-medium">Identifiants</label>
             <input
                 type="email"

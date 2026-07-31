@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Hash; 
 
 class SuperClient extends Authenticatable implements CanResetPasswordContract
 {
@@ -31,5 +32,16 @@ class SuperClient extends Authenticatable implements CanResetPasswordContract
     public function notification(): HasMany
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('password.reset', ['token' => $token, 'email' => $this->email]);
+        $this->notify(new \App\Notifications\ResetPasswordLink($url, 'client'));
+    }
+
+    public function setMotDePasseAttribute($value)
+    {
+        $this->attributes['mot_de_passe'] = Hash::make($value);
     }
 }
