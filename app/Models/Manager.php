@@ -38,4 +38,10 @@ class Manager extends Authenticatable
     {
         return 'id';
     }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('manager.password.reset', ['token' => $token, 'email' => $this->email]);
+        $this->notify(new \App\Notifications\ResetPasswordLink($url, 'manager'));
+    }
 }

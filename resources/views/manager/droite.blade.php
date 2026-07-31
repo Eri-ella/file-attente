@@ -12,7 +12,6 @@
 
         <form method="POST" action="{{ route('manager.login') }}" autocomplete="off">
             @csrf
-            
             <label for="email" class="text-[#222D52] font-medium">Identifiants</label>
             <input
                 type="email"

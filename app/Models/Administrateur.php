@@ -31,4 +31,10 @@ class Administrateur extends Authenticatable
     {
         return 'id';
     }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('admin.password.reset', ['token' => $token, 'email' => $this->email]);
+        $this->notify(new \App\Notifications\ResetPasswordLink($url, 'administrateur'));
+    }
 }

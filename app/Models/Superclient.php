@@ -32,4 +32,10 @@ class SuperClient extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('password.reset', ['token' => $token, 'email' => $this->email]);
+        $this->notify(new \App\Notifications\ResetPasswordLink($url, 'client'));
+    }
 }

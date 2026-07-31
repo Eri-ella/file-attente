@@ -44,6 +44,9 @@ Route::middleware('auth:superclient')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::get('/profiInfos', [ProfilController::class, 'profil_infos'])->name('profil_infos');
     Route::get('/historique', [ProfilController::class, 'historique'])->name('historique');
+
+    Route::put('/profil', [ConnexionClientController::class, 'updateProfil'])->name('profil.update');
+    Route::delete('/profil', [ConnexionClientController::class, 'deleteAccount'])->name('profil.delete');
 });
 // Client -> service
 
@@ -68,7 +71,20 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/listeclient', [DashboardController::class, 'listClient']);
     Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
     Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
+
+     Route::get('/admin/profil', function () {
+        return view('admin.profil');
+    })->name('admin.profil');
+    Route::put('/admin/profil', [ConnexionController::class, 'updateProfilAdmin'])->name('admin.profil.update');
+    Route::delete('/admin/profil', [ConnexionController::class, 'deleteAccountAdmin'])->name('admin.profil.delete');
 });
+
+
+// Admin — mot de passe oublié (finalisation)
+Route::post('/admin/motdepasse', [ConnexionController::class, 'sendResetLinkAdmin'])->name('admin.motdepasse.send');
+Route::get('/admin/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormAdmin'])->name('admin.password.reset');
+Route::post('/admin/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordAdmin'])->name('admin.password.update');
+
 // ***
 // Manager
 // ***
@@ -79,9 +95,9 @@ Route::get('/manager/motdepasse', [ConnexionController::class, 'mdpManager'])->n
 
 
 Route::middleware('auth:manager')->group(function () {
-    Route::post('/manager/logout', [ConnexionController::class, 'logoutManager'])->name('manager.logout');
-
     Route::get('/manager/connexionmanager/service/modifier', [DashboardController::class, 'droiteModifierService'])->name('manager.connexionmanager.modifierservice');
+
+    Route::post('/manager/logout', [ConnexionController::class, 'logoutManager'])->name('manager.logout');
 
     Route::get('/connexionmanager', [DashboardController::class, 'connexionManager']);
 
@@ -101,4 +117,16 @@ Route::middleware('auth:manager')->group(function () {
 
     Route::get('/manager/connexionmanager/droiteconnexion', [DashboardController::class, 'droiteConnexion'])->name('manager.connexionmanager.droiteconnexion');
 
+    Route::get('/manager/profil', function () {
+        return view('manager.profil');
+    })->name('manager.profil');
+
+    Route::put('/manager/profil', [ConnexionController::class, 'updateProfilManager'])->name('manager.profil.update');
+    Route::delete('/manager/profil', [ConnexionController::class, 'deleteAccountManager'])->name('manager.profil.delete');
+
 });
+
+// Manager — mot de passe oublié (finalisation)
+Route::post('/manager/motdepasse', [ConnexionController::class, 'sendResetLinkManager'])->name('manager.motdepasse.send');
+Route::get('/manager/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormManager'])->name('manager.password.reset');
+Route::post('/manager/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordManager'])->name('manager.password.update');
