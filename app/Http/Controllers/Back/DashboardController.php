@@ -22,6 +22,10 @@ class DashboardController extends Controller
         return view('admin.listeclient.droitema');
     }
 
+    public function droiteProfilAdmin () {
+        return view('admin.listeclient.droitepro');
+    }
+
     // manager
 
     public function connexionManager () {

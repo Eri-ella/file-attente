@@ -71,10 +71,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/listeclient', [DashboardController::class, 'listClient']);
     Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
     Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
+    Route::get('/admin/listeclient/droitepro', [DashboardController::class, 'droiteProfilAdmin'])->name('admin.listeclient.droitepro');
 
-     Route::get('/admin/profil', function () {
-        return view('admin.profil');
-    })->name('admin.profil');
     Route::put('/admin/profil', [ConnexionController::class, 'updateProfilAdmin'])->name('admin.profil.update');
     Route::delete('/admin/profil', [ConnexionController::class, 'deleteAccountAdmin'])->name('admin.profil.delete');
 });
