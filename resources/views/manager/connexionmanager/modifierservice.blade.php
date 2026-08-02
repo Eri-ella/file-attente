@@ -73,13 +73,13 @@
                 {{-- ===== Colonne droite ===== --}}
                 <div class="space-y-5">
                     <div>
-                        <label for="duree" class="block text-sm text-gray-500 mb-1">Durée Moyenne</label>
+                        <label for="duree" class="block text-sm text-gray-500 mb-1">Durée Moyenne (minutes)</label>
                         <input type="number" id="duree" name="duree" value="{{ $duree }}"
                             class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]">
                     </div>
         
                     <div>
-                        <label for="cout" class="block text-sm text-gray-500 mb-1">Coût</label>
+                        <label for="cout" class="block text-sm text-gray-500 mb-1">Coût (FCFA)</label>
                         <input type="number" id="cout" name="cout" value="{{ $cout }}"
                             class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]">
                     </div>

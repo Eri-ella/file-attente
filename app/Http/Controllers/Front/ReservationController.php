@@ -8,22 +8,25 @@ use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-
+use App\Models\Categorie;
+use App\Models\ProfilUsager;
 
 class ReservationController extends Controller
 {
-    public function create(Service $service): View
+    public function create(Request $request, Service $service): View
     {
-        return view('client.reservation', compact('service'));
+        if ($request->ajax()) {
+            return view('client.reservation-content', compact('service'));
+        }
 
+        $services = Service::all();
+        $categories = Categorie::with('services')->get();
+        $profils = ProfilUsager::with('services')->get();
+
+        return view('client.reservation', compact('service', 'services', 'categories', 'profils'));
     }
 
-    /**
-     * IMPORTANT : suppose qu'un Super_Client connecté a son id en session
-     * (ex: session(['superclient_id' => $superClient->id]) au moment de sa connexion).
-     * Sinon, on traite la demande comme un Client anonyme identifié par son email.
-     */
-    public function store(Request $request, Service $service): RedirectResponse
+    public function store(Request $request, Service $service)
     {
         $estSuperClientConnecte = session()->has('superclient_id');
 
@@ -35,15 +38,11 @@ class ReservationController extends Controller
         ]);
 
         $clientMail = null;
-
         if (! $estSuperClientConnecte) {
-            // La contrainte de clé étrangère exige que l'email existe déjà dans "clients"
-            // AVANT de pouvoir l'utiliser dans "reservations" → on le crée s'il n'existe pas.
             $client = Client::firstOrCreate(['mail' => $donnees['client_mail']]);
             $clientMail = $client->mail;
         }
 
-        // Une réservation par ticket demandé (nombre_tickets = combien de lignes créer)
         for ($i = 0; $i < $donnees['nombre_tickets']; $i++) {
             Reservation::create([
                 'service_id' => $service->id,
@@ -54,8 +53,13 @@ class ReservationController extends Controller
             ]);
         }
 
-        return redirect()
-            ->route('reservation.create', $service)
-            ->with('succes', 'Réservation confirmée !');
+        if ($request->ajax()) {
+            return view('client.reservation-content', [
+                'service' => $service,
+                'succes' => 'Réservation confirmée !',
+            ]);
+        }
+
+        return redirect()->route('reservation.create', $service)->with('succes', 'Réservation confirmée !');
     }
 }
