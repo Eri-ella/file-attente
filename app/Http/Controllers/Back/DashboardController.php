@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Categorie;
+use App\Models\ProfilUsager;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -76,11 +79,7 @@ class DashboardController extends Controller
     public function droiteService () { 
         $services = Service::with(['categorie', 'profil_usager'])->get();
         return view('manager.connexionmanager.droiteservice',['services'=>$services]);
-    }
-
-    public function droiteModifierService () {
-        return view('manager.connexionmanager.modifierservice');
-    }
+    } 
 
     public function droiteFile () {
         return view('manager.connexionmanager.droitefile');
@@ -101,4 +100,107 @@ class DashboardController extends Controller
     public function droiteConnexion () {
         return view('manager.connexionmanager.droiteconnexion');
     }
+
+/**
+ * Formulaire Ajouter / Modifier un service
+ */
+public function droiteModifierService($id = null)
+{
+    $categories = Categorie::orderBy('nom')->get();
+    $profilUsagers = ProfilUsager::orderBy('nom')->get();
+
+    $service = null;
+    if ($id) {
+        $service = Service::with(['categorie', 'profil_usager'])->findOrFail($id);
+        // Convertir le time BDD en minutes pour le formulaire
+        $service->duree = $this->timeToMinutes($service->duree);
+    }
+
+    return view('manager.connexionmanager.modifierservice', compact('categories', 'profilUsagers', 'service'));
+}
+
+/**
+ * Traitement : AJOUT d'un service
+ */
+public function storeService(Request $request)
+{
+    $manager = Auth::guard('manager')->user();
+
+    $validated = $request->validate([
+        'nom' => 'required|string|max:255',
+        'description' => 'required|string',
+        'critere_technique' => 'required|in:Gratuit,Payant',
+        'duree' => 'required|integer|min:1', // ← minutes entières
+        'cout' => 'required|integer|min:0',
+        'categorie_id' => 'required|exists:categories,id',
+        'profil_usager_id' => 'required|exists:profil_usagers,id',
+    ]);
+
+    $validated['duree'] = $this->minutesToTime($request->duree); // ← conversion
+    $validated['mairie_id'] = $manager->mairie_id;
+
+    Service::create($validated);
+
+    return redirect()->route('manager.connexionmanager.droiteservice')
+        ->with('success', 'Service ajouté avec succès.');
+}
+
+/**
+ * Traitement : MODIFICATION d'un service
+ */
+public function updateService(Request $request, $id)
+{
+    $service = Service::findOrFail($id);
+    $manager = Auth::guard('manager')->user();
+
+    $validated = $request->validate([
+        'nom' => 'required|string|max:255',
+        'description' => 'required|string',
+        'critere_technique' => 'required|in:Gratuit,Payant',
+        'duree' => 'required|integer|min:1',
+        'cout' => 'required|integer|min:0',
+        'categorie_id' => 'required|exists:categories,id',
+        'profil_usager_id' => 'required|exists:profil_usagers,id',
+    ]);
+
+    $validated['duree'] = $this->minutesToTime($request->duree);
+    $validated['mairie_id'] = $manager->mairie_id;
+
+    $service->update($validated);
+
+    return redirect()->route('manager.connexionmanager.droiteservice')
+        ->with('success', 'Service modifié avec succès.');
+}
+/**
+ * Traitement : SUPPRESSION d'un service
+ */
+public function destroyService($id)
+{
+    $service = Service::findOrFail($id);
+    $service->delete();
+
+    return redirect()->route('manager.connexionmanager.droiteservice')
+        ->with('success', 'Service supprimé avec succès.');
+}
+
+/**
+ * Convertit un nombre de minutes en format TIME pour la BDD
+ * Ex: 15 → "00:15:00", 90 → "01:30:00"
+ */
+private function minutesToTime(int $minutes): string
+{
+    $h = intdiv($minutes, 60);
+    $m = $minutes % 60;
+    return sprintf('%02d:%02d:00', $h, $m);
+}
+
+/**
+ * Convertit un format TIME de la BDD en nombre de minutes
+ * Ex: "00:15:00" → 15, "01:30:00" → 90
+ */
+private function timeToMinutes(string $time): int
+{
+    list($h, $m) = explode(':', $time);
+    return ((int) $h * 60) + (int) $m;
+}
 }

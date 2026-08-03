@@ -96,7 +96,21 @@ Route::get('/manager/motdepasse', [ConnexionController::class, 'mdpManager'])->n
 
 
 Route::middleware('auth:manager')->group(function () {
-    Route::get('/manager/connexionmanager/service/modifier', [DashboardController::class, 'droiteModifierService'])->name('manager.connexionmanager.modifierservice');
+    // Formulaire ajout (vide) / modification (pré-rempli)
+    Route::get('/manager/connexionmanager/service/modifier/{id?}', [DashboardController::class, 'droiteModifierService'])
+        ->name('manager.connexionmanager.modifierservice');
+
+    // Traitement ajout
+    Route::post('/manager/connexionmanager/service/store', [DashboardController::class, 'storeService'])
+        ->name('manager.connexionmanager.service.store');
+
+    // Traitement modification
+    Route::put('/manager/connexionmanager/service/update/{id}', [DashboardController::class, 'updateService'])
+        ->name('manager.connexionmanager.service.update');
+
+    // Suppression
+    Route::delete('/manager/connexionmanager/service/destroy/{id}', [DashboardController::class, 'destroyService'])
+        ->name('manager.connexionmanager.service.destroy');
 
     Route::post('/manager/logout', [ConnexionController::class, 'logoutManager'])->name('manager.logout');
 
