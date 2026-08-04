@@ -3,28 +3,41 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\SuperClient;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class ProfilController extends Controller
 {
-    public function profil () {
+    public function profil(): View
+    {
+        /** @var SuperClient $superclient */
         $superclient = Auth::guard('superclient')->user();
+
         return view('client.profil', compact('superclient'));
     }
 
-    public function profil_infos () {
+    public function profil_infos(): View
+    {
+        /** @var SuperClient $superclient */
         $superclient = Auth::guard('superclient')->user();
+
         return view('client.profilInfos', compact('superclient'));
     }
 
-    public function historique () {
+    public function historique(): View
+    {
+        /** @var SuperClient $superclient */
         $superclient = Auth::guard('superclient')->user();
+
         return view('client.historique', compact('superclient'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
+        /** @var SuperClient $superclient */
         $superclient = Auth::guard('superclient')->user();
 
         $data = $request->validate([
@@ -47,8 +60,9 @@ class ProfilController extends Controller
         return redirect()->route('profil')->with('success', 'Profil mis à jour avec succès');
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request): RedirectResponse
     {
+        /** @var SuperClient $superclient */
         $superclient = Auth::guard('superclient')->user();
 
         $superclient->delete();
@@ -60,5 +74,4 @@ class ProfilController extends Controller
         return redirect()->route('inscription')->with('success', 'Votre compte a été supprimé');
     }
 }
-
 

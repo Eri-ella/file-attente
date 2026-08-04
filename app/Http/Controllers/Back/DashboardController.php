@@ -3,8 +3,15 @@
 namespace App\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Client;
+use App\Models\Manager;
+use App\Models\Reservation;
 use App\Models\Service;
+use App\Models\Ticket;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Categorie;
 use App\Models\ProfilUsager;
@@ -15,25 +22,30 @@ class DashboardController extends Controller
 {
     // ========== ADMINISTRATEUR ==========
 
-    public function listClient () {
+    public function listClient(): View
+    {
         return view('admin.listeclient.liste');
     }
 
-    public function droiteClient () {
+    public function droiteClient(): View
+    {
         return view('admin.listeclient.droitecli');
     }
 
-    public function droiteManager () {
+    public function droiteManager(): View
+    {
         return view('admin.listeclient.droitema');
     }
 
-    public function droiteProfilAdmin () {
+    public function droiteProfilAdmin(): View
+    {
         return view('admin.listeclient.droitepro');
     }
 
     // ========== MANAGER ==========
 
-    public function connexionManager () {
+    public function connexionManager(): View
+    {
         return view('manager.connexionmanager.connexionManager');
     }
 
@@ -86,27 +98,44 @@ class DashboardController extends Controller
 
     public function droiteProfil () {
         $manager = Auth::guard('manager')->user();
-        return view('manager.connexionmanager.droiteprofil', compact('manager'));
+        $mairie = $manager->mairie;
+
+        if (!$mairie) {
+            abort(404, 'Mairie introuvable.');
+        }
+
+        return view('manager.connexionmanager.droiteprofil', compact('mairie'));
     }
 
-    public function updateProfil(Request $request)
+    public function updateProfil(Request $request): RedirectResponse
     {
+        /** @var Manager $manager */
         $manager = Auth::guard('manager')->user();
+        $mairie = $manager->mairie;
+
+        if (!$mairie) {
+            abort(404, 'Mairie introuvable.');
+        }
 
         $data = $request->validate([
             'nom' => ['required', 'string', 'max:255'],
-            'prenom' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email'],
-            'numero' => ['required', 'string'],
+            'adresse' => ['required', 'string', 'max:255'],
+            'telephone' => ['required', 'string', 'max:50'],
+            'mail' => ['required', 'email'],
+            'heure_ouvert_matin' => ['required', 'date_format:H:i'],
+            'heure_ouvert_soir' => ['required', 'date_format:H:i'],
+            'heure_ferme_matin' => ['required', 'date_format:H:i'],
+            'heure_ferme_soir' => ['required', 'date_format:H:i'],
         ]);
 
-        $manager->update($data);
+        $mairie->update($data);
 
-        return redirect()->route('manager.connexionmanager.droiteprofil')->with('success', 'Profil mis à jour avec succès');
+        return redirect()->route('manager.connexionmanager.droiteprofil')->with('success', 'Profil de la mairie mis à jour avec succès');
     }
 
-    public function deleteProfil(Request $request)
+    public function deleteProfil(Request $request): RedirectResponse
     {
+        /** @var Manager $manager */
         $manager = Auth::guard('manager')->user();
         $manager->delete();
         Auth::guard('manager')->logout();
@@ -338,15 +367,20 @@ class DashboardController extends Controller
         return view('manager.connexionmanager.droiteusager');
     }
 
-    public function droiteCategorie () {
-        return view('manager.connexionmanager.droitecategorie');
+        return view('manager.connexionmanager.droiteusager', compact('profils'));
     }
 
-    public function droiteHistorique () {
-        return view('manager.connexionmanager.droitehistorique');
+    public function droiteHistorique(): \Illuminate\View\View
+    {
+        $tickets = Ticket::with(['service', 'reservation.superClient', 'reservation.client', 'superClient'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('manager.connexionmanager.droitehistorique', compact('tickets'));
     }
 
-    public function droiteConnexion () {
+    public function droiteConnexion(): View
+    {
         return view('manager.connexionmanager.droiteconnexion');
     }
 

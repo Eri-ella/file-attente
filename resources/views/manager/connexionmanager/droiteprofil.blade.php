@@ -27,33 +27,60 @@
                     @csrf
     
                 <div>
-                    <label for="prenom" class="block text-sm text-gray-500 mb-1">Prénom</label>
-                    <input type="text" id="prenom" name="prenom"
+                    <label for="nom" class="block text-sm text-gray-500 mb-1">Nom de la mairie</label>
+                    <input type="text" id="nom" name="nom"
                         class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
-                        value="{{ $manager->prenom }}" required>
+                        value="{{ $mairie->nom }}" required>
                 </div>
 
                 <div>
-                    <label for="nom" class="block text-sm text-gray-500 mb-1">Nom</label>
-                    <input type="text" id="nom" name="nom"
+                    <label for="adresse" class="block text-sm text-gray-500 mb-1">Adresse</label>
+                    <input type="text" id="adresse" name="adresse"
                         class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
-                        value="{{ $manager->nom }}" required>
+                        value="{{ $mairie->adresse }}" required>
                 </div>
-    
+
                 <div>
-                    <label for="numero" class="block text-sm text-gray-500 mb-1">Téléphone</label>
-                    <input type="text" id="numero" name="numero"
+                    <label for="telephone" class="block text-sm text-gray-500 mb-1">Téléphone</label>
+                    <input type="text" id="telephone" name="telephone"
                         class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
-                        value="{{ $manager->numero }}" required>
+                        value="{{ $mairie->telephone }}" required>
                 </div>
-    
+
                 <div>
-                    <label for="email" class="block text-sm text-gray-500 mb-1">Adresse E-Mail</label>
-                    <input type="email" id="email" name="email"
+                    <label for="mail" class="block text-sm text-gray-500 mb-1">Adresse E-Mail</label>
+                    <input type="email" id="mail" name="mail"
                         class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
-                        value="{{ $manager->email }}" required>
+                        value="{{ $mairie->mail }}" required>
                 </div>
-    
+
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <div>
+                        <label for="heure_ouvert_matin" class="block text-sm text-gray-500 mb-1">Ouverture matin</label>
+                        <input type="time" id="heure_ouvert_matin" name="heure_ouvert_matin"
+                            class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
+                            value="{{ $mairie->heure_ouvert_matin }}" required>
+                    </div>
+                    <div>
+                        <label for="heure_ferme_matin" class="block text-sm text-gray-500 mb-1">Fermeture matin</label>
+                        <input type="time" id="heure_ferme_matin" name="heure_ferme_matin"
+                            class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
+                            value="{{ $mairie->heure_ferme_matin }}" required>
+                    </div>
+                    <div>
+                        <label for="heure_ouvert_soir" class="block text-sm text-gray-500 mb-1">Ouverture soir</label>
+                        <input type="time" id="heure_ouvert_soir" name="heure_ouvert_soir"
+                            class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
+                            value="{{ $mairie->heure_ouvert_soir }}" required>
+                    </div>
+                    <div>
+                        <label for="heure_ferme_soir" class="block text-sm text-gray-500 mb-1">Fermeture soir</label>
+                        <input type="time" id="heure_ferme_soir" name="heure_ferme_soir"
+                            class="w-full border border-[#222D52]/30 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#222D52]"
+                            value="{{ $mairie->heure_ferme_soir }}" required>
+                    </div>
+                </div>
+
                 <div class="text-center pt-2">
                     <button type="submit"
                             class="bg-[#222D52] hover:bg-[#18213f] text-white text-sm font-medium px-8 py-2.5 rounded">

@@ -18,11 +18,8 @@ use App\Http\Controllers\Back\DashboardController;
 // ***
 
 // Client -> acceuil
-
 Route::get('/', [AcceuilController::class, 'index'])->name('acceuil');
- 
 Route::get('/tousServices', [AcceuilController::class, 'tousServices'])->name('tousServices');
-
 Route::get('/information', [AcceuilController::class, 'information'])->name('information');
 
 Route::get('/ticket', [TicketController::class, 'index'])->name('ticket');
@@ -52,10 +49,10 @@ Route::middleware('auth:superclient')->group(function () {
     Route::post('/profil/delete', [ProfilController::class, 'delete'])->name('profil.delete');
 });
 
-// Client -> service (Route dynamique avec paramètre)
+// Client -> service
 Route::get('/service/{service}', [ServiceController::class, 'show'])->name('service.show');
 
-// Reservation (CORRECTION : Utilisation du chemin exact incluant le dossier \Front\)
+// Reservation
 Route::get('/reservation/{service}', [ReservationController::class, 'create'])->name('reservation.create');
 Route::post('/reservation/{service}', [ReservationController::class, 'store'])->name('reservation.store');
 
@@ -65,13 +62,10 @@ Route::patch('/ticket/{ticket}/annuler', [TicketController::class, 'annuler'])->
 // ***
 // Administrateur 
 // ***
-
-
 Route::get('/admin', [ConnexionController::class, 'connexionAdmin'])->name('connexionAdmin');
 Route::post('/admin/login', [ConnexionController::class, 'loginAdmin'])->name('admin.login');
 Route::get('/admin/motdepasse', [ConnexionController::class, 'mdpAdmin'])->name('admin.motdepasse');
  
-// Client côté administrateur
 Route::middleware('auth:admin')->group(function () {
     Route::post('/admin/logout', [ConnexionController::class, 'logoutAdmin'])->name('admin.logout');
 
@@ -84,16 +78,14 @@ Route::middleware('auth:admin')->group(function () {
     Route::delete('/admin/profil', [ConnexionController::class, 'deleteAccountAdmin'])->name('admin.profil.delete');
 });
 
-
-// Admin — mot de passe oublié (finalisation)
 Route::post('/admin/motdepasse', [ConnexionController::class, 'sendResetLinkAdmin'])->name('admin.motdepasse.send');
 Route::get('/admin/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormAdmin'])->name('admin.password.reset');
 Route::post('/admin/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordAdmin'])->name('admin.password.update');
 
+
 // ***
 // Manager
 // ***
-
 Route::get('/manager', [ConnexionController::class, 'connexionManager'])->name('pageManager');
 Route::post('/manager/login', [ConnexionController::class, 'loginManager'])->name('manager.login');
 Route::get('/manager/motdepasse', [ConnexionController::class, 'mdpManager'])->name('manager.motdepasse');
@@ -118,6 +110,9 @@ Route::middleware('auth:manager')->group(function () {
 
     Route::post('/manager/logout', [ConnexionController::class, 'logoutManager'])->name('manager.logout');
 
+    // Route AJOUTÉE pour gérer la création du ticket (Tableau de Bord principal)
+    Route::post('/manager/reservation/{id}/generer-ticket', [DashboardController::class, 'genererTicket']);
+
     Route::get('/connexionmanager', [DashboardController::class, 'connexionManager']);
 
     Route::get('/manager/connexionmanager/droitetableau', [DashboardController::class, 'droiteTableau'])->name('manager.connexionmanager.droitetableau');
@@ -132,7 +127,15 @@ Route::middleware('auth:manager')->group(function () {
 
     Route::get('/manager/connexionmanager/droiteusager', [DashboardController::class, 'droiteUsager'])->name('manager.connexionmanager.droiteusager');
 
+    // CORRECTION : Routes indispensables ajoutées pour l'enregistrement, la modif et les statuts des usagers
+    Route::post('/manager/profil-usager/store', [DashboardController::class, 'storeUsager']);
+    Route::post('/manager/profil-usager/{id}/modifier', [DashboardController::class, 'modifierNomUsager']);
+    Route::post('/manager/profil-usager/{id}/statut', [DashboardController::class, 'basculerStatutUsager']);
+
     Route::get('/manager/connexionmanager/droitecategorie', [DashboardController::class, 'droiteCategorie'])->name('manager.connexionmanager.droitecategorie');
+    Route::post('/manager/categorie/store', [DashboardController::class, 'storeCategorie'])->name('manager.categorie.store');
+    Route::post('/manager/categorie/{id}/modifier', [DashboardController::class, 'modifierNomCategorie'])->name('manager.categorie.modifier');
+    Route::post('/manager/categorie/{id}/statut', [DashboardController::class, 'basculerStatutCategorie'])->name('manager.categorie.statut');
 
     Route::get('/manager/connexionmanager/droitehistorique', [DashboardController::class, 'droiteHistorique'])->name('manager.connexionmanager.droitehistorique');
 
@@ -153,9 +156,11 @@ Route::middleware('auth:manager')->group(function () {
     Route::post('/manager/ticket/{ticket}/retirer', [DashboardController::class, 'retirerDeFile'])->name('manager.ticket.retirer');
 });
 
-// Manager — mot de passe oublié (finalisation)
+// Manager — mot de passe oublié
 Route::post('/manager/motdepasse', [ConnexionController::class, 'sendResetLinkManager'])->name('manager.motdepasse.send');
 Route::get('/manager/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormManager'])->name('manager.password.reset');
 Route::post('/manager/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordManager'])->name('manager.password.update');
+
+
 
 

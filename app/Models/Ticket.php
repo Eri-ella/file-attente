@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory; // ← Ajouter cette ligne
 
     protected $fillable = [
         'numero',
         'statut',
-        'service_id',
         'superclient_id',
         'client_mail',
         'reservation_id',
@@ -33,12 +32,49 @@ class Ticket extends Model
 
     public function service(): BelongsTo
     {
-        return $this->belongsTo(Service::class, 'service_id');
+        static::creating(function (Ticket $ticket) {
+            if (empty($ticket->numero)) {
+                $ticket->numero = static::genererNumero($ticket->service_id);
+            }
+
+            if (empty($ticket->fin) && ! empty($ticket->debut) && ! empty($ticket->service_id)) {
+                $service = $ticket->service ?? Service::find($ticket->service_id);
+                if ($service) {
+                    $ticket->fin = static::calculerFin($ticket->debut, $service->duree);
+                }
+            }
+        });
+
+        static::saving(function (Ticket $ticket) {
+            if (empty($ticket->fin) && ! empty($ticket->debut) && ! empty($ticket->service_id)) {
+                $service = $ticket->service ?? Service::find($ticket->service_id);
+                if ($service) {
+                    $ticket->fin = static::calculerFin($ticket->debut, $service->duree);
+                }
+            }
+        });
     }
 
     public function superclient(): BelongsTo
     {
-        return $this->belongsTo(Superclient::class, 'superclient_id');
+        if ($value !== null && $value !== '') {
+            return $value;
+        }
+
+        $service = $this->service;
+        if (! $service) {
+            return $value;
+        }
+
+        if ($this->debut) {
+            return static::calculerFin($this->debut, $service->duree);
+        }
+
+        if ($this->created_at) {
+            return static::calculerFin($this->created_at->format('H:i'), $service->duree);
+        }
+
+        return $value;
     }
 
     public function client(): BelongsTo

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Reservation;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -34,7 +35,7 @@ class ReservationController extends Controller
         $donnees = $request->validate([
             'client_mail' => $estSuperClientConnecte ? 'nullable|email' : 'required|email',
             'date' => 'nullable|date',
-            'heure_souhaite' => 'nullable',
+            'heure_souhaite' => 'nullable|date_format:H:i',
             'nombre_tickets' => 'required|integer|min:1',
         ]);
 
@@ -72,5 +73,19 @@ class ReservationController extends Controller
         }
 
         return redirect()->route('ticket.show', $dernierTicket)->with('succes', 'Réservation confirmée !');
+    }
+
+    private function obtenirProchainCreneau(Service $service, string $date, Carbon $heure): Carbon
+    {
+        $creneau = $heure->copy()->second(0);
+
+        while (Reservation::where('service_id', $service->id)
+            ->where('date', $date)
+            ->where('heure_souhaite', $creneau->format('H:i'))
+            ->exists()) {
+            $creneau->addMinutes(Ticket::dureeEnMinutes($service->duree));
+        }
+
+        return $creneau;
     }
 }
