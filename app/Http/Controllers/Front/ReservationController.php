@@ -9,22 +9,26 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-
+use App\Models\Categorie;
+use App\Models\ProfilUsager;
+use App\Models\Ticket;
 
 class ReservationController extends Controller
 {
-    public function create(Service $service): View
+    public function create(Request $request, Service $service): View
     {
-        return view('client.reservation', compact('service'));
+        if ($request->ajax()) {
+            return view('client.reservation-content', compact('service'));
+        }
 
+        $services = Service::all();
+        $categories = Categorie::with('services')->get();
+        $profils = ProfilUsager::with('services')->get();
+
+        return view('client.reservation', compact('service', 'services', 'categories', 'profils'));
     }
 
-    /**
-     * IMPORTANT : suppose qu'un Super_Client connecté a son id en session
-     * (ex: session(['superclient_id' => $superClient->id]) au moment de sa connexion).
-     * Sinon, on traite la demande comme un Client anonyme identifié par son email.
-     */
-    public function store(Request $request, Service $service): RedirectResponse
+    public function store(Request $request, Service $service)
     {
         $estSuperClientConnecte = session()->has('superclient_id');
 
@@ -36,47 +40,39 @@ class ReservationController extends Controller
         ]);
 
         $clientMail = null;
-
         if (! $estSuperClientConnecte) {
             $client = Client::firstOrCreate(['mail' => $donnees['client_mail']]);
             $clientMail = $client->mail;
         }
 
-        $date = $donnees['date'] ?? now()->toDateString();
-        $heureDemande = $donnees['heure_souhaite'] ? Carbon::parse($donnees['heure_souhaite']) : null;
-
-        if ($heureDemande) {
-            if (Reservation::where('service_id', $service->id)
-                ->where('date', $date)
-                ->where('heure_souhaite', $heureDemande->format('H:i'))
-                ->exists()) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->withErrors(['heure_souhaite' => 'Ce créneau est déjà réservé pour ce service. Choisissez une autre heure.']);
-            }
-        }
-
-        $heure = $heureDemande
-            ?? ($date === now()->toDateString() ? Carbon::now() : Carbon::parse('08:00'));
+        $dernierTicket = null;
 
         for ($i = 0; $i < $donnees['nombre_tickets']; $i++) {
-            $heure = $this->obtenirProchainCreneau($service, $date, $heure);
-
-            Reservation::create([
-                'service_id' => $service->id,
-                'date' => $date,
-                'heure_souhaite' => $heure->format('H:i'),
+            $reservation = Reservation::create([
+                'service_id'     => $service->id,
+                'date'           => $donnees['date'] ?? now()->toDateString(),
+                'heure_souhaite' => $donnees['heure_souhaite'] ?? now()->toTimeString(),
                 'superclient_id' => $estSuperClientConnecte ? session('superclient_id') : null,
-                'client_mail' => $clientMail,
+                'client_mail'    => $clientMail,
             ]);
 
-            $heure = $heure->copy()->addMinutes(Ticket::dureeEnMinutes($service->duree));
+            $dernierTicket = Ticket::creerDepuisReservation($reservation);
         }
 
-        return redirect()
-            ->route('reservation.create', $service)
-            ->with('succes', 'Réservation confirmée !');
+        if ($request->ajax()) {
+            return view('client.reservation-content', [
+                'service' => $service,
+                'succes' => 'Réservation confirmée !',
+                'ticket' => $dernierTicket,
+            ]);
+        }
+
+        // Stocke l'email en session pour retrouver le ticket plus tard
+        if ($clientMail) {
+            session(['dernier_client_mail' => $clientMail]);
+        }
+
+        return redirect()->route('ticket.show', $dernierTicket)->with('succes', 'Réservation confirmée !');
     }
 
     private function obtenirProchainCreneau(Service $service, string $date, Carbon $heure): Carbon

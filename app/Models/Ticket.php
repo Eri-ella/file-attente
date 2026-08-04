@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory; // ← Ajouter cette ligne
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Reservation;
-use App\Models\Service;
 
 class Ticket extends Model
 {
@@ -17,13 +15,22 @@ class Ticket extends Model
         'statut',
         'superclient_id',
         'client_mail',
-        'service_id',
         'reservation_id',
-        'debut',
-        'fin',
+        'position',
+        'heure_estimee',
+        'heure_passage',
+        'date_file',
     ];
 
-    protected static function booted(): void
+    protected $casts = [
+        'heure_estimee' => 'datetime:H:i',
+        'heure_passage' => 'datetime:H:i',
+        'date_file'     => 'date',
+    ];
+
+    /* ========== RELATIONS EXISTANTES ========== */
+
+    public function service(): BelongsTo
     {
         static::creating(function (Ticket $ticket) {
             if (empty($ticket->numero)) {
@@ -48,7 +55,7 @@ class Ticket extends Model
         });
     }
 
-    public function getFinAttribute($value)
+    public function superclient(): BelongsTo
     {
         if ($value !== null && $value !== '') {
             return $value;
@@ -70,74 +77,42 @@ class Ticket extends Model
         return $value;
     }
 
-    public static function calculerFin(string $debut, string|int $duree): string
-    {
-        $minutes = static::dureeEnMinutes($duree);
-
-        return \Carbon\Carbon::parse($debut)->addMinutes($minutes)->format('H:i');
-    }
-
-    public static function dureeEnMinutes(string|int $duree): int
-    {
-        if (is_int($duree)) {
-            return $duree;
-        }
-
-        if (is_numeric($duree)) {
-            return (int) $duree;
-        }
-
-        $parts = explode(':', $duree);
-        if (count($parts) >= 2) {
-            $hours = (int) $parts[0];
-            $minutes = (int) $parts[1];
-            return ($hours * 60) + $minutes;
-        }
-
-        return 0;
-    }
-
-    /**
-     * Génère le prochain numéro pour un service donné : A-001, A-002... pour service_id=1,
-     * B-001, B-002... pour service_id=2, etc.
-     */
-    public static function genererNumero(int $serviceId): string
-    {
-        $lettre = chr(64 + $serviceId);
-
-        $dernierNumero = static::where('service_id', $serviceId)
-            ->whereNotNull('numero')
-            ->orderBy('id', 'desc')
-            ->value('numero');
-
-        if (! $dernierNumero || ! preg_match('/^(?:[A-Z])-([0-9]{3})$/', $dernierNumero, $matches)) {
-            $compteur = 1;
-        } else {
-            $compteur = (int) $matches[1] + 1;
-        }
-
-        $numero = str_pad((string) $compteur, 3, '0', STR_PAD_LEFT);
-
-        return "{$lettre}-{$numero}";
-    }
-
-    public function service(): BelongsTo
-    {
-        return $this->belongsTo(Service::class);
-    }
-
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_mail', 'mail');
     }
 
-    public function superClient(): BelongsTo
-    {
-        return $this->belongsTo(SuperClient::class, 'superclient_id');
-    }
+    /* ========== NOUVELLE RELATION ========== */
 
     public function reservation(): BelongsTo
     {
         return $this->belongsTo(Reservation::class);
+    }
+
+    /* ========== MÉTHODES ========== */
+
+    public static function genererNumero(Service $service): string
+    {
+        $lettre = $service->categorie->lettre ?? 'X';
+        $today  = now()->toDateString();
+
+        $compteur = self::whereDate('date_file', $today)
+            ->whereHas('service', fn ($q) => $q->where('categorie_id', $service->categorie_id))
+            ->count() + 1;
+
+        return $lettre . '-' . str_pad($compteur, 3, '0', STR_PAD_LEFT);
+    }
+
+    public static function creerDepuisReservation(Reservation $reservation): self
+    {
+        return self::create([
+            'reservation_id' => $reservation->id,
+            'numero'         => self::genererNumero($reservation->service),
+            'statut'         => 'en_attente',
+            'service_id'     => $reservation->service_id,
+            'superclient_id' => $reservation->superclient_id,
+            'client_mail'    => $reservation->client_mail,
+            'date_file'      => today(),
+        ]);
     }
 }
