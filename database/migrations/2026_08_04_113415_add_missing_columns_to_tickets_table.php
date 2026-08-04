@@ -44,7 +44,7 @@ return new class extends Migration
         // Schema::table() ne peut pas fiabiliser un ->unique() conditionnel dans le même bloc
         // si des lignes existantes ont déjà numero = NULL en double.
         if (!$this->hasUniqueIndex('tickets', 'numero')) {
-            Schema::table('tickets', function (Blueprter $table) {
+            Schema::table('tickets', function (Blueprint $table) {
                 $table->unique('numero');
             });
         }
