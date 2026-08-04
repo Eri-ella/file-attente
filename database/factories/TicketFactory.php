@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Ticket;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Service;
 use App\Models\Superclient;
 use App\Models\Client;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<Ticket>
@@ -18,18 +18,36 @@ class TicketFactory extends Factory
      *
      * @return array<string, mixed>
      */
-        public function definition(): array
-        {
-            $estSuperClient = $this->faker->boolean();
+    public function definition(): array
+    {
+        $estSuperClient = $this->faker->boolean();
 
-            return [
-                'numero' => $this->faker->unique()->bothify('??-####'),
-                'statut' => $this->faker->randomElement(['en_attente', 'en_cours', 'termine', 'annule']),
-                'service_id' => \App\Models\Service::inRandomOrder()->first()?->id ?? \App\Models\Service::factory(),
-                'superclient_id' => $estSuperClient ? (\App\Models\Superclient::inRandomOrder()->first()?->id ?? \App\Models\Superclient::factory()) : null,
-                'client_mail' => !$estSuperClient ? (\App\Models\Client::inRandomOrder()->first()?->mail ?? \App\Models\Client::factory()) : null,
-            ];
+        $service = Service::inRandomOrder()->first() ?? Service::factory()->create();
+
+        $superclientId = null;
+        $clientMail = null;
+
+        if ($estSuperClient) {
+            $superclient = Superclient::inRandomOrder()->first() ?? Superclient::factory()->create();
+            $superclientId = $superclient->id;
+        } else {
+            $client = Client::inRandomOrder()->first() ?? Client::factory()->create();
+            $clientMail = $client->mail;
         }
 
-}
+        $lettre = chr(64 + ($service->id % 26 ?: 26));
 
+        return [
+            'numero' => $lettre . '-' . $this->faker->unique()->numerify('###'),
+            'statut' => $this->faker->randomElement([
+                'en_attente',
+                'en_cours',
+                'termine',
+                'annule',
+            ]),
+            'service_id' => $service->id,
+            'superclient_id' => $superclientId,
+            'client_mail' => $clientMail,
+        ];
+    }
+}

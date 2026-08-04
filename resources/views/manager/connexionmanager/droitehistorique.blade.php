@@ -1,10 +1,3 @@
-@php
-    $tickets = [
-        ['TICKET' => 'B_040', 'SERVICE' => 'Carte identité', 'DATE' => '14 juin 2026', 'MAIL_CLIENT' => 'Dyldev@gmail.com'],
-        ['TICKET' => 'B_040', 'SERVICE' => 'Renouvellement de passeport', 'DATE' => '14 juin 2026', 'MAIL_CLIENT' => 'Lapoisse@gmail.com'],
-        ['TICKET' => 'B_040', 'SERVICE' => 'Carte identité', 'DATE' => '14 mai 2026', 'MAIL_CLIENT' => 'loiselle25@gmail.com'],
-    ];
-@endphp 
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
     <head>
@@ -15,25 +8,31 @@
     <body class="h-full flex flex-col">
 
         <main class="flex-1 bg-[#F9F8F5] p-10 overflow-auto border border-[#222D52]/50">
-            <h1 class="text-2xl font-medium text-[#222D52] mb-8">Liste des clients</h1>
-            <table class="w-full text-left text-sm bg-[#FDFFFF]">
-                <thead class=" border border-[#222D52]/50">
-                    <tr class=" text-[#222D52]/70 border border-[#222D52]/50">
-                        <th class="pb-2 font-normal">TICKET</th>
-                        <th class="pb-2 font-normal">SERVICE</th>
-                        <th class="pb-2 font-normal">DATE</th>
-                        <th class="pb-2 font-normal">MAIL_CLIENT</th>
+            <h1 class="text-2xl font-medium text-[#222D52] mb-8">Historique des tickets</h1>
+            <table class="w-full text-left text-sm bg-[#FDFFFF] border border-[#222D52]/50">
+                <thead>
+                    <tr class="text-[#222D52]/70 border-b border-[#222D52]/50">
+                        <th class="pb-2 font-normal">Ticket</th>
+                        <th class="pb-2 font-normal">Service</th>
+                        <th class="pb-2 font-normal">Date</th>
+                        <th class="pb-2 font-normal">Heure</th>
+                        <th class="pb-2 font-normal">E-mail</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($tickets as $ticket)
-                        <tr class=" border border-[#222D52]/50">
-                            <td class="py-4 text-gray-800">{{ $ticket['TICKET'] }}</td>
-                            <td class="py-4 text-gray-800">{{ $ticket['SERVICE'] }}</td>
-                            <td class="py-4 text-gray-800">{{ $ticket['DATE'] }}</td>
-                            <td class="py-4 text-gray-800">{{ $ticket['MAIL_CLIENT'] }}</td>
+                    @forelse ($tickets as $ticket)
+                        <tr class="border-b border-[#222D52]/20">
+                            <td class="py-4 text-gray-800 font-bold">{{ $ticket->numero }}</td>
+                            <td class="py-4 text-gray-800">{{ $ticket->service->nom ?? 'Service inconnu' }}</td>
+                            <td class="py-4 text-gray-800">{{ optional($ticket->reservation)->date ? \Carbon\Carbon::parse($ticket->reservation->date)->format('d/m/Y') : '—' }}</td>
+                            <td class="py-4 text-gray-800">{{ optional($ticket->reservation)->heure_souhaite ?? $ticket->debut ?? '—' }}</td>
+                            <td class="py-4 text-gray-800">{{ optional(optional($ticket->reservation)->superClient)->email ?? optional($ticket->reservation)->client_mail ?? $ticket->client_mail ?? '—' }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-4 text-center text-gray-400">Aucun ticket historique trouvé.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
 

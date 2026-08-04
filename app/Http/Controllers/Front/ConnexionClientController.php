@@ -4,21 +4,23 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\SuperClient;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\View\View;
 
 class ConnexionClientController extends Controller
 {
     // ================= CONNEXION =================
 
-    public function connexion()
+    public function connexion(): View
     {
         return view('client.connexion');
     }
 
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -40,7 +42,7 @@ class ConnexionClientController extends Controller
         ])->onlyInput('email');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::guard('superclient')->logout();
         $request->session()->invalidate();
@@ -50,12 +52,12 @@ class ConnexionClientController extends Controller
 
     // ================= INSCRIPTION =================
 
-    public function inscription()
+    public function inscription(): View
     {
         return view('client.inscription');
     }
 
-    public function register(Request $request)
+    public function register(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'nom' => ['required', 'string', 'max:255'],
@@ -84,12 +86,12 @@ class ConnexionClientController extends Controller
 
     // ================= MOT DE PASSE OUBLIÉ =================
 
-    public function passe()
+    public function passe(): View
     {
         return view('client.mdpOublie');
     }
 
-    public function sendResetLink(Request $request)
+    public function sendResetLink(Request $request): RedirectResponse
     {
         $request->validate(['email' => ['required', 'email']]);
 
@@ -102,7 +104,7 @@ class ConnexionClientController extends Controller
             : back()->withErrors(['email' => 'Aucun compte trouvé avec cet email.']);
     }
 
-    public function showResetForm(Request $request, string $token)
+    public function showResetForm(Request $request, string $token): View
     {
         return view('client.resetPassword', [
             'token' => $token,
@@ -110,7 +112,7 @@ class ConnexionClientController extends Controller
         ]);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): RedirectResponse
     {
         $request->validate([
             'token' => ['required'],
@@ -130,38 +132,40 @@ class ConnexionClientController extends Controller
             : back()->withErrors(['email' => __($status)]);
     }
 
-    public function updateProfil(Request $request)
-{
-    $client = Auth::guard('superclient')->user();
+    public function updateProfil(Request $request): RedirectResponse
+    {
+        /** @var SuperClient $client */
+        $client = Auth::guard('superclient')->user();
 
-    $data = $request->validate([
-        'nom' => ['required', 'string', 'max:255'],
-        'prenom' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'unique:superclients,email,' . $client->id],
-        'telephone' => ['required', 'string', 'max:20'],
-        'pass' => ['nullable', 'min:8', 'confirmed'],
-    ]);
+        $data = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:superclients,email,' . $client->id],
+            'telephone' => ['required', 'string', 'max:20'],
+            'pass' => ['nullable', 'min:8', 'confirmed'],
+        ]);
 
-    $client->fill([
-        'nom' => $data['nom'],
-        'prenom' => $data['prenom'],
-        'email' => $data['email'],
-        'numero' => $data['telephone'],
-    ]);
+        $client->fill([
+            'nom' => $data['nom'],
+            'prenom' => $data['prenom'],
+            'email' => $data['email'],
+            'numero' => $data['telephone'],
+        ]);
 
-    if (!empty($data['pass'])) {
-        $client->mot_de_passe = Hash::make($data['pass']);
+        if (!empty($data['pass'])) {
+            $client->mot_de_passe = Hash::make($data['pass']);
+        }
+
+        $client->save();
+
+        return back()->with('status', 'Profil mis à jour avec succès.');
     }
 
-    $client->save();
-
-    return back()->with('status', 'Profil mis à jour avec succès.');
-    }
-
-    public function deleteAccount(Request $request)
+    public function deleteAccount(Request $request): RedirectResponse
     {
         $request->validate(['pass' => ['required']]);
 
+        /** @var SuperClient $client */
         $client = Auth::guard('superclient')->user();
 
         if (!Hash::check($request->pass, $client->getAuthPassword())) {

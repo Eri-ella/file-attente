@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Reservation;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -34,7 +35,7 @@ class ReservationController extends Controller
         $donnees = $request->validate([
             'client_mail' => $estSuperClientConnecte ? 'nullable|email' : 'required|email',
             'date' => 'nullable|date',
-            'heure_souhaite' => 'nullable',
+            'heure_souhaite' => 'nullable|date_format:H:i',
             'nombre_tickets' => 'required|integer|min:1',
         ]);
 

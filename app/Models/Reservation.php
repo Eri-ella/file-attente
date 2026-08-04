@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Reservation extends Model
 {
@@ -22,6 +23,21 @@ class Reservation extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    /**
+     * Accéder directement à la catégorie liée au service de cette réservation
+     */
+    public function categorie(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Categorie::class,
+            Service::class,
+            'id',           // Clé locale sur la table services (l'id du service)
+            'id',           // Clé locale sur la table categories (l'id de la catégorie)
+            'service_id',   // Clé étrangère sur la table reservations
+            'categorie_id'  // Clé étrangère sur la table services
+        );
     }
 
     /**
