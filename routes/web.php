@@ -56,6 +56,8 @@ Route::get('/service/{service}', [ServiceController::class, 'show'])->name('serv
 Route::get('/reservation/{service}', [ReservationController::class, 'create'])->name('reservation.create');
 Route::post('/reservation/{service}', [ReservationController::class, 'store'])->name('reservation.store');
 
+Route::get('/ticket', [TicketController::class, 'index'])->name('ticket');
+Route::post('/ticket/rechercher', [TicketController::class, 'rechercher'])->name('ticket.rechercher');
 Route::get('/ticket/{ticket}', [TicketController::class, 'show'])->name('ticket.show');
 Route::patch('/ticket/{ticket}/annuler', [TicketController::class, 'annuler'])->name('ticket.annuler');
 
@@ -151,6 +153,13 @@ Route::middleware('auth:manager')->group(function () {
     // Actions file d'attente
     Route::post('/manager/ticket/{ticket}/ajouter-file', [DashboardController::class, 'ajouterAFile'])->name('manager.ticket.ajouterFile');
     Route::post('/manager/ticket/appeler-suivant', [DashboardController::class, 'appelerSuivant'])->name('manager.ticket.appelerSuivant');
+    Route::post('/manager/ticket/{ticket}/terminer', [DashboardController::class, 'terminerTicket'])->name('manager.ticket.terminer');
+    Route::post('/manager/ticket/{ticket}/no-show', [DashboardController::class, 'noShow'])->name('manager.ticket.noShow');
+    Route::post('/manager/ticket/{ticket}/retirer', [DashboardController::class, 'retirerDeFile'])->name('manager.ticket.retirer');
+
+    Route::post('/manager/ticket/{ticket}/ajouter-file', [DashboardController::class, 'ajouterAFile'])->name('manager.ticket.ajouterFile');
+    Route::post('/manager/ticket/appeler-suivant', [DashboardController::class, 'appelerSuivant'])->name('manager.ticket.appelerSuivant');
+    Route::post('/manager/ticket/{ticket}/demarrer', [DashboardController::class, 'demarrerTraitement'])->name('manager.ticket.demarrer');
     Route::post('/manager/ticket/{ticket}/terminer', [DashboardController::class, 'terminerTicket'])->name('manager.ticket.terminer');
     Route::post('/manager/ticket/{ticket}/no-show', [DashboardController::class, 'noShow'])->name('manager.ticket.noShow');
     Route::post('/manager/ticket/{ticket}/retirer', [DashboardController::class, 'retirerDeFile'])->name('manager.ticket.retirer');

@@ -1,6 +1,7 @@
-@extends('layouts.client')
+@extends('layouts.connexion_layout')
 
-@section('client-content')
+@section('connexion-content')
+
     @include('client.services-shell', [
         'innerView' => 'client.service-content',
         'innerData' => ['service' => $service],
