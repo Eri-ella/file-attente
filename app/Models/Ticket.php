@@ -2,39 +2,81 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ticket extends Model
 {
     use HasFactory;
 
-    // 1. CORRECTION : Ajout des clés obligatoires pour permettre l'insertion de données
     protected $fillable = [
         'numero',
         'statut',
         'service_id',
         'superclient_id',
-        'client_mail'
+        'client_mail',
+        'reservation_id',
+        'position',
+        'heure_estimee',
+        'heure_passage',
+        'date_file',
     ];
 
-    // 2. CORRECTION : Syntaxe belongsTo (b minuscule) pour lier le service
-    public function service(): BelongsTo 
+    protected $casts = [
+        'heure_estimee' => 'datetime:H:i',
+        'heure_passage' => 'datetime:H:i',
+        'date_file'     => 'date',
+    ];
+
+    /* ========== RELATIONS EXISTANTES ========== */
+
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
 
-    // 3. AJOUT : Relation avec le Superclient
-    public function superclient(): BelongsTo 
+    public function superclient(): BelongsTo
     {
         return $this->belongsTo(Superclient::class, 'superclient_id');
     }
 
-    // 4. AJOUT : Relation avec le Client classique (via la colonne client_mail)
-    public function client(): BelongsTo 
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_mail', 'mail');
     }
-}
 
+    /* ========== NOUVELLE RELATION ========== */
+
+    public function reservation(): BelongsTo
+    {
+        return $this->belongsTo(Reservation::class);
+    }
+
+    /* ========== MÉTHODES ========== */
+
+    public static function genererNumero(Service $service): string
+    {
+        $lettre = $service->categorie->lettre ?? 'X';
+        $today  = now()->toDateString();
+
+        $compteur = self::whereDate('date_file', $today)
+            ->whereHas('service', fn ($q) => $q->where('categorie_id', $service->categorie_id))
+            ->count() + 1;
+
+        return $lettre . '-' . str_pad($compteur, 3, '0', STR_PAD_LEFT);
+    }
+
+    public static function creerDepuisReservation(Reservation $reservation): self
+    {
+        return self::create([
+            'reservation_id' => $reservation->id,
+            'numero'         => self::genererNumero($reservation->service),
+            'statut'         => 'en_attente',
+            'service_id'     => $reservation->service_id,
+            'superclient_id' => $reservation->superclient_id,
+            'client_mail'    => $reservation->client_mail,
+            'date_file'      => today(),
+        ]);
+    }
+}
