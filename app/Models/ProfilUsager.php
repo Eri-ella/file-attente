@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ProfilUsager extends Model
 {
     use HasFactory;
+
+    // SÉCURITÉ : Indique explicitement le nom de votre table SQL dans phpMyAdmin
+    protected $table = 'profil_usagers';
  
     protected $fillable = [
         'nom',
@@ -20,3 +23,5 @@ class ProfilUsager extends Model
         return $this->hasMany(Service::class);
     }
 }
+
+

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('profil_usagers', function (Blueprint $table) {
             $table->id();
-            $table->enum('nom', ['tout public', 'entreprise'])->unique();
-            $table->enum('statut', ['actif', 'inactif']);
+            $table->string('nom')->unique(); // ← Changé de enum à string
+            $table->string('statut')->default('actif'); // ← string au lieu de enum pour plus de flexibilité
             $table->timestamps();
         });
     }
