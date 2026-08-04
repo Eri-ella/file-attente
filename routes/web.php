@@ -5,6 +5,7 @@ use App\Http\Controllers\Front\AcceuilController;
 use App\Http\Controllers\Front\ServiceController;
 use App\Http\Controllers\Front\ProfilController;
 use App\Http\Controllers\Front\ConnexionClientController;
+use App\Http\Controllers\Front\TicketController;
 
 // CORRECTION : Importation du bon chemin pour le contrôleur de réservation
 use App\Http\Controllers\Front\ReservationController;
@@ -24,7 +25,8 @@ Route::get('/tousServices', [AcceuilController::class, 'tousServices'])->name('t
 
 Route::get('/information', [AcceuilController::class, 'information'])->name('information');
 
-Route::get('/ticket', [AcceuilController::class, 'ticket'])->name('ticket');
+Route::get('/ticket', [TicketController::class, 'index'])->name('ticket');
+Route::post('/ticket/rechercher', [TicketController::class, 'rechercher'])->name('ticket.rechercher');
 
 Route::get('/connexion', [ConnexionClientController::class, 'connexion'])->name('connexion');
 Route::post('/connexion', [ConnexionClientController::class, 'login'])->name('connexion.store');
@@ -57,6 +59,8 @@ Route::get('/service/{service}', [ServiceController::class, 'show'])->name('serv
 Route::get('/reservation/{service}', [ReservationController::class, 'create'])->name('reservation.create');
 Route::post('/reservation/{service}', [ReservationController::class, 'store'])->name('reservation.store');
 
+Route::get('/ticket/{ticket}', [TicketController::class, 'show'])->name('ticket.show');
+Route::patch('/ticket/{ticket}/annuler', [TicketController::class, 'annuler'])->name('ticket.annuler');
 
 // ***
 // Administrateur 
@@ -96,7 +100,21 @@ Route::get('/manager/motdepasse', [ConnexionController::class, 'mdpManager'])->n
 
 
 Route::middleware('auth:manager')->group(function () {
-    Route::get('/manager/connexionmanager/service/modifier', [DashboardController::class, 'droiteModifierService'])->name('manager.connexionmanager.modifierservice');
+    // Formulaire ajout (vide) / modification (pré-rempli)
+    Route::get('/manager/connexionmanager/service/modifier/{id?}', [DashboardController::class, 'droiteModifierService'])
+        ->name('manager.connexionmanager.modifierservice');
+
+    // Traitement ajout
+    Route::post('/manager/connexionmanager/service/store', [DashboardController::class, 'storeService'])
+        ->name('manager.connexionmanager.service.store');
+
+    // Traitement modification
+    Route::put('/manager/connexionmanager/service/update/{id}', [DashboardController::class, 'updateService'])
+        ->name('manager.connexionmanager.service.update');
+
+    // Suppression
+    Route::delete('/manager/connexionmanager/service/destroy/{id}', [DashboardController::class, 'destroyService'])
+        ->name('manager.connexionmanager.service.destroy');
 
     Route::post('/manager/logout', [ConnexionController::class, 'logoutManager'])->name('manager.logout');
 
@@ -127,11 +145,16 @@ Route::middleware('auth:manager')->group(function () {
     Route::put('/manager/profil', [ConnexionController::class, 'updateProfilManager'])->name('manager.profil.update');
     Route::delete('/manager/profil', [ConnexionController::class, 'deleteAccountManager'])->name('manager.profil.delete');
 
+    // Actions file d'attente
+    Route::post('/manager/ticket/{ticket}/ajouter-file', [DashboardController::class, 'ajouterAFile'])->name('manager.ticket.ajouterFile');
+    Route::post('/manager/ticket/appeler-suivant', [DashboardController::class, 'appelerSuivant'])->name('manager.ticket.appelerSuivant');
+    Route::post('/manager/ticket/{ticket}/terminer', [DashboardController::class, 'terminerTicket'])->name('manager.ticket.terminer');
+    Route::post('/manager/ticket/{ticket}/no-show', [DashboardController::class, 'noShow'])->name('manager.ticket.noShow');
+    Route::post('/manager/ticket/{ticket}/retirer', [DashboardController::class, 'retirerDeFile'])->name('manager.ticket.retirer');
 });
 
 // Manager — mot de passe oublié (finalisation)
 Route::post('/manager/motdepasse', [ConnexionController::class, 'sendResetLinkManager'])->name('manager.motdepasse.send');
 Route::get('/manager/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormManager'])->name('manager.password.reset');
 Route::post('/manager/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordManager'])->name('manager.password.update');
-
 

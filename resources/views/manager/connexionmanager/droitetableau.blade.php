@@ -1,23 +1,9 @@
 @php
     $statistiques = [
-        ['valeur' => '23', 'label' => "Tickets aujourd'hui"],
-        ['valeur' => '7 min', 'label' => 'Attente moyenne'],
-        ['valeur' => '3', 'label' => 'Tickets en attente'],
-        ['valeur' => '2', 'label' => 'Décalages'],
-    ];
- 
-    $file = [
-        ['ordre' => '01', 'ticket' => 'B-039', 'debut' => '8h00', 'fin' => '8h35', 'statut' => 'EN COURS'],
-        ['ordre' => '02', 'ticket' => 'B-039', 'debut' => '8h00', 'fin' => '8h35', 'statut' => 'EN COURS'],
-        ['ordre' => '03', 'ticket' => 'B-039', 'debut' => '8h00', 'fin' => '8h35', 'statut' => 'EN COURS'],
-        ['ordre' => '04', 'ticket' => 'B-039', 'debut' => '8h00', 'fin' => '8h35', 'statut' => 'EN COURS'],
-    ];
- 
-    $clientsEnAttente = [
-        ['ordre' => '01', 'heure' => '8h00-8h35', 'date' => '12/12/2026'],
-        ['ordre' => '02', 'heure' => '8h00-8h35', 'date' => '12/12/2026'],
-        ['ordre' => '03', 'heure' => '8h00-8h35', 'date' => '12/12/2026'],
-        ['ordre' => '04', 'heure' => '8h00-8h35', 'date' => '12/12/2026'],
+        ['valeur' => $ticketsAujourdhui, 'label' => "Tickets aujourd'hui"],
+        ['valeur' => $attenteMoyenne, 'label' => 'Attente moyenne'],
+        ['valeur' => $ticketsEnAttenteCount, 'label' => 'Tickets en attente'],
+        ['valeur' => $decalages, 'label' => 'Décalages'],
     ];
 @endphp
 <!DOCTYPE html>
@@ -28,12 +14,17 @@
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="h-full">
-        
         <main class="p-10 bg-[#F9F8F5]">
-        
             <h1 class="text-2xl font-medium text-[#222D52] mb-8">Tableau de bord</h1>
-        
-            {{-- ===== Cartes statistiques (carrées, bordure simple, pas d'arrondi) ===== --}}
+
+            @if(session('succes'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{{ session('succes') }}</div>
+            @endif
+            @if(session('erreur'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{{ session('erreur') }}</div>
+            @endif
+
+            {{-- Stats --}}
             <div class="flex justify-between mb-10">
                 @foreach ($statistiques as $stat)
                     <div class="w-36 h-36 border border-[#222D52]/20 p-4 flex flex-col justify-center bg-[#FDFFFF]">
@@ -42,232 +33,116 @@
                     </div>
                 @endforeach
             </div>
-        
-            {{-- ===== File en cours ===== --}}
-            <div class="border border-[#222D52]/20  p-6 bg-[#FDFFFF]">
-                <h2 class="text-lg font-medium text-[#222D52] mb-4">File en cours</h2>
-        
-                <table class="w-full text-left text-sm">
-                    <thead>
-                        <tr class="text-gray-500 border-b border-[#222D52]/20">
-                            <th class="pb-2 font-normal">Numéro d'ordre</th>
-                            <th class="pb-2 font-normal">Numéro de ticket</th>
-                            <th class="pb-2 font-normal">Heure de debut</th>
-                            <th class="pb-2 font-normal">Heure de fin</th>
-                            <th class="pb-2 font-normal">Statut</th>
-                            <th class="pb-2 font-normal"></th>
-                            <th class="pb-2 font-normal"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="corps-file">
-                        @foreach ($file as $ticket)
-                            <tr class="border-b border-[#222D52]/10">
-                                <td class="py-3 text-gray-400 ordre">{{ $ticket['ordre'] }}</td>
-                                <td class="py-3 text-gray-800">{{ $ticket['ticket'] }}</td>
-                                <td class="py-3 text-gray-800">{{ $ticket['debut'] }}</td>
-                                <td class="py-3 text-gray-800">{{ $ticket['fin'] }}</td>
-                                <td class="py-3 text-gray-800 statut">{{ $ticket['statut'] }}</td>
-                                <td class="py-3">
-                                    <button onclick="insererAuDessus(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                                        Insérer au dessus
-                                    </button>
-                                </td>
-                                <td class="py-3">
-                                    <button onclick="retirerTicket(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                                        Retirer
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="7" class="pt-4 text-center">
-                                <button onclick="ajouterALaFile()" class="border border-[#222D52]/50 px-4 py-2 text-sm hover:bg-gray-50 rounded">
-                                    Ajouter à la file
-                                </button>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        
-            {{-- ===== Clients en attente ===== --}}
-            <div class="border border-[#222D52]/20 p-6 bg-[#FDFFFF] mt-10 bg-[#FDFFFF]">
-                <h2 class="text-lg font-medium text-[#222D52] mb-4">Clients en attente</h2>
-        
-                <table class="w-full text-left text-sm">
-                    <thead>
-                        <tr class="text-gray-500 border-b border-[#222D52]/20">
-                            <th class="pb-2 font-normal">Numéro d'ordre</th>
-                            <th class="pb-2 font-normal">Heure souhaitée</th>
-                            <th class="pb-2 font-normal">Date souhaitée</th>
-                            <th class="pb-2 font-normal"></th>
-                            <th class="pb-2 font-normal"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="corps-attente">
-                        @foreach ($clientsEnAttente as $client)
-                            <tr class="border-b border-[#222D52]/10">
-                                <td class="py-3 text-gray-400 ordre">{{ $client['ordre'] }}</td>
-                                <td class="py-3 text-gray-800 heure">{{ $client['heure'] }}</td>
-                                <td class="py-3 text-gray-800 date">{{ $client['date'] }}</td>
-                                <td class="py-3">
-                                    <button onclick="ajouterALaFileDepuisAttente(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                                        Ajouter à la file
-                                    </button>
-                                </td>
-                                <td class="py-3">
-                                    <button onclick="retirerClientAttente(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                                        Retirer
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        
-            <div class="border border-[#222D52]/20 p-6 bg-[#FDFFFF] mt-10 max-w-2xl w-full mr-auto rounded-lg shadow-sm">
-                <h2 class="text-lg font-medium text-[#222D52] mb-4">Créneaux libérés récemment</h2>
 
-                <div class="bg-[#D2B589]/40 p-4 text-sm text-[#222D52] mb-4 border-l-4 border-[#222D52]">
-                    Un ticket annulé à 13:45 a libéré 15 min. 4 clients éligibles ont été notifiés automatiquement.
+            {{-- File en cours --}}
+            <div class="border border-[#222D52]/20 p-6 bg-[#FDFFFF] mb-10">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-medium text-[#222D52]">File en cours</h2>
+                    <form action="{{ route('manager.ticket.appelerSuivant') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="bg-[#222D52] hover:bg-[#18213f] text-white text-sm font-medium px-4 py-2 rounded">
+                            Appeler le suivant
+                        </button>
+                    </form>
                 </div>
 
-                <p class="text-sm text-gray-600">
-                    Optimisation intelligente : 1 place réattribuée avec succès à 13:52.
-                </p>
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="text-gray-500 border-b border-[#222D52]/20">
+                            <th class="pb-2 font-normal">N° ordre</th>
+                            <th class="pb-2 font-normal">Ticket</th>
+                            <th class="pb-2 font-normal">Service</th>
+                            <th class="pb-2 font-normal">Heure estimée</th>
+                            <th class="pb-2 font-normal">Statut</th>
+                            <th class="pb-2 font-normal"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($file as $t)
+                            <tr class="border-b border-[#222D52]/10">
+                                <td class="py-3 text-gray-400">{{ $loop->iteration }}</td>
+                                <td class="py-3 text-gray-800 font-medium">{{ $t->numero }}</td>
+                                <td class="py-3 text-gray-800">{{ $t->service->nom ?? 'N/A' }}</td>
+                                <td class="py-3 text-gray-800">
+                                    {{ $t->heure_estimee ? \Carbon\Carbon::parse($t->heure_estimee)->format('H:i') : '--:--' }}
+                                </td>
+                                <td class="py-3">
+                                    @if($t->statut === 'en_cours')
+                                        <span class="bg-[#D2B589]/50 px-2 py-1 text-xs">EN COURS</span>
+                                    @elseif($t->statut === 'appele')
+                                        <span class="bg-yellow-100 px-2 py-1 text-xs">APPELÉ</span>
+                                    @else
+                                        <span class="text-gray-600 text-xs">EN FILE</span>
+                                    @endif
+                                </td>
+                                <td class="py-3">
+                                    @if($t->statut === 'en_file')
+                                        <form action="{{ route('manager.ticket.retirer', $t) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">Retirer</button>
+                                        </form>
+                                    @elseif($t->statut === 'en_cours')
+                                        <form action="{{ route('manager.ticket.terminer', $t) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="border border-green-600 text-green-700 px-3 py-1.5 text-sm hover:bg-green-50">Terminer</button>
+                                        </form>
+                                        <form action="{{ route('manager.ticket.noShow', $t) }}" method="POST" class="inline ml-1">
+                                            @csrf
+                                            <button type="submit" class="border border-red-400 text-red-600 px-3 py-1.5 text-sm hover:bg-red-50">Absent</button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="6" class="py-6 text-center text-gray-500">Aucun ticket en file</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
 
-        
+            {{-- Clients en attente (réservations non validées) --}}
+            <div class="border border-[#222D52]/20 p-6 bg-[#FDFFFF]">
+                <h2 class="text-lg font-medium text-[#222D52] mb-4">Clients en attente de validation</h2>
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="text-gray-500 border-b border-[#222D52]/20">
+                            <th class="pb-2 font-normal">N°</th>
+                            <th class="pb-2 font-normal">Ticket</th>
+                            <th class="pb-2 font-normal">Service</th>
+                            <th class="pb-2 font-normal">Heure souhaitée</th>
+                            <th class="pb-2 font-normal">Date souhaitée</th>
+                            <th class="pb-2 font-normal">Titulaire</th>
+                            <th class="pb-2 font-normal"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($clientsEnAttente as $t)
+                            <tr class="border-b border-[#222D52]/10">
+                                <td class="py-3 text-gray-400">{{ $loop->iteration }}</td>
+                                <td class="py-3 text-gray-800 font-medium">{{ $t->numero }}</td>
+                                <td class="py-3 text-gray-800">{{ $t->service->nom ?? 'N/A' }}</td>
+                                <td class="py-3 text-gray-800">
+                                    {{ $t->reservation && $t->reservation->heure_souhaite ? \Carbon\Carbon::parse($t->reservation->heure_souhaite)->format('H:i') : '--:--' }}
+                                </td>
+                                <td class="py-3 text-gray-800">
+                                    {{ $t->reservation && $t->reservation->date ? \Carbon\Carbon::parse($t->reservation->date)->format('d/m/Y') : '--' }}
+                                </td>
+                                <td class="py-3 text-gray-800">
+                                    {{ $t->client_mail ?? $t->superclient->email ?? 'N/A' }}
+                                </td>
+                                <td class="py-3">
+                                    <form action="{{ route('manager.ticket.ajouterFile', $t) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="bg-[#222D52] hover:bg-[#18213f] text-white px-3 py-1.5 text-sm rounded">Ajouter à la file</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="7" class="py-6 text-center text-gray-500">Aucun client en attente</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </main>
-    
-        <script>
-            // Reconstruit les numéros d'ordre (01, 02, 03...) selon la position réelle des lignes
-            function renumeroterFile() {
-                const lignes = document.querySelectorAll('#corps-file tr');
-                lignes.forEach(function (ligne, position) {
-                    const numero = String(position + 1).padStart(2, '0');
-                    ligne.querySelector('.ordre').textContent = numero;
-                });
-            }
-        
-            function retirerTicket(bouton) {
-                const ligne = bouton.closest('tr');
-                ligne.remove();
-                renumeroterFile();
-            }
-        
-            function creerLigneVide() {
-                const nouvelleLigne = document.createElement('tr');
-                nouvelleLigne.className = 'border-b border-[#222D52]/10';
-                nouvelleLigne.innerHTML = `
-                    <td class="py-3 text-gray-400 ordre">—</td>
-                    <td class="py-3 text-gray-800">
-                        <input type="text" placeholder="N° ticket" class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1">
-                    </td>
-                    <td class="py-3 text-gray-800">
-                        <input type="text" placeholder="Heure debut" class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1">
-                    </td>
-                    <td class="py-3 text-gray-800">
-                        <input type="text" placeholder="Heure fin" class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1">
-                    </td>
-                    <td class="py-3 text-gray-800 statut">EN ATTENTE</td>
-                    <td class="py-3">
-                        <button onclick="insererAuDessus(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                            Insérer au dessus
-                        </button>
-                    </td>
-                    <td class="py-3">
-                        <button onclick="retirerTicket(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                            Retirer
-                        </button>
-                    </td>
-                `;
-                return nouvelleLigne;
-            }
-        
-            function insererAuDessus(bouton) {
-                const ligneActuelle = bouton.closest('tr');
-                const nouvelleLigne = creerLigneVide();
-        
-                ligneActuelle.parentNode.insertBefore(nouvelleLigne, ligneActuelle);
-                nouvelleLigne.querySelector('input').focus();
-                renumeroterFile();
-            }
-        
-            function ajouterALaFile() {
-                const corpsFile = document.getElementById('corps-file');
-                const nouvelleLigne = creerLigneVide();
-        
-                corpsFile.appendChild(nouvelleLigne);
-                nouvelleLigne.querySelector('input').focus();
-                renumeroterFile();
-            }
-        
-            //Clients en attente 
-        
-            function renumeroterAttente() {
-                const lignes = document.querySelectorAll('#corps-attente tr');
-                lignes.forEach(function (ligne, position) {
-                    const numero = String(position + 1).padStart(2, '0');
-                    ligne.querySelector('.ordre').textContent = numero;
-                });
-            }
-        
-            // Retire le client de la liste d'attente et l'envoie dans "File en cours"
-            function ajouterALaFileDepuisAttente(bouton) {
-                const ligneAttente = bouton.closest('tr');
-        
-                // Récupère les infos du client en attente avant de supprimer sa ligne
-                const heureSouhaitee = ligneAttente.querySelector('.heure').textContent.trim();
-        
-                // "8h00-8h35" devient un tableau ["8h00", "8h35"] grâce à split('-')
-                const heures = heureSouhaitee.split('-');
-                const heureDebut = heures[0];
-                const heureFin = heures[1];
-        
-                // Construit la nouvelle ligne pour le tableau "File en cours"
-                const nouvelleLigneFile = document.createElement('tr');
-                nouvelleLigneFile.className = 'border-b border-[#222D52]/10';
-                nouvelleLigneFile.innerHTML = `
-                    <td class="py-3 text-gray-400 ordre">—</td>
-                    <td class="py-3 text-gray-800">
-                        <input type="text" placeholder="N° ticket" class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1">
-                    </td>
-                    <td class="py-3 text-gray-800">${heureDebut}</td>
-                    <td class="py-3 text-gray-800">${heureFin}</td>
-                    <td class="py-3 text-gray-800 statut">EN COURS</td>
-                    <td class="py-3">
-                        <button onclick="insererAuDessus(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                            Insérer au dessus
-                        </button>
-                    </td>
-                    <td class="py-3">
-                        <button onclick="retirerTicket(this)" class="border border-[#222D52]/50 px-3 py-1.5 text-sm hover:bg-gray-50">
-                            Retirer
-                        </button>
-                    </td>
-                `;
-        
-                // Ajoute le client à la fin de "File en cours"
-                document.getElementById('corps-file').appendChild(nouvelleLigneFile);
-                renumeroterFile();
-        
-                // Retire le client de "Clients en attente"
-                ligneAttente.remove();
-                renumeroterAttente();
-            }
-        
-            // Retire simplement un client de la liste d'attente, sans l'envoyer dans la file
-            function retirerClientAttente(bouton) {
-                const ligne = bouton.closest('tr');
-                ligne.remove();
-                renumeroterAttente();
-            }
-        </script>
-    
     </body>
 </html>
- 

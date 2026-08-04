@@ -110,7 +110,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <span>
-                            <p class="text-xs">Durée moy. {{ $services[$i]->duree}} min</p>
+                            <p class="text-xs">Durée moy. {{ \Carbon\Carbon::parse($services[$i]->duree)->format('H') * 60 + \Carbon\Carbon::parse($services[$i]->duree)->format('i') }} min</p>
                         </span>
                         <span class="btn-secondary">
                             <button>
