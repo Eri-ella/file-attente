@@ -8,15 +8,14 @@ use App\Models\Manager;
 use App\Models\Reservation;
 use App\Models\Service;
 use App\Models\Ticket;
+use App\Models\Categorie;
+use App\Models\ProfilUsager;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Categorie;
-use App\Models\ProfilUsager;
-use App\Models\Ticket;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -364,10 +363,58 @@ class DashboardController extends Controller
     // --- AUTRES VUES MANAGER ---
 
     public function droiteUsager () {
-        return view('manager.connexionmanager.droiteusager');
+        $profils = ProfilUsager::orderBy('nom')->get();
+        return view('manager.connexionmanager.droiteusager', compact('profils'));
     }
 
-        return view('manager.connexionmanager.droiteusager', compact('profils'));
+    public function droiteCategorie(): View
+    {
+        $categories = Categorie::orderBy('nom')->get();
+        return view('manager.connexionmanager.droitecategorie', compact('categories'));
+    }
+
+    public function storeCategorie(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+        ]);
+
+        $categorie = Categorie::create([
+            'nom' => $validated['nom'],
+            'statut' => 'actif',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'categorie' => $categorie,
+        ]);
+    }
+
+    public function modifierNomCategorie(Request $request, $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+        ]);
+
+        $categorie = Categorie::findOrFail($id);
+        $categorie->update(['nom' => $validated['nom']]);
+
+        return response()->json([
+            'success' => true,
+            'categorie' => $categorie,
+        ]);
+    }
+
+    public function basculerStatutCategorie(Request $request, $id): JsonResponse
+    {
+        $categorie = Categorie::findOrFail($id);
+        $nouveauStatut = $categorie->statut === 'actif' ? 'inactif' : 'actif';
+        $categorie->update(['statut' => $nouveauStatut]);
+
+        return response()->json([
+            'success' => true,
+            'nouveau_statut' => $nouveauStatut,
+        ]);
     }
 
     public function droiteHistorique(): \Illuminate\View\View
