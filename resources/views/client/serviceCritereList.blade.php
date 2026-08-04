@@ -1,4 +1,4 @@
-<section class="flex flex-col text-(--primary-color) bg-red-100 p-4">
+<section class="flex flex-col text-(--primary-color) p-4">
     {{-- Services gratuits --}}
     @php
         $gratuits = $services->where('cout', 0)->sortBy('nom');
@@ -8,7 +8,7 @@
             <h3 class="font-medium pb-5">🆓 Services gratuits</h3>
             <div class="flex flex-col gap-2 pl-4">
                 @foreach ($gratuits as $service)
-                    <p>{{ $service->nom }}</p>
+                    <a href="{{ route('service.show', $service->id) }}" class="hover:underline cursor-pointer block">{{ $service->nom }}</a>
                 @endforeach
             </div>
         </div>
@@ -16,7 +16,6 @@
         <p class="text-gray-500">Aucun service gratuit disponible.</p>
     @endif
 
-    {{-- Séparateur --}}
     <hr class="my-6 border-gray-300">
 
     {{-- Services payants --}}
@@ -28,7 +27,7 @@
             <h3 class="font-medium pb-5">💰 Services payants</h3>
             <div class="flex flex-col gap-2 pl-4">
                 @foreach ($payants as $service)
-                    <p>{{ $service->nom }} – {{ number_format($service->cout, 0, ',', ' ') }} FCFA</p>
+                    <a href="{{ route('service.show', $service->id) }}" class="hover:underline cursor-pointer block">{{ $service->nom }} – {{ number_format($service->cout, 0, ',', ' ') }} FCFA</a>
                 @endforeach
             </div>
         </div>

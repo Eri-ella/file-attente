@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         if (Schema::hasTable('categories')) {
-            DB::statement("ALTER TABLE categories MODIFY nom VARCHAR(255) NOT NULL UNIQUE, MODIFY statut ENUM('actif','inactif') NOT NULL DEFAULT 'actif';");
+            DB::statement("ALTER TABLE categories MODIFY nom VARCHAR(191) NOT NULL UNIQUE, MODIFY statut ENUM('actif','inactif') NOT NULL DEFAULT 'actif';");
         }
     }
 
