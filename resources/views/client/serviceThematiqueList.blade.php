@@ -3,7 +3,7 @@
         <h4 class="font-medium pb-5">{{ $categorie->nom }}</h4>
         <div class="flex flex-col pl-10 gap-5">
             @forelse ($categorie->services as $service)
-                <p>{{ $service->nom }}</p>
+                <a href="{{ route('service.show', $service->id) }}" class="hover:underline cursor-pointer">{{ $service->nom }}</a>
             @empty
                 <p class="text-gray-500 text-sm">Aucun service dans cette catégorie</p>
             @endforelse
