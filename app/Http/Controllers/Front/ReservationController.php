@@ -74,18 +74,4 @@ class ReservationController extends Controller
 
         return redirect()->route('ticket.show', $dernierTicket)->with('succes', 'Réservation confirmée !');
     }
-
-    private function obtenirProchainCreneau(Service $service, string $date, Carbon $heure): Carbon
-    {
-        $creneau = $heure->copy()->second(0);
-
-        while (Reservation::where('service_id', $service->id)
-            ->where('date', $date)
-            ->where('heure_souhaite', $creneau->format('H:i'))
-            ->exists()) {
-            $creneau->addMinutes(Ticket::dureeEnMinutes($service->duree));
-        }
-
-        return $creneau;
-    }
 }

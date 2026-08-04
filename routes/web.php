@@ -161,6 +161,3 @@ Route::post('/manager/motdepasse', [ConnexionController::class, 'sendResetLinkMa
 Route::get('/manager/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormManager'])->name('manager.password.reset');
 Route::post('/manager/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordManager'])->name('manager.password.update');
 
-
-
-
