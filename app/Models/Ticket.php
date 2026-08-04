@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ticket extends Model
 {
-    use HasFactory; // ← Ajouter cette ligne
+    use HasFactory;
 
     protected $fillable = [
         'numero',
         'statut',
+        'service_id',
         'superclient_id',
         'client_mail',
         'reservation_id',
@@ -28,61 +29,22 @@ class Ticket extends Model
         'date_file'     => 'date',
     ];
 
-    /* ========== RELATIONS EXISTANTES ========== */
+    /* ========== RELATIONS ========== */
 
     public function service(): BelongsTo
     {
-        static::creating(function (Ticket $ticket) {
-            if (empty($ticket->numero)) {
-                $ticket->numero = static::genererNumero($ticket->service_id);
-            }
-
-            if (empty($ticket->fin) && ! empty($ticket->debut) && ! empty($ticket->service_id)) {
-                $service = $ticket->service ?? Service::find($ticket->service_id);
-                if ($service) {
-                    $ticket->fin = static::calculerFin($ticket->debut, $service->duree);
-                }
-            }
-        });
-
-        static::saving(function (Ticket $ticket) {
-            if (empty($ticket->fin) && ! empty($ticket->debut) && ! empty($ticket->service_id)) {
-                $service = $ticket->service ?? Service::find($ticket->service_id);
-                if ($service) {
-                    $ticket->fin = static::calculerFin($ticket->debut, $service->duree);
-                }
-            }
-        });
+        return $this->belongsTo(Service::class, 'service_id');
     }
 
     public function superclient(): BelongsTo
     {
-        if ($value !== null && $value !== '') {
-            return $value;
-        }
-
-        $service = $this->service;
-        if (! $service) {
-            return $value;
-        }
-
-        if ($this->debut) {
-            return static::calculerFin($this->debut, $service->duree);
-        }
-
-        if ($this->created_at) {
-            return static::calculerFin($this->created_at->format('H:i'), $service->duree);
-        }
-
-        return $value;
+        return $this->belongsTo(Superclient::class, 'superclient_id');
     }
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_mail', 'mail');
     }
-
-    /* ========== NOUVELLE RELATION ========== */
 
     public function reservation(): BelongsTo
     {
