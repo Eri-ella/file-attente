@@ -182,19 +182,19 @@
                 </div>
             </div>
 
-            {{-- Barre de recherche centrée --}}
-            <div id="hero-search" class="absolute left-1/2 -translate-x-1/2 bottom-[-22px] w-[90%] md:w-auto">
+            {{-- ✅ BARRE DE RECHERCHE IMPOSANTE (style Affluences) --}}
+            <div id="hero-search" class="absolute left-1/2 -translate-x-1/2 bottom-[-28px] md:bottom-[-38px] w-[92%] max-w-4xl">
                 <form action="" class="flex items-center" onsubmit="event.preventDefault(); if (window.filtrerServices) filtrerServices();">
-                    <div class="flex items-center bg-(--white-color) rounded-full pl-3 pr-1 h-11 w-full md:w-80 shadow-lg transition overflow-hidden">
-                        <iconify-icon icon="boxicons:search" class="text-gray-500"></iconify-icon>
+                    <div class="flex items-center bg-(--white-color) rounded-full pl-5 md:pl-7 pr-1.5 md:pr-2 h-14 md:h-20 w-full shadow-2xl transition overflow-hidden">
+                        <iconify-icon icon="boxicons:search" class="text-gray-600 text-xl md:text-3xl"></iconify-icon>
                         <input 
                             id="recherche-services" 
                             oninput="if (window.filtrerServices) filtrerServices(this);" 
-                            class="outline-none placeholder-gray-400 text-black bg-transparent flex-1 px-2 text-sm" 
+                            class="outline-none placeholder-gray-400 text-black bg-transparent flex-1 px-3 md:px-5 text-sm md:text-lg" 
                             type="text" 
                             placeholder="ex : carte biométrique"
                         >
-                        <button type="submit" class="self-stretch my-1 px-4 bg-[#222d52] hover:opacity-50 text-white text-sm font-semibold rounded-full whitespace-nowrap transition">
+                        <button type="submit" class="self-stretch my-1.5 md:my-2 px-6 md:px-12 bg-[#222d52] hover:opacity-50 text-white text-sm md:text-lg font-semibold rounded-full whitespace-nowrap transition">
                             Rechercher
                         </button>
                     </div>
@@ -203,7 +203,7 @@
         </section>
 
         {{-- ✅ SECTION SERVICES (responsive) --}}
-        <section class="flex flex-col text-(--primary-color) gap-4 md:gap-6 p-5 md:p-10 mt-5 mb-10">
+        <section class="flex flex-col text-(--primary-color) gap-4 md:gap-6 p-5 md:p-10 mt-14 md:mt-16 mb-10">
             <div class="flex items-center justify-between">
                 <h2 class="text-2xl md:text-4xl font-medium">Services</h2>
                 <div class="flex items-center gap-3">
@@ -297,7 +297,7 @@
             {{-- Mobile : empilé / PC : podium --}}
             <div class="flex flex-col md:flex-row md:items-end gap-4 w-full md:w-auto">
                 
-                {{-- 2ème place (ordre inversé sur mobile pour mettre le 1er en haut) --}}
+                {{-- 2ème place --}}
                 @if(isset($topServices[1]))
                 <div class="order-2 md:order-1 flex flex-col items-center justify-center text-center card2 top-service-side">
                     <div class="w-25 h-25 md:w-30 md:h-30 flex items-center justify-center text-5xl md:text-7xl bg-(--white-color) rounded-full service-icon-wrap">
