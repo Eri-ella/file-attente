@@ -12,37 +12,43 @@
 
         <form method="POST" action="{{ route('admin.login') }}">
             @csrf
-            <label for="email" class="text-[#222D52] font-medium ">Identifiants</label>
+            <label for="email" class="text-[#222D52] font-medium">Identifiants</label>
             <input
                 type="email"
                 id="email"
                 name="email"
                 placeholder="admin@mairie-virtu3ll3"
-                class="w-full  border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
+                class="w-full border border-gray-300 bg-[#FDFFFF] px-3 py-2 mb-5 text-sm text-gray-800 mt-3 rounded-lg" 
                 required
                 value="{{ old('email') }}"
             >
 
-            <label for="password" class="text-[#222D52] font-medium relative">Mot de passe
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="••••••••"
-                class="w-full border border-gray-300 px-3 py-2 mb-2 text-sm text-gray-800 mt-3 rounded-lg" 
-                autocomplete="new-password"
-                required
-            >
+            <label for="password" class="text-[#222D52] font-medium block">Mot de passe</label>
+            <div class="relative w-full mb-2">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    class="w-full border border-gray-300 px-3 py-2 text-sm text-gray-800 mt-3 rounded-lg pr-10" 
+                    autocomplete="new-password"
+                    required
+                >
+                <span class="password-icon absolute right-3 bottom-3 cursor-pointer text-gray-400">
+                    <i data-feather="eye" class="eye-open w-5 h-5"></i>
+                    <i data-feather="eye-off" class="eye-closed w-5 h-5 hidden"></i>
+                </span>
+            </div>
 
-            <!-- AJOUT : La section du message d'erreur en rouge sous le mot de passe -->
             @error('login_error')
                 <p class="text-xs text-red-600 font-medium mb-4">
                     {{ $message }}
                 </p>
             @enderror
 
-            <button type="submit" class="w-full block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg"> Se connecter</button>
-            
+            <button type="submit" class="w-full block mx-auto w-[280px] bg-[#222D52] hover:bg-[#18213f] text-white font-medium text-base py-3.5 mt-5 rounded-lg">
+                Se connecter
+            </button>
         </form>
     </div>
 </div>
@@ -52,4 +58,3 @@
     feather.replace();
 </script>
 @vite(['public/js/admin.js'])
-

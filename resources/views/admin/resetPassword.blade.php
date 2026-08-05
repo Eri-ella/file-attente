@@ -25,8 +25,14 @@
                 <label class="text-[#222D52] font-medium">Adresse e-mail</label>
                 <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color)" type="email" name="email" value="{{ old('email', $email) }}" required>
 
-                <label class="text-[#222D52] font-medium">Nouveau mot de passe</label>
-                <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color)" type="password" name="password" required>
+                <label class="text-[#222D52] font-medium block">Nouveau mot de passe</label>
+                <div class="relative w-full">
+                    <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color) w-full pr-10" type="password" name="password" required>
+                    <span class="password-icon absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400">
+                        <i data-feather="eye" class="eye-open w-5 h-5"></i>
+                        <i data-feather="eye-off" class="eye-closed w-5 h-5 hidden"></i>
+                    </span>
+                </div>
 
                 <label class="text-[#222D52] font-medium">Confirmer le mot de passe</label>
                 <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color)" type="password" name="password_confirmation" required>
@@ -41,5 +47,8 @@
             </div>
         </form>
     </main>
+
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>feather.replace();</script>
 </body>
 </html>

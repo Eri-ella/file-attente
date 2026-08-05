@@ -1,17 +1,20 @@
 import '../css/admin.css';
 
-const eye = document.querySelector('.feather-eye');
-const eyeOff = document.querySelector('.feather-eye-off');
-const password = document.querySelector('#password');
+function togglePassword() {
+    document.querySelectorAll('.password-icon').forEach(wrap => {
+        const input = wrap.parentElement?.querySelector('input[type="password"], input[type="text"]');
+        const eyeOpen = wrap.querySelector('.eye-open, svg.feather-eye');
+        const eyeClosed = wrap.querySelector('.eye-closed, svg.feather-eye-off');
+        
+        if (!input || !eyeOpen) return;
+        
+        wrap.addEventListener('click', () => {
+            const isPwd = input.type === 'password';
+            input.type = isPwd ? 'text' : 'password';
+            eyeOpen.classList.toggle('hidden', isPwd);
+            if (eyeClosed) eyeClosed.classList.toggle('hidden', !isPwd);
+        });
+    });
+}
 
-eye.addEventListener("click", () => {
-  eye.style.display = "none";
-  eyeOff.style.display = "block";
-  password.type = "text";
-});
-
-eyeOff.addEventListener("click", () => {
-  eyeOff.style.display = "none";
-  eye.style.display = "block";
-  password.type = "password";
-});
+document.addEventListener('DOMContentLoaded', togglePassword);
