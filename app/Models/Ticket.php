@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'reservation_id',
@@ -47,5 +48,22 @@ class Ticket extends Model
             'statut'         => 'en_attente',
             'date_file'      => today(),
         ]);
+    }
+
+    /**
+     * Retourne l'email à notifier (superclient prioritaire, sinon client invité).
+     */
+    public function getEmailDestinataireAttribute(): ?string
+    {
+        return $this->reservation->superclient?->email
+            ?? $this->reservation->client_mail;
+    }
+
+    /**
+     * Adresse email utilisée par le système de notification Laravel.
+     */
+    public function routeNotificationForMail(): ?string
+    {
+        return $this->emailDestinataire;
     }
 }

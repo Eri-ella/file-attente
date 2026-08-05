@@ -56,7 +56,6 @@ class DashboardController extends Controller
             ->where('statut', 'en_attente')
             ->count();
 
-        // CHANGEMENT : with('service') → with(['reservation.service.categorie', ...])
         $ticketsActifs = Ticket::whereDate('date_file', $today)
             ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
             ->with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
@@ -64,14 +63,12 @@ class DashboardController extends Controller
 
         $totalMinutes = 0;
         foreach ($ticketsActifs as $t) {
-            // CHANGEMENT : $t->service->duree → $t->reservation->service->duree
             $totalMinutes += $this->timeToMinutes($t->reservation->service->duree ?? '00:00:00');
         }
         $attenteMoyenne = $ticketsActifs->count() > 0
             ? round($totalMinutes / $ticketsActifs->count()) . ' min'
             : '0 min';
 
-        // CHANGEMENT : with('service', 'reservation') → relation via reservation
         $file = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->whereDate('date_file', $today)
             ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
@@ -219,7 +216,6 @@ class DashboardController extends Controller
     {
         $today = today();
 
-        // CHANGEMENT : with('service', 'reservation') → relation via reservation
         $ticketEnCours = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->whereDate('date_file', $today)
             ->where('statut', 'en_cours')
@@ -228,7 +224,6 @@ class DashboardController extends Controller
         $tempsRestantSecondes = 0;
         if ($ticketEnCours) {
             $debut = Carbon::parse($ticketEnCours->heure_passage);
-            // CHANGEMENT : $ticketEnCours->service->duree → $ticketEnCours->reservation->service->duree
             $dureeMinutes = $this->timeToMinutes($ticketEnCours->reservation->service->duree ?? '00:00:00');
             $finEstimee = $debut->copy()->addMinutes($dureeMinutes);
             $tempsRestantSecondes = max(0, now()->diffInSeconds($finEstimee, false));
@@ -275,7 +270,6 @@ class DashboardController extends Controller
 
     public function droiteHistorique(): View
     {
-        // CHANGEMENT : suppression de 'service' et 'superClient' directs sur Ticket
         $tickets = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->orderByDesc('created_at')
             ->get();
@@ -323,13 +317,12 @@ class DashboardController extends Controller
         $nouvellePosition = $dernierePosition + 1;
         $heureEstimee = now();
 
-        $enCours = Ticket::with(['reservation.service']) // eager-load pour la suite
+        $enCours = Ticket::with(['reservation.service'])
             ->whereDate('date_file', $today)
             ->where('statut', 'en_cours')
             ->first();
 
         if ($enCours) {
-            // CHANGEMENT : $enCours->service->duree → $enCours->reservation->service->duree
             $dureeEnCours = $this->timeToMinutes($enCours->reservation->service->duree ?? '00:00:00');
             $debutEnCours = Carbon::parse($enCours->heure_passage);
             $tempsEcoule = now()->diffInMinutes($debutEnCours);
@@ -337,7 +330,6 @@ class DashboardController extends Controller
             $heureEstimee->addMinutes($tempsRestant);
         }
 
-        // CHANGEMENT : eager-load reservation.service pour la boucle
         $ticketsEnFile = Ticket::with(['reservation.service'])
             ->whereDate('date_file', $today)
             ->whereIn('statut', ['en_file', 'retard_decale'])
@@ -345,7 +337,6 @@ class DashboardController extends Controller
             ->get();
 
         foreach ($ticketsEnFile as $t) {
-            // CHANGEMENT : $t->service->duree → $t->reservation->service->duree
             $heureEstimee->addMinutes($this->timeToMinutes($t->reservation->service->duree ?? '00:00:00'));
         }
 
@@ -354,6 +345,11 @@ class DashboardController extends Controller
             'position' => $nouvellePosition,
             'heure_estimee' => $heureEstimee->format('H:i:s'),
         ]);
+
+        // NOTIFICATION : ticket validé et ajouté à la file
+        if ($ticket->emailDestinataire) {
+            $ticket->notify(new \App\Notifications\TicketValideNotification($ticket));
+        }
 
         return back()->with('succes', 'Ticket ' . $ticket->numero . ' ajouté à la file.');
     }
@@ -448,6 +444,11 @@ class DashboardController extends Controller
             $ticket->increment('nombre_retards');
             $ticket->update(['statut' => 'retard_decale']);
 
+            // NOTIFICATION : avertissement de retard
+            if ($ticket->emailDestinataire) {
+                $ticket->notify(new \App\Notifications\TicketRetardeNotification($ticket));
+            }
+
             $suivant = Ticket::whereDate('date_file', $today)
                 ->whereIn('statut', ['en_file', 'retard_decale'])
                 ->where('id', '!=', $ticket->id)
@@ -471,6 +472,12 @@ class DashboardController extends Controller
         }
 
         $ticket->update(['statut' => 'annule']);
+
+        // NOTIFICATION : exclusion définitive
+        if ($ticket->emailDestinataire) {
+            $ticket->notify(new \App\Notifications\TicketAnnuleNotification($ticket));
+        }
+
         $suivant = $this->appelerAutomatiquement();
 
         if ($suivant) {
