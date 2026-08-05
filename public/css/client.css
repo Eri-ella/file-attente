@@ -14,7 +14,7 @@
     @apply text-(--white-color) bg-(--primary-color) px-10 py-1 rounded-tl-lg rounded-br-lg cursor-pointer;
 }
 .btn-secondary {
-    @apply text-(--white-color) bg-(--highlight-color) px-3 py-1 rounded-tl-lg rounded-br-lg cursor-pointer;
+    @apply text-(--white-color) bg-(--highlight-color) px-1 py-1 rounded-tl-lg rounded-br-lg cursor-pointer;
 }
 
 /* container */
@@ -72,9 +72,6 @@
     to {
         stroke-dashoffset: 150;
     }
-}
-.blue-circle:hover {
-    stroke: aliceblue;
 }
 .timer {
     top: 45%;
