@@ -10,20 +10,7 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
-        if (session('dernier_client_mail')) {
-            $ticket = Ticket::whereHas('reservation', fn ($q) => $q->where('client_mail', session('dernier_client_mail')))
-                ->latest()
-                ->first();
-            if ($ticket) return redirect()->route('ticket.show', $ticket);
-        }
-
-        if (session('superclient_id')) {
-            $ticket = Ticket::whereHas('reservation', fn ($q) => $q->where('superclient_id', session('superclient_id')))
-                ->latest()
-                ->first();
-            if ($ticket) return redirect()->route('ticket.show', $ticket);
-        }
-
+        // Affiche toujours le formulaire de recherche, même si une session existe
         return view('client.recherche-ticket');
     }
 
@@ -32,9 +19,9 @@ class TicketController extends Controller
         $request->validate(['email' => 'required|email']);
         $email = $request->input('email');
 
-       $ticket = Ticket::where(function ($query) use ($email) {
+        $ticket = Ticket::where(function ($query) use ($email) {
             $query->whereHas('reservation', fn ($q) => $q->where('client_mail', $email))
-                ->orWhereHas('reservation.superClient', fn ($q) => $q->where('email', $email));
+                  ->orWhereHas('reservation.superClient', fn ($q) => $q->where('email', $email));
         })
         ->latest()
         ->first();
@@ -51,14 +38,14 @@ class TicketController extends Controller
     {
         $ticket->load(['reservation.service.categorie', 'reservation.superClient', 'reservation.client']);
 
-        $file = Ticket::with('reservation.service')
+        $file = Ticket::with(['reservation.service'])
             ->whereDate('date_file', today())
             ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
             ->orderBy('position')
             ->orderBy('created_at')
             ->get();
 
-        $queryMesTickets = Ticket::with('reservation.service')
+        $queryMesTickets = Ticket::with(['reservation.service', 'reservation.superClient', 'reservation.client'])
             ->whereDate('date_file', today())
             ->orderBy('created_at', 'desc');
 

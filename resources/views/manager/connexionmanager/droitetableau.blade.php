@@ -62,7 +62,7 @@
                         <tr class="border-b border-[#222D52]/10">
                             <td class="py-3 text-gray-400">{{ $loop->iteration }}</td>
                             <td class="py-3 text-gray-800 font-medium">{{ $t->numero }}</td>
-                            <td class="py-3 text-gray-800">{{ $t->service->nom ?? 'N/A' }}</td>
+                            <td class="py-3 text-gray-800">{{ $t->reservation->service->nom ?? 'N/A' }}</td>
                             <td class="py-3 text-gray-800">
                                 {{ $t->heure_estimee ? \Carbon\Carbon::parse($t->heure_estimee)->format('H:i') : '--:--' }}
                             </td>
@@ -128,7 +128,7 @@
                         <tr class="border-b border-[#222D52]/10">
                             <td class="py-3 text-gray-400">{{ $loop->iteration }}</td>
                             <td class="py-3 text-gray-800 font-medium">{{ $t->numero }}</td>
-                            <td class="py-3 text-gray-800">{{ $t->service->nom ?? 'N/A' }}</td>
+                            <td class="py-3 text-gray-800">{{ $t->reservation->service->nom ?? 'N/A' }}</td>
                             <td class="py-3 text-gray-800">
                                 {{ $t->reservation && $t->reservation->heure_souhaite ? \Carbon\Carbon::parse($t->reservation->heure_souhaite)->format('H:i') : '--:--' }}
                             </td>
@@ -136,7 +136,7 @@
                                 {{ $t->reservation && $t->reservation->date ? \Carbon\Carbon::parse($t->reservation->date)->format('d/m/Y') : '--' }}
                             </td>
                             <td class="py-3 text-gray-800">
-                                {{ $t->client_mail ?? $t->superclient->email ?? 'N/A' }}
+                                {{ $t->reservation->client_mail ?? $t->reservation->superClient->email ?? 'N/A' }}
                             </td>
                             <td class="py-3">
                                 <form action="{{ route('manager.ticket.ajouterFile', $t) }}" method="POST" class="inline">

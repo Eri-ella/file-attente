@@ -29,10 +29,10 @@
     <div class="flex w-full justify-center gap-10 mb-10 px-4 flex-wrap">
         <table class="min-w-70">
             <tbody class="flex flex-col gap-5">
-                <tr class="flex justify-between"><td>Service</td><td>{{ $ticket->service->nom ?? 'N/A' }}</td></tr>
+                <tr class="flex justify-between"><td>Service</td><td>{{ $ticket->reservation->service->nom ?? 'N/A' }}</td></tr>
                 <tr class="flex justify-between"><td>Date</td><td>{{ $ticket->date_file ? $ticket->date_file->format('d F Y') : 'Non définie' }}</td></tr>
                 <tr class="flex justify-between"><td>Heure estimée</td><td>{{ $ticket->heure_estimee ? $ticket->heure_estimee->format('H:i') : '--:--' }}</td></tr>
-                <tr class="flex justify-between"><td>Titulaire</td><td>{{ $ticket->client_mail ?? $ticket->superclient->email ?? 'N/A' }}</td></tr>
+                <tr class="flex justify-between"><td>Titulaire</td><td>{{ $ticket->reservation->client_mail ?? $ticket->reservation->superClient->email ?? 'N/A' }}</td></tr>
                 @if($ticket->nombre_retards > 0)
                 <tr class="flex justify-between"><td>Retards</td><td>{{ $ticket->nombre_retards }}/3</td></tr>
                 @endif
