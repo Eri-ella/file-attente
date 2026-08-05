@@ -12,7 +12,8 @@
             <table class="w-full text-left text-sm bg-[#FDFFFF]">
                 <thead class=" border border-[#222D52]/50">
                     <tr class=" text-[#222D52]/70 border border-[#222D52]/50">
-                        <th class="pb-2 font-normal ">Nom</th>
+                        <th class="pb-2 font-normal">Nom</th>
+                        <th class="pb-2 font-normal">Lettre</th>
                         <th class="pb-2 font-normal">Statut</th>
                         <th class="pb-2 font-normal"></th>
                         <th class="pb-2 font-normal"></th>
@@ -24,12 +25,28 @@
                             <td class="py-4 text-gray-800">
                                   <input
                                     type="text"
+                                    data-field="nom"
                                     id="nom-{{ $categorie->id }}"
                                     value="{{ $categorie->nom }}"
                                     readonly
-                                    onblur="sauvegarderNom(this)"
+                                    onblur="sauvegarderCategorie(this)"
                                     onkeydown="verifierEntree(event, this)"
                                     class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1 read-only:text-gray-800"
+                                >
+                            </td>
+                            <td class="py-4 text-gray-800">
+                                  <input
+                                    type="text"
+                                    maxlength="1"
+                                    pattern="[A-Za-z]"
+                                    placeholder="A"
+                                    data-field="lettre"
+                                    id="lettre-{{ $categorie->id }}"
+                                    value="{{ $categorie->lettre }}"
+                                    readonly
+                                    onblur="sauvegarderCategorie(this)"
+                                    onkeydown="verifierEntree(event, this)"
+                                    class="w-16 bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1 text-center read-only:text-gray-800"
                                 >
                             </td>
                             <td class="py-4 text-gray-800 statut">{{ $categorie->statut ?? 'actif' }}</td>
@@ -39,20 +56,20 @@
                                 </button>
                             </td>
                              <td class="py-4">
-                                <button onclick="modifierNom(this)" class="border border-[#222D52]/50  px-4 py-1.5 text-sm hover:bg-gray-50">
+                                <button onclick="modifierCategorie(this)" class="border border-[#222D52]/50  px-4 py-1.5 text-sm hover:bg-gray-50">
                                     Modifier
                                 </button>
                             </td>
                         </tr>
                     @empty
                         <tr class="ligne-vide">
-                            <td colspan="4" class="py-8 text-center text-gray-400">Aucune catégorie enregistrée pour le moment.</td>
+                            <td colspan="5" class="py-8 text-center text-gray-400">Aucune catégorie enregistrée pour le moment.</td>
                         </tr>
                     @endforelse
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4" class="py-4 text-center">
+                        <td colspan="5" class="py-4 text-center">
                             <button onclick="ajouterCategorie()" class="border border-[#222D52]/50 px-4 py-2 text-sm hover:bg-gray-50 rounded">
                                 + Ajouter une catégorie
                             </button>
@@ -108,11 +125,13 @@
                 });
             }
 
-            function modifierNom(bouton) {
+            function modifierCategorie(bouton) {
                 const ligne = bouton.closest('tr');
-                const champNom = ligne.querySelector('input');
+                const champNom = ligne.querySelector('input[data-field="nom"]');
+                const champLettre = ligne.querySelector('input[data-field="lettre"]');
 
                 champNom.readOnly = false;
+                champLettre.readOnly = false;
                 champNom.focus();
                 champNom.select();
             }
@@ -123,13 +142,17 @@
                 }
             }
 
-            function sauvegarderNom(champ) {
+            function sauvegarderCategorie(champ) {
                 const ligne = champ.closest('tr');
                 const id = ligne.getAttribute('data-id');
-                const nouveauNom = champ.value.trim();
+                const champNom = ligne.querySelector('input[data-field="nom"]');
+                const champLettre = ligne.querySelector('input[data-field="lettre"]');
+                const nouveauNom = champNom.value.trim();
+                const nouvelleLettre = champLettre.value.trim().toUpperCase();
 
                 if (!id || champ.readOnly) return;
-                champ.readOnly = true;
+                champNom.readOnly = true;
+                champLettre.readOnly = true;
 
                 fetch(`${CATEGORIE_MODIFIER_BASE}/${id}/modifier`, {
                     method: 'POST',
@@ -139,7 +162,7 @@
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
-                    body: JSON.stringify({ nom: nouveauNom })
+                    body: JSON.stringify({ nom: nouveauNom, lettre: nouvelleLettre })
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -173,6 +196,18 @@
                             placeholder="Nom de la catégorie"
                             onkeydown="creerCategorieSurEntree(event, this)"
                             class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1"
+                            data-field="nom"
+                        >
+                    </td>
+                    <td class="py-4 text-gray-800">
+                        <input
+                            type="text"
+                            placeholder="A"
+                            maxlength="1"
+                            pattern="[A-Za-z]"
+                            onkeydown="creerCategorieSurEntree(event, this)"
+                            class="w-16 bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1 text-center"
+                            data-field="lettre"
                         >
                     </td>
                     <td class="py-4 text-gray-800 statut uppercase">ACTIF</td>
@@ -186,8 +221,12 @@
 
             function creerCategorieSurEntree(evenement, champ) {
                 if (evenement.key === 'Enter') {
-                    const nomCategorie = champ.value.trim();
-                    if (!nomCategorie) return;
+                    const ligne = champ.closest('tr');
+                    const nomCategorie = ligne.querySelector('input[data-field="nom"]').value.trim();
+                    const lettreCategorie = ligne.querySelector('input[data-field="lettre"]').value.trim().toUpperCase();
+                    if (!nomCategorie || !lettreCategorie) {
+                        return;
+                    }
 
                     champ.disabled = true;
 
@@ -199,7 +238,7 @@
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
-                        body: JSON.stringify({ nom: nomCategorie })
+                        body: JSON.stringify({ nom: nomCategorie, lettre: lettreCategorie })
                     })
                     .then(response => {
                         if (!response.ok) {
@@ -212,27 +251,30 @@
                             const ligne = champ.closest('tr');
                             ligne.setAttribute('data-id', data.categorie.id);
                             ligne.classList.remove('temporary-row');
-                            champ.id = `nom-${data.categorie.id}`;
-                            champ.disabled = false;
-                            champ.readOnly = true;
-                            champ.removeAttribute('onkeydown');
-                            champ.onblur = function() { sauvegarderNom(this); };
-                            champ.onkeydown = function(e) { verifierEntree(e, this); };
-                            champ.className = "w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1 read-only:text-gray-800";
-
-                            const statutTd = ligne.querySelector('.statut');
-                            statutTd.textContent = data.categorie.statut.toUpperCase();
 
                             ligne.innerHTML = `
                                 <td class="py-4 text-gray-800">
                                     <input
                                         type="text"
+                                        data-field="nom"
                                         id="nom-${data.categorie.id}"
                                         value="${data.categorie.nom}"
                                         readonly
-                                        onblur="sauvegarderNom(this)"
+                                        onblur="sauvegarderCategorie(this)"
                                         onkeydown="verifierEntree(event, this)"
                                         class="w-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1 read-only:text-gray-800"
+                                    >
+                                </td>
+                                <td class="py-4 text-gray-800">
+                                    <input
+                                        type="text"
+                                        data-field="lettre"
+                                        id="lettre-${data.categorie.id}"
+                                        value="${data.categorie.lettre}"
+                                        readonly
+                                        onblur="sauvegarderCategorie(this)"
+                                        onkeydown="verifierEntree(event, this)"
+                                        class="w-16 bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-[#222D52] rounded px-1 text-center read-only:text-gray-800"
                                     >
                                 </td>
                                 <td class="py-4 text-gray-800 statut">${data.categorie.statut.toUpperCase()}</td>
@@ -240,7 +282,7 @@
                                     <button onclick="basculerStatut(this)" class="border border-[#222D52]/50 px-4 py-1.5 text-sm hover:bg-gray-50">Suspendre</button>
                                 </td>
                                 <td class="py-4">
-                                    <button onclick="modifierNom(this)" class="border border-[#222D52]/50 px-4 py-1.5 text-sm hover:bg-gray-50">Modifier</button>
+                                    <button onclick="modifierCategorie(this)" class="border border-[#222D52]/50 px-4 py-1.5 text-sm hover:bg-gray-50">Modifier</button>
                                 </td>
                             `;
                         } else {

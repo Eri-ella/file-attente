@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Categorie;
 use App\Models\ProfilUsager;
 use App\Models\Ticket;
+use App\Models\SuperClient;
+use App\Models\Manager;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -18,19 +20,64 @@ class DashboardController extends Controller
     //  ADMINISTRATEUR
     // ================================================================
 
-    public function listClient () {
+    /**
+     * Page principale admin : affiche l'entête + menu + iframe du tableau des clients
+     */
+    public function listClient()
+    {
         return view('admin.listeclient.liste');
     }
 
-    public function droiteClient () {
-        return view('admin.listeclient.droitecli');
+    /**
+     * Contenu de l'iframe : liste des superclients depuis la base
+     */
+    public function droiteClient()
+    {
+        $clients = SuperClient::orderBy('nom')->get();
+        return view('admin.listeclient.droitecli', compact('clients'));
     }
 
-    public function droiteManager () {
-        return view('admin.listeclient.droitema');
+    /**
+     * Bascule le statut d'un superclient (appelé en AJAX depuis le bouton Suspendre/Activer)
+     */
+    public function basculerStatutClient($id)
+    {
+        $client = SuperClient::findOrFail($id);
+        $client->statut = ($client->statut ?? 'actif') === 'actif' ? 'inactif' : 'actif';
+        $client->save();
+
+        return response()->json([
+            'success' => true,
+            'nouveau_statut' => $client->statut,
+        ]);
     }
 
-    public function droiteProfilAdmin () {
+    /**
+     * Contenu de l'iframe : liste des managers depuis la base
+     */
+    public function droiteManager()
+    {
+        $managers = Manager::orderBy('nom')->get();
+        return view('admin.listeclient.droitema', compact('managers'));
+    }
+
+    /**
+     * Bascule le statut d'un manager (appelé en AJAX depuis le bouton Suspendre/Activer)
+     */
+    public function basculerStatutManager($id)
+    {
+        $manager = Manager::findOrFail($id);
+        $manager->statut = ($manager->statut ?? 'actif') === 'actif' ? 'inactif' : 'actif';
+        $manager->save();
+
+        return response()->json([
+            'success' => true,
+            'nouveau_statut' => $manager->statut,
+        ]);
+    }
+
+    public function droiteProfilAdmin()
+    {
         return view('admin.listeclient.droitepro');
     }
 
@@ -38,15 +85,16 @@ class DashboardController extends Controller
     //  MANAGER — CONNEXION
     // ================================================================
 
-    public function connexionManager () {
+    public function connexionManager()
+    {
         return view('manager.connexionmanager.connexionManager');
     }
 
     // ================================================================
-    //  TABLEAU DE BORD  (refait : tout passe par ->reservation)
+    //  TABLEAU DE BORD (refait : tout passe par ->reservation)
     // ================================================================
 
-    public function droiteTableau ()
+    public function droiteTableau()
     {
         $today = today();
 
@@ -95,7 +143,8 @@ class DashboardController extends Controller
     //  PROFIL MANAGER
     // ================================================================
 
-    public function droiteProfil () {
+    public function droiteProfil()
+    {
         $manager = Auth::guard('manager')->user();
         $mairie = $manager?->mairie;
 
@@ -142,10 +191,11 @@ class DashboardController extends Controller
     //  SERVICES
     // ================================================================
 
-    public function droiteService () { 
+    public function droiteService()
+    {
         $services = Service::with(['categorie', 'profil_usager'])->get();
-        return view('manager.connexionmanager.droiteservice',['services'=>$services]);
-    } 
+        return view('manager.connexionmanager.droiteservice', ['services' => $services]);
+    }
 
     public function droiteModifierService($id = null)
     {
@@ -209,10 +259,10 @@ class DashboardController extends Controller
     }
 
     // ================================================================
-    //  FILE D'ATTENTE (VUE DÉDIÉE)  —  refait via ->reservation
+    //  FILE D'ATTENTE (VUE DÉDIÉE) — refait via ->reservation
     // ================================================================
 
-    public function droiteFile ()
+    public function droiteFile()
     {
         $today = today();
 
@@ -253,54 +303,7 @@ class DashboardController extends Controller
     }
 
     // ================================================================
-    //  AUTRES VUES MANAGER
-    // ================================================================
-
-    public function droiteUsager(): View
-    {
-        $profils = ProfilUsager::orderBy('nom')->get();
-        return view('manager.connexionmanager.droiteusager', compact('profils'));
-    }
-
-    public function droiteCategorie(): View
-    {
-        $categories = Categorie::orderBy('nom')->get();
-        return view('manager.connexionmanager.droitecategorie', compact('categories'));
-    }
-
-    public function droiteHistorique(): View
-    {
-        $tickets = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
-            ->orderByDesc('created_at')
-            ->get();
-
-        return view('manager.connexionmanager.droitehistorique', compact('tickets'));
-    }
-
-    public function droiteConnexion(): View
-    {
-        return view('manager.connexionmanager.droiteconnexion');
-    }
-
-    // ================================================================
-    //  HELPERS
-    // ================================================================
-
-    private function minutesToTime(int $minutes): string
-    {
-        $h = intdiv($minutes, 60);
-        $m = $minutes % 60;
-        return sprintf('%02d:%02d:00', $h, $m);
-    }
-
-    private function timeToMinutes(string $time): int
-    {
-        list($h, $m) = explode(':', $time);
-        return ((int) $h * 60) + (int) $m;
-    }
-
-    // ================================================================
-    //  ACTIONS SUR LA FILE  —  refaites via ->reservation
+    //  ACTIONS SUR LA FILE — refaites via ->reservation
     // ================================================================
 
     public function ajouterAFile(Request $request, Ticket $ticket)
@@ -500,5 +503,129 @@ class DashboardController extends Controller
         ]);
 
         return back()->with('succes', 'Ticket retiré de la file.');
+    }
+
+    // ================================================================
+    //  AUTRES VUES MANAGER
+    // ================================================================
+
+    public function droiteUsager(): View
+    {
+        $profils = ProfilUsager::orderBy('nom')->get();
+        return view('manager.connexionmanager.droiteusager', compact('profils'));
+    }
+
+    public function droiteCategorie(): View
+    {
+        $categories = Categorie::orderBy('nom')->get();
+        return view('manager.connexionmanager.droitecategorie', compact('categories'));
+    }
+
+    public function storeCategorie(Request $request)
+    {
+        $validated = $request->validate([
+            'nom' => 'required|string|max:191|unique:categories,nom',
+            'lettre' => 'required|string|size:1|alpha|unique:categories,lettre',
+        ]);
+        $validated['lettre'] = strtoupper($validated['lettre']);
+        $validated['statut'] = 'actif';
+
+        $categorie = Categorie::create($validated);
+
+        return response()->json(['success' => true, 'categorie' => $categorie]);
+    }
+
+    public function modifierNomCategorie(Request $request, $id)
+    {
+        $categorie = Categorie::findOrFail($id);
+
+        $validated = $request->validate([
+            'nom' => 'required|string|max:191|unique:categories,nom,' . $categorie->id,
+            'lettre' => 'required|string|size:1|alpha|unique:categories,lettre,' . $categorie->id,
+        ]);
+        $validated['lettre'] = strtoupper($validated['lettre']);
+
+        $categorie->update([
+            'nom' => $validated['nom'],
+            'lettre' => $validated['lettre'],
+        ]);
+
+        return response()->json(['success' => true, 'categorie' => $categorie]);
+    }
+
+    public function basculerStatutCategorie($id)
+    {
+        $categorie = Categorie::findOrFail($id);
+        $nouveauStatut = $categorie->statut === 'actif' ? 'inactif' : 'actif';
+        $categorie->update(['statut' => $nouveauStatut]);
+
+        return response()->json(['success' => true, 'nouveau_statut' => $nouveauStatut]);
+    }
+
+    public function storeUsager(Request $request)
+    {
+        $validated = $request->validate([
+            'nom' => 'required|string|max:191',
+        ]);
+
+        $profil = ProfilUsager::create([
+            'nom' => $validated['nom'],
+            'statut' => 'actif',
+        ]);
+
+        return response()->json(['success' => true, 'profil' => $profil]);
+    }
+
+    public function modifierNomUsager(Request $request, $id)
+    {
+        $usager = ProfilUsager::findOrFail($id);
+
+        $validated = $request->validate([
+            'nom' => 'required|string|max:191',
+        ]);
+
+        $usager->update(['nom' => $validated['nom']]);
+
+        return response()->json(['success' => true, 'profil' => $usager]);
+    }
+
+    public function basculerStatutUsager($id)
+    {
+        $usager = ProfilUsager::findOrFail($id);
+        $nouveauStatut = $usager->statut === 'actif' ? 'inactif' : 'actif';
+        $usager->update(['statut' => $nouveauStatut]);
+
+        return response()->json(['success' => true, 'nouveau_statut' => $nouveauStatut]);
+    }
+
+    public function droiteHistorique(): View
+    {
+        $tickets = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('manager.connexionmanager.droitehistorique', compact('tickets'));
+    }
+
+    public function droiteConnexion(): View
+    {
+        return view('manager.connexionmanager.droiteconnexion');
+    }
+
+    // ================================================================
+    //  HELPERS
+    // ================================================================
+
+    private function minutesToTime(int $minutes): string
+    {
+        $h = intdiv($minutes, 60);
+        $m = $minutes % 60;
+        return sprintf('%02d:%02d:00', $h, $m);
+    }
+
+    private function timeToMinutes(string $time): int
+    {
+        list($h, $m) = explode(':', $time);
+        return ((int) $h * 60) + (int) $m;
     }
 }

@@ -1,5 +1,5 @@
 <?php
- 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\AcceuilController;
 use App\Http\Controllers\Front\ServiceController;
@@ -69,9 +69,23 @@ Route::get('/admin/motdepasse', [ConnexionController::class, 'mdpAdmin'])->name(
 Route::middleware('auth:admin')->group(function () {
     Route::post('/admin/logout', [ConnexionController::class, 'logoutAdmin'])->name('admin.logout');
 
-    Route::get('/listeclient', [DashboardController::class, 'listClient']);
+    // ✅ PAGE PRINCIPALE APRÈS CONNEXION ADMIN (entête + menu + iframe)
+    Route::get('/listeclient', [DashboardController::class, 'listClient'])->name('admin.listeclient');
+
+    // ✅ CONTENU DE L'IFRAME (tableau des superclients)
     Route::get('/admin/listeclient/droitecli', [DashboardController::class, 'droiteClient'])->name('admin.listeclient.droitecli');
+
+    // ✅ BOUTON SUSPENDRE / ACTIVER SUPERCLIENT (AJAX)
+    Route::post('/admin/superclient/{id}/basculer-statut', [DashboardController::class, 'basculerStatutClient'])
+        ->name('admin.superclient.basculerStatut');
+
+    // ✅ CONTENU DE L'IFRAME (tableau des managers)
     Route::get('/admin/listeclient/droitema', [DashboardController::class, 'droiteManager'])->name('admin.listeclient.droitema');
+
+    // ✅ BOUTON SUSPENDRE / ACTIVER MANAGER (AJAX)
+    Route::post('/admin/manager/{id}/basculer-statut', [DashboardController::class, 'basculerStatutManager'])
+        ->name('admin.manager.basculerStatut');
+
     Route::get('/admin/listeclient/droitepro', [DashboardController::class, 'droiteProfilAdmin'])->name('admin.listeclient.droitepro');
 
     Route::put('/admin/profil', [ConnexionController::class, 'updateProfilAdmin'])->name('admin.profil.update');
@@ -167,4 +181,3 @@ Route::middleware('auth:manager')->group(function () {
 Route::post('/manager/motdepasse', [ConnexionController::class, 'sendResetLinkManager'])->name('manager.motdepasse.send');
 Route::get('/manager/reinitialiser-mot-de-passe/{token}', [ConnexionController::class, 'showResetFormManager'])->name('manager.password.reset');
 Route::post('/manager/reinitialiser-mot-de-passe', [ConnexionController::class, 'resetPasswordManager'])->name('manager.password.update');
-

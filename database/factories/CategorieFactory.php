@@ -21,6 +21,7 @@ class CategorieFactory extends Factory
     {
         return [
             'nom' => fake()->unique()->randomElement(['Foncier & Urbanisme', 'Économie & Commerce', 'État Civil & Citoyenneté']),
+            'lettre' => chr(65 + fake()->unique()->numberBetween(0, 25)),
             'statut' => fake()->randomElement(['actif', 'inactif']),
 
         ];

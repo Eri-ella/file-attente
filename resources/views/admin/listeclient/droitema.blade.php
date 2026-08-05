@@ -1,61 +1,71 @@
-@php
-    $managers= [
-        ['nom' => 'Jean Houessou', 'identifiant' => 'jeandev@gmail.com', 'telephone' => '019601020501', 'statut' => 'actif'],
-    ];
-@endphp
 @extends('layouts.admin')
 @section('content')
     <body class="h-full flex flex-col">
         <main class="flex-1 bg-[#F9F8F5] p-10 overflow-auto border border-[#222D52]/50"> 
             <h1 class="text-2xl font-medium text-[#222D52] mb-8">Liste des Managers</h1>
             <table class="w-full text-left text-sm bg-[#FDFFFF]">
-                <thead class=" border border-[#222D52]/50">
-                    <tr class=" text-[#222D52]/70 border border-[#222D52]/50">
+                <thead class="border border-[#222D52]/50">
+                    <tr class="text-[#222D52]/70 border border-[#222D52]/50">
                         <th class="pb-2 font-normal">Nom</th>
-                        <th class="pb-2 font-normal">identitifiant</th>
+                        <th class="pb-2 font-normal">Identifiant</th>
                         <th class="pb-2 font-normal">Téléphone</th>
                         <th class="pb-2 font-normal">Statut</th>
                         <th class="pb-2 font-normal"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($managers as $manager )
-                        <tr class=" border border-[#222D52]/50">
-                            <td class="py-4 text-gray-800">{{ $manager['nom'] }}</td>
-                            <td class="py-4 text-gray-800">{{ $manager['identifiant'] }}</td>
-                            <td class="py-4 text-gray-800">{{ $manager['telephone'] }}</td>
-                            <td class="py-4 text-gray-800 statut">{{ $manager['statut'] }}</td>
+                    @forelse ($managers as $manager)
+                        <tr class="border border-[#222D52]/50">
+                            <td class="py-4 text-gray-800">{{ $manager->nom }} {{ $manager->prenom }}</td>
+                            <td class="py-4 text-gray-800">{{ $manager->email }}</td>
+                            <td class="py-4 text-gray-800">{{ $manager->numero }}</td>
+                            <td class="py-4 text-gray-800 statut">{{ $manager->statut ?? 'actif' }}</td>
                             <td class="py-4">
-                                <button onclick="basculerStatut(this)" class="border border-[#222D52]/50  px-4 py-1.5 text-sm hover:bg-gray-50">
-                                    Suspendre
+                                <button 
+                                    onclick="basculerStatut(this, {{ $manager->id }})" 
+                                    class="border border-[#222D52]/50 px-4 py-1.5 text-sm hover:bg-gray-50"
+                                >
+                                    {{ ($manager->statut ?? 'actif') === 'actif' ? 'Suspendre' : 'Activer' }}
                                 </button>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-500">
+                                Aucun manager trouvé dans la base de données.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
-
         </main>
-           <script>
-            function basculerStatut(bouton) {
-                
+
+        <script>
+            function basculerStatut(bouton, managerId) {
                 const ligne = bouton.closest('tr');
                 const celluleStatut = ligne.querySelector('.statut');
+                const texteActuel = celluleStatut.textContent.trim();
 
-                const estActif = celluleStatut.textContent.trim() === 'actif';
+                bouton.disabled = true;
+                bouton.textContent = 'Chargement...';
 
-                if (estActif) {
-                    celluleStatut.textContent = "inactif";
-                } else {
-                    celluleStatut.textContent = "actif";
-                };
-
-                if(estActif){
-                    bouton.textContent = "Activer"
-                }
-                else{
-                    bouton.textContent = "Suspendre"
-                };
+                fetch(`/admin/manager/${managerId}/basculer-statut`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        celluleStatut.textContent = data.nouveau_statut;
+                        bouton.textContent = data.nouveau_statut === 'actif' ? 'Suspendre' : 'Activer';
+                    }
+                })
+                .catch(error => console.error('Erreur :', error))
+                .finally(() => { bouton.disabled = false; });
             }
         </script>
     </body>

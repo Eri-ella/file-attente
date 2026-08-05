@@ -16,7 +16,7 @@ class SuperClient extends Authenticatable implements CanResetPasswordContract
 
     protected $table = 'superclients';
 
-    protected $fillable = ['nom', 'prenom', 'age', 'date_de_naissance', 'sexe', 'email', 'mot_de_passe', 'numero'];
+    protected $fillable = ['nom', 'prenom', 'age', 'date_de_naissance', 'sexe', 'email', 'mot_de_passe', 'numero', 'statut'];
     protected $hidden = ['mot_de_passe'];
 
     public function getAuthPassword()
