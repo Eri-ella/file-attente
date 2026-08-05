@@ -3,33 +3,26 @@
 namespace Database\Factories;
 
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Mairie;
 use App\Models\Categorie;
 use App\Models\ProfilUsager;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Service>
- */
 class ServiceFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Service::class;
+
     public function definition(): array
     {
         return [
-            'nom' => $this->faker->sentence(),
-            'description' => $this->faker->text(),
+            'nom' => $this->faker->words(3, true),
+            'description' => $this->faker->paragraph(),
             'critere_technique' => $this->faker->randomElement(['Gratuit', 'Payant']),
-            'duree' => $this->faker->numberbetween(10, 45),
-            'cout' => $this->faker->numberbetween(500, 2000),
-            
-            'profil_usager_id' => ProfilUsager::first()?->id ?? ProfilUsager::factory(),
-            'categorie_id' => Categorie::first()?->id ?? Categorie::factory(),
-            'mairie_id' => Mairie::first()?->id ?? Mairie::factory(),
+            'duree' => $this->faker->time('H:i:s', '00:30:00'),
+            'cout' => $this->faker->numberBetween(0, 10000),
+            'mairie_id' => Mairie::inRandomOrder()->first()?->id ?? Mairie::factory()->create()->id,
+            'categorie_id' => Categorie::inRandomOrder()->first()?->id ?? Categorie::factory()->create()->id,
+            'profil_usager_id' => ProfilUsager::inRandomOrder()->first()?->id ?? ProfilUsager::factory()->create()->id,
         ];
     }
 }

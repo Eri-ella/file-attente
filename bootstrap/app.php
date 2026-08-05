@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Console\Scheduling\Schedule;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,9 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return route('acceuil');
         });
     })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('tickets:verifier-rappels')->everyMinute();
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
     })->create();
-    

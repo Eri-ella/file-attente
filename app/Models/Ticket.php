@@ -5,76 +5,65 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
+        'reservation_id',
         'numero',
         'statut',
-        'service_id',
-        'superclient_id',
-        'client_mail',
-        'reservation_id',
         'position',
+        'nombre_retards',
         'heure_estimee',
         'heure_passage',
         'date_file',
     ];
 
     protected $casts = [
-        'heure_estimee' => 'datetime:H:i',
-        'heure_passage' => 'datetime:H:i',
-        'date_file'     => 'date',
+        'heure_estimee'  => 'datetime:H:i',
+        'heure_passage'  => 'datetime:H:i',
+        'date_file'      => 'date',
+        'nombre_retards' => 'integer',
     ];
-
-    /* ========== RELATIONS ========== */
-
-    public function service(): BelongsTo
-    {
-        return $this->belongsTo(Service::class, 'service_id');
-    }
-
-    public function superclient(): BelongsTo
-    {
-        return $this->belongsTo(Superclient::class, 'superclient_id');
-    }
-
-    public function client(): BelongsTo
-    {
-        return $this->belongsTo(Client::class, 'client_mail', 'mail');
-    }
 
     public function reservation(): BelongsTo
     {
         return $this->belongsTo(Reservation::class);
     }
 
-    /* ========== MÉTHODES ========== */
-
-    public static function genererNumero(Service $service): string
+    public static function genererNumero(Service $service, int $indexJour): string
     {
-        $lettre = $service->categorie->lettre ?? 'X';
-        $today  = now()->toDateString();
-
-        $compteur = self::whereDate('date_file', $today)
-            ->whereHas('service', fn ($q) => $q->where('categorie_id', $service->categorie_id))
-            ->count() + 1;
-
-        return $lettre . '-' . str_pad($compteur, 3, '0', STR_PAD_LEFT);
+        $lettre = $service->categorie->lettre ?? 'C' . $service->categorie_id;
+        return $lettre . '-' . str_pad($indexJour, 3, '0', STR_PAD_LEFT);
     }
 
-    public static function creerDepuisReservation(Reservation $reservation): self
+    public static function creerDepuisReservation(Reservation $reservation, string $numero): self
     {
         return self::create([
             'reservation_id' => $reservation->id,
-            'numero'         => self::genererNumero($reservation->service),
+            'numero'         => $numero,
             'statut'         => 'en_attente',
-            'service_id'     => $reservation->service_id,
-            'superclient_id' => $reservation->superclient_id,
-            'client_mail'    => $reservation->client_mail,
             'date_file'      => today(),
         ]);
+    }
+
+    /**
+     * Retourne l'email à notifier (superclient prioritaire, sinon client invité).
+     */
+    public function getEmailDestinataireAttribute(): ?string
+    {
+        return $this->reservation->superclient?->email
+            ?? $this->reservation->client_mail;
+    }
+
+    /**
+     * Adresse email utilisée par le système de notification Laravel.
+     */
+    public function routeNotificationForMail(): ?string
+    {
+        return $this->emailDestinataire;
     }
 }

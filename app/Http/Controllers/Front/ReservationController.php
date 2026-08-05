@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Reservation;
 use App\Models\Service;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -35,7 +34,7 @@ class ReservationController extends Controller
         $donnees = $request->validate([
             'client_mail' => $estSuperClientConnecte ? 'nullable|email' : 'required|email',
             'date' => 'nullable|date',
-            'heure_souhaite' => 'nullable|date_format:H:i',
+            'heure_souhaite' => 'nullable',
             'nombre_tickets' => 'required|integer|min:1',
         ]);
 
@@ -44,6 +43,13 @@ class ReservationController extends Controller
             $client = Client::firstOrCreate(['mail' => $donnees['client_mail']]);
             $clientMail = $client->mail;
         }
+
+        $lettre = $service->categorie->lettre ?? 'C' . $service->categorie_id;
+        $today  = now()->toDateString();
+
+        $countExistant = Ticket::whereDate('date_file', $today)
+            ->whereHas('reservation.service', fn ($q) => $q->where('categorie_id', $service->categorie_id))
+            ->count();
 
         $dernierTicket = null;
 
@@ -56,7 +62,13 @@ class ReservationController extends Controller
                 'client_mail'    => $clientMail,
             ]);
 
-            $dernierTicket = Ticket::creerDepuisReservation($reservation);
+            $numero = $lettre . '-' . str_pad($countExistant + $i + 1, 3, '0', STR_PAD_LEFT);
+
+            $dernierTicket = Ticket::creerDepuisReservation($reservation, $numero);
+        }
+
+        if ($clientMail) {
+            session(['dernier_client_mail' => $clientMail]);
         }
 
         if ($request->ajax()) {
@@ -65,11 +77,6 @@ class ReservationController extends Controller
                 'succes' => 'Réservation confirmée !',
                 'ticket' => $dernierTicket,
             ]);
-        }
-
-        // Stocke l'email en session pour retrouver le ticket plus tard
-        if ($clientMail) {
-            session(['dernier_client_mail' => $clientMail]);
         }
 
         return redirect()->route('ticket.show', $dernierTicket)->with('succes', 'Réservation confirmée !');

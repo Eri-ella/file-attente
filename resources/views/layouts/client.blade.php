@@ -71,4 +71,4 @@
     </footer>
     @vite(['public/js/client.js'])
 </body>
-</html> 
+</html>

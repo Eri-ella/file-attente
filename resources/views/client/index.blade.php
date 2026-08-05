@@ -8,7 +8,7 @@
     @vite(['public/js/client.js'])
 </head>
 <body>
-    <header class="flex items-center justify-between bg-(--primary-color) w-[100%] px-10">
+    <header class="flex items-center justify-between bg-(--primary-color) w-[100%] px-15">
         <a href="{{  route('acceuil') }}"><img class="w-35" src={{ asset('assets/smart-queue-light.png') }} alt="smart queue logo"></a>
         <ul class="flex justify-between gap-5 text-(--white-color)">
             <li><a href="{{  route('acceuil') }}">Acceuil</a></li>
@@ -21,12 +21,12 @@
     </header>
 
     <main>
-        <section class="bg-linear-to-b from-(--primary-color) to-(--blue-gradient-color) rounded-b-[100px] text-(--white-color) p-10 gap-10 mb-10">
+        <section class="flex items-center bg-linear-to-b from-(--primary-color) to-(--blue-gradient-color) rounded-b-[100px] text-(--white-color) p-10 gap-10 mb-10 h-[80vh] relative">
             <div class="flex items-center gap-20">
-                <div class="flex flex-col gap-5">
+                <div class="flex flex-col gap-5 pl-5">
                     <h2 class="text-4xl font-medium">Votre place dans la file d'attente, directement dans votre poche.</h2>
                     <p class="">Trouvez vos établissements favoris, estimez votre temps d'attente grâce à notre algorithme en direct et payez vos services en un clic. L'application indispensable pour ne plus jamais perdre une minute dans un hall d'accueil.</p>
-                    <div class="flex items-center justify-center gap-10">
+                    <div class="flex items-center gap-10">
                         <button class="btn-secondary"><a href="{{ route('information') }}">Apprendre à réserver</a></button>
                         <button class="btn-secondary"><a href="{{ route('ticket') }}">Voir mes tickets</a></button>
                     </div>
@@ -62,9 +62,9 @@
     
                 </div>
             </div>
-            <div>
-                <form action=""  class="flex relative items-center justify-center">
-                    <div class="flex absolute bg-(--white-color) py-1 px-2 rounded-tl-lg rounded-br-lg top-5 hover:bg-gray-100 shadow-lg">
+            <div class="flex absolute left-[45%] bottom-[-15px] " >
+                <form action=""  class="flex items-center justify-center">
+                    <div class="flex bg-(--white-color) py-1 px-2 rounded-tl-lg rounded-br-lghover:bg-gray-100 shadow-lg">
                         <input class="outline-none placeholder-gray-400" type="text" name="" id="" placeholder="ex : carte biométrique">
                         <iconify-icon icon="boxicons:search" class="mt-1 text-gray-400 cursor-pointer"></iconify-icon>
                     </div>

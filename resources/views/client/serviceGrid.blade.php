@@ -1,6 +1,6 @@
 
     <section>
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-7 p-7 overflow-hidden text-(--primary-color)">
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] place-items-center gap-5 p-5 overflow-hidden text-(--primary-color)">
             @foreach ($services as $service)
                 <div class="flex flex-col w-75 h-75 justify-between gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
                     <div class="flex items-center gap-5">
