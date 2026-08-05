@@ -22,6 +22,7 @@ class Manager extends Authenticatable
         'mot_de_passe', 
         'numero', 
         'mairie_id',
+        'statut',
     ];
  
     protected $hidden = ['mot_de_passe'];

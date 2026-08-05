@@ -12,10 +12,10 @@
     @include('admin.listeclient.entete')
     <main class="flex size-full md:flex-row  ">
 
-        <div class="flex w-1/5">
+        <div class="flex w-1/6">
             @include('admin.listeclient.gauche')
         </div>
-        <div  class="flex w-4/5">
+        <div  class="flex w-5/6">
             <iframe class="w-full" src="{{ route('admin.listeclient.droitecli') }}" name="tableau" title="Tableau"  class="w-full h-full border-0"></iframe>
         
         </div>
