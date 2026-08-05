@@ -19,7 +19,8 @@
         <div class="text-center bg-yellow-600 text-white py-6 px-4 font-medium">
             <p class="text-sm mb-2">⏱️ CLIENT APPELÉ — TEMPS RESTANT</p>
             <h2 class="text-5xl font-bold" id="compteur-appel" data-secondes="{{ $tempsRestantAppel }}">--:--:--</h2>
-            <p class="mt-2 text-sm opacity-90">Ticket {{ $ticketAppele->numero }} — {{ $ticketAppele->service->nom ?? 'N/A' }}</p>
+            {{-- LIGNE CORRIGÉE : service via reservation --}}
+            <p class="mt-2 text-sm opacity-90">Ticket {{ $ticketAppele->numero }} — {{ $ticketAppele->reservation->service->nom ?? 'N/A' }}</p>
             <div class="mt-4 space-x-2">
                 <form action="{{ route('manager.ticket.demarrer', $ticketAppele) }}" method="POST" class="inline">
                     @csrf
@@ -45,7 +46,7 @@
                 <div class="flex-1 p-8 space-y-4 text-left">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Service</span>
-                        <span class="font-medium text-[#222D52]">{{ $ticketEnCours->service->nom ?? 'N/A' }}</span>
+                        <span class="font-medium text-[#222D52]">{{ $ticketEnCours->reservation->service->nom ?? 'N/A' }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Date</span>
@@ -57,7 +58,8 @@
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Titulaire</span>
-                        <span class="font-medium text-[#222D52]">{{ $ticketEnCours->client_mail ?? $ticketEnCours->superclient->email ?? 'N/A' }}</span>
+                        {{-- LIGNE CORRIGÉE : titulaire via reservation --}}
+                        <span class="font-medium text-[#222D52]">{{ $ticketEnCours->reservation->client_mail ?? $ticketEnCours->reservation->superClient->email ?? 'N/A' }}</span>
                     </div>
                 </div>
                 <div class="w-40 border-l-2 border-dashed border-[#222D52] bg-[#D2B589]/50 flex flex-col items-center justify-center">
@@ -106,7 +108,8 @@
                             <tr class="border-b border-[#222D52]/10">
                                 <td class="py-3 text-gray-400">{{ $loop->iteration }}</td>
                                 <td class="py-3 text-gray-800 font-medium">{{ $t->numero }}</td>
-                                <td class="py-3 text-gray-800">{{ $t->service->nom ?? 'N/A' }}</td>
+                                {{-- LIGNE CORRIGÉE : service via reservation --}}
+                                <td class="py-3 text-gray-800">{{ $t->reservation->service->nom ?? 'N/A' }}</td>
                                 <td class="py-3 text-gray-800">
                                     {{ $t->heure_estimee ? \Carbon\Carbon::parse($t->heure_estimee)->format('H:i') : '--:--' }}
                                 </td>
