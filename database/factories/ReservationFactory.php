@@ -3,30 +3,30 @@
 namespace Database\Factories;
 
 use App\Models\Reservation;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Service;
 use App\Models\Superclient;
-use App\Models\Client;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Reservation>
- */
 class ReservationFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-        public function definition(): array
-        {
-            $estSuperClient = $this->faker->boolean();
+    protected $model = Reservation::class;
 
-            return [
-                'date' => $this->faker->date(),
-                'heure_souhaite' => $this->faker->time(),
-                'superclient_id' => $estSuperClient ? (\App\Models\Superclient::inRandomOrder()->first()?->id ?? \App\Models\Superclient::factory()) : null,
-                'client_mail' => !$estSuperClient ? (\App\Models\Client::inRandomOrder()->first()?->mail ?? \App\Models\Client::factory()) : null,
-            ];
-        }
+    public function definition(): array
+    {
+        $service = Service::inRandomOrder()->first() ?? Service::factory()->create();
+        $superclient = Superclient::inRandomOrder()->first() ?? Superclient::factory()->create();
 
+        return [
+            'service_id' => $service->id,
+            'superclient_id' => $this->faker->boolean(70) ? $superclient->id : null,
+            'client_mail' => $this->faker->optional(0.3)->email(),
+            'date' => $this->faker->dateTimeBetween('-1 month', '+1 month'),
+            'heure_souhaite' => $this->faker->optional()->time('H:i:s'),
+            'nombre_tickets' => $this->faker->numberBetween(1, 3),
+            'commentaire' => $this->faker->optional()->sentence(),
+            'statut' => $this->faker->randomElement(['en_attente', 'confirmée', 'annulée']),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
 }

@@ -1,6 +1,6 @@
-@extends('layouts.client')
+@extends('layouts.connexion_layout')
 
-@section('client-content')
+@section('connexion-content')
 
     <main class="flex w-full">
         <div class="flex flex-col items-start justify-center w-1/2 min-h-screen bg-(--primary-color) gap-5 px-10">

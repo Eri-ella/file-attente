@@ -4,12 +4,13 @@
 
 @php
     $statutLabel = match($ticket->statut) {
-        'en_cours'  => 'Votre ticket est en cours de traitement',
-        'appele'    => 'Veuillez vous rendre au guichet',
-        'termine'   => 'Ticket terminé',
-        'annule'    => 'Ticket annulé',
-        'no_show'   => 'Ticket expiré',
-        default     => 'Votre tour approche',
+        'en_cours'      => 'Votre ticket est en cours de traitement',
+        'appele'        => 'Veuillez vous rendre au guichet',
+        'retard_decale' => 'Votre passage a été reporté — retour dans la file',
+        'termine'       => 'Ticket terminé',
+        'annule'        => 'Ticket annulé',
+        'no_show'       => 'Ticket expiré',
+        default         => 'Votre tour approche',
     };
 @endphp
 
@@ -19,7 +20,7 @@
         <p class="text-(--highlight-color)">{{ $statutLabel }}</p>
         <p id="compteur" class="text-(--white-color) text-7xl font-medium" data-secondes="{{ $tempsRestantSecondes }}">--:--:--</p>
         <p class="text-(--white-color)">
-            @if(in_array($ticket->statut, ['en_attente', 'en_file', 'appele'])) Temps restant avant le passage
+            @if(in_array($ticket->statut, ['en_attente', 'en_file', 'appele', 'retard_decale'])) Temps restant avant le passage
             @elseif($ticket->statut === 'en_cours') En cours de traitement
             @else -- @endif
         </p>
@@ -28,10 +29,13 @@
     <div class="flex w-full justify-center gap-10 mb-10 px-4 flex-wrap">
         <table class="min-w-70">
             <tbody class="flex flex-col gap-5">
-                <tr class="flex justify-between"><td>Service</td><td>{{ $ticket->service->nom ?? 'N/A' }}</td></tr>
+                <tr class="flex justify-between"><td>Service</td><td>{{ $ticket->reservation->service->nom ?? 'N/A' }}</td></tr>
                 <tr class="flex justify-between"><td>Date</td><td>{{ $ticket->date_file ? $ticket->date_file->format('d F Y') : 'Non définie' }}</td></tr>
                 <tr class="flex justify-between"><td>Heure estimée</td><td>{{ $ticket->heure_estimee ? $ticket->heure_estimee->format('H:i') : '--:--' }}</td></tr>
-                <tr class="flex justify-between"><td>Titulaire</td><td>{{ $ticket->client_mail ?? $ticket->superclient->email ?? 'N/A' }}</td></tr>
+                <tr class="flex justify-between"><td>Titulaire</td><td>{{ $ticket->reservation->client_mail ?? $ticket->reservation->superClient->email ?? 'N/A' }}</td></tr>
+                @if($ticket->nombre_retards > 0)
+                <tr class="flex justify-between"><td>Retards</td><td>{{ $ticket->nombre_retards }}/3</td></tr>
+                @endif
             </tbody>
         </table>
         <div class="flex flex-col justify-center h-[160px] items-center bg-[#d2b58975] border-l-3 border-(--primary-color) border-dashed min-w-30 gap-2 mb-10">
@@ -53,6 +57,7 @@
                         <td class="p-3 uppercase text-sm">
                             @if($estEnCours) <span class="bg-[#d2b58975] px-2 py-1">En cours</span>
                             @elseif($t->statut === 'appele') <span class="bg-yellow-100 px-2 py-1">Appelé</span>
+                            @elseif($t->statut === 'retard_decale') <span class="bg-orange-100 text-orange-700 px-2 py-1">Décalé</span>
                             @else <span class="text-gray-600">En attente</span> @endif
                         </td>
                     </tr>
@@ -75,6 +80,7 @@
                             @elseif($t->statut === 'annule') <span class="bg-red-100 text-red-800 px-2 py-1 text-sm">Annulé</span>
                             @elseif($t->statut === 'termine') <span class="bg-green-100 text-green-800 px-2 py-1 text-sm">Terminé</span>
                             @elseif($t->statut === 'no_show') <span class="bg-gray-200 text-gray-700 px-2 py-1 text-sm">Expiré</span>
+                            @elseif($t->statut === 'retard_decale') <span class="bg-orange-100 text-orange-700 px-2 py-1 text-sm">Décalé ({{ $t->nombre_retards }}/3)</span>
                             @else <span class="text-sm">{{ $t->date_file ? $t->date_file->format('d/m/Y') : '-' }}</span> @endif
                         </td>
                         <td class="p-3 text-right">

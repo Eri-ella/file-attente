@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Categorie;
@@ -13,7 +14,9 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    // ========== ADMINISTRATEUR ==========
+    // ================================================================
+    //  ADMINISTRATEUR
+    // ================================================================
 
     public function listClient () {
         return view('admin.listeclient.liste');
@@ -31,13 +34,17 @@ class DashboardController extends Controller
         return view('admin.listeclient.droitepro');
     }
 
-    // ========== MANAGER ==========
+    // ================================================================
+    //  MANAGER — CONNEXION
+    // ================================================================
 
     public function connexionManager () {
         return view('manager.connexionmanager.connexionManager');
     }
 
-    // --- TABLEAU DE BORD ---
+    // ================================================================
+    //  TABLEAU DE BORD  (refait : tout passe par ->reservation)
+    // ================================================================
 
     public function droiteTableau ()
     {
@@ -49,32 +56,37 @@ class DashboardController extends Controller
             ->where('statut', 'en_attente')
             ->count();
 
+        // CHANGEMENT : with('service') → with(['reservation.service.categorie', ...])
         $ticketsActifs = Ticket::whereDate('date_file', $today)
-            ->whereIn('statut', ['en_file', 'appele', 'en_cours'])
-            ->with('service')
+            ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
+            ->with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->get();
 
         $totalMinutes = 0;
         foreach ($ticketsActifs as $t) {
-            $totalMinutes += $this->timeToMinutes($t->service->duree ?? '00:00:00');
+            // CHANGEMENT : $t->service->duree → $t->reservation->service->duree
+            $totalMinutes += $this->timeToMinutes($t->reservation->service->duree ?? '00:00:00');
         }
         $attenteMoyenne = $ticketsActifs->count() > 0
             ? round($totalMinutes / $ticketsActifs->count()) . ' min'
             : '0 min';
 
-        $file = Ticket::with('service', 'reservation')
+        // CHANGEMENT : with('service', 'reservation') → relation via reservation
+        $file = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->whereDate('date_file', $today)
-            ->whereIn('statut', ['en_file', 'appele', 'en_cours'])
+            ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
             ->orderBy('position')
             ->get();
 
-        $clientsEnAttente = Ticket::with('service', 'reservation')
+        $clientsEnAttente = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->whereDate('date_file', $today)
             ->where('statut', 'en_attente')
             ->orderBy('created_at')
             ->get();
 
-        $decalages = 0;
+        $decalages = Ticket::whereDate('date_file', $today)
+            ->where('statut', 'retard_decale')
+            ->sum('nombre_retards');
 
         return view('manager.connexionmanager.droitetableau', compact(
             'ticketsAujourdhui', 'attenteMoyenne', 'ticketsEnAttenteCount', 'decalages',
@@ -82,16 +94,29 @@ class DashboardController extends Controller
         ));
     }
 
-    // --- PROFIL ---
+    // ================================================================
+    //  PROFIL MANAGER
+    // ================================================================
 
     public function droiteProfil () {
         $manager = Auth::guard('manager')->user();
-        return view('manager.connexionmanager.droiteprofil', compact('manager'));
+        $mairie = $manager?->mairie;
+
+        if (!$mairie) {
+            abort(404, 'Mairie introuvable pour ce manager.');
+        }
+
+        return view('manager.connexionmanager.droiteprofil', compact('mairie'));
     }
 
     public function updateProfil(Request $request)
     {
         $manager = Auth::guard('manager')->user();
+        $mairie = $manager?->mairie;
+
+        if (!$mairie) {
+            abort(404, 'Mairie introuvable pour ce manager.');
+        }
 
         $data = $request->validate([
             'nom' => ['required', 'string', 'max:255'],
@@ -116,7 +141,9 @@ class DashboardController extends Controller
         return redirect()->route('pageManager')->with('success', 'Votre compte a été supprimé');
     }
 
-    // --- SERVICES ---
+    // ================================================================
+    //  SERVICES
+    // ================================================================
 
     public function droiteService () { 
         $services = Service::with(['categorie', 'profil_usager'])->get();
@@ -184,37 +211,103 @@ class DashboardController extends Controller
             ->with('success', 'Service supprimé avec succès.');
     }
 
-    // --- FILE D'ATTENTE ---
+    // ================================================================
+    //  FILE D'ATTENTE (VUE DÉDIÉE)  —  refait via ->reservation
+    // ================================================================
 
     public function droiteFile ()
     {
         $today = today();
 
-        $ticketEnCours = Ticket::with('service', 'reservation')
+        // CHANGEMENT : with('service', 'reservation') → relation via reservation
+        $ticketEnCours = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
             ->whereDate('date_file', $today)
             ->where('statut', 'en_cours')
             ->first();
 
-        $file = Ticket::with('service', 'reservation')
-            ->whereDate('date_file', $today)
-            ->whereIn('statut', ['en_file', 'appele', 'en_cours'])
-            ->orderBy('position')
-            ->get();
-
         $tempsRestantSecondes = 0;
         if ($ticketEnCours) {
             $debut = Carbon::parse($ticketEnCours->heure_passage);
-            $dureeMinutes = $this->timeToMinutes($ticketEnCours->service->duree ?? '00:00:00');
+            // CHANGEMENT : $ticketEnCours->service->duree → $ticketEnCours->reservation->service->duree
+            $dureeMinutes = $this->timeToMinutes($ticketEnCours->reservation->service->duree ?? '00:00:00');
             $finEstimee = $debut->copy()->addMinutes($dureeMinutes);
             $tempsRestantSecondes = max(0, now()->diffInSeconds($finEstimee, false));
         }
 
+        $ticketAppele = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
+            ->whereDate('date_file', $today)
+            ->where('statut', 'appele')
+            ->first();
+
+        $tempsRestantAppel = 0;
+        if ($ticketAppele) {
+            $debutAppel = Carbon::parse($ticketAppele->heure_passage);
+            $finAppel = $debutAppel->copy()->addMinutes(5);
+            $tempsRestantAppel = max(0, now()->diffInSeconds($finAppel, false));
+        }
+
+        $file = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
+            ->whereDate('date_file', $today)
+            ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
+            ->orderBy('position')
+            ->get();
+
         return view('manager.connexionmanager.droitefile', compact(
-            'ticketEnCours', 'file', 'tempsRestantSecondes'
+            'ticketEnCours', 'ticketAppele', 'file', 'tempsRestantSecondes', 'tempsRestantAppel'
         ));
     }
 
-    // --- ACTIONS SUR LA FILE ---
+    // ================================================================
+    //  AUTRES VUES MANAGER
+    // ================================================================
+
+    public function droiteUsager(): View
+    {
+        $profils = ProfilUsager::orderBy('nom')->get();
+        return view('manager.connexionmanager.droiteusager', compact('profils'));
+    }
+
+    public function droiteCategorie(): View
+    {
+        $categories = Categorie::orderBy('nom')->get();
+        return view('manager.connexionmanager.droitecategorie', compact('categories'));
+    }
+
+    public function droiteHistorique(): View
+    {
+        // CHANGEMENT : suppression de 'service' et 'superClient' directs sur Ticket
+        $tickets = Ticket::with(['reservation.service.categorie', 'reservation.client', 'reservation.superClient'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('manager.connexionmanager.droitehistorique', compact('tickets'));
+    }
+
+    public function droiteConnexion(): View
+    {
+        return view('manager.connexionmanager.droiteconnexion');
+    }
+
+    // ================================================================
+    //  HELPERS
+    // ================================================================
+
+    private function minutesToTime(int $minutes): string
+    {
+        $h = intdiv($minutes, 60);
+        $m = $minutes % 60;
+        return sprintf('%02d:%02d:00', $h, $m);
+    }
+
+    private function timeToMinutes(string $time): int
+    {
+        list($h, $m) = explode(':', $time);
+        return ((int) $h * 60) + (int) $m;
+    }
+
+    // ================================================================
+    //  ACTIONS SUR LA FILE  —  refaites via ->reservation
+    // ================================================================
 
     public function ajouterAFile(Request $request, Ticket $ticket)
     {
@@ -224,31 +317,36 @@ class DashboardController extends Controller
 
         $today = today();
         $dernierePosition = Ticket::whereDate('date_file', $today)
-            ->whereIn('statut', ['en_file', 'appele', 'en_cours'])
+            ->whereIn('statut', ['en_file', 'appele', 'en_cours', 'retard_decale'])
             ->max('position') ?? 0;
 
         $nouvellePosition = $dernierePosition + 1;
         $heureEstimee = now();
 
-        $enCours = Ticket::whereDate('date_file', $today)
+        $enCours = Ticket::with(['reservation.service']) // eager-load pour la suite
+            ->whereDate('date_file', $today)
             ->where('statut', 'en_cours')
             ->first();
 
         if ($enCours) {
-            $dureeEnCours = $this->timeToMinutes($enCours->service->duree ?? '00:00:00');
+            // CHANGEMENT : $enCours->service->duree → $enCours->reservation->service->duree
+            $dureeEnCours = $this->timeToMinutes($enCours->reservation->service->duree ?? '00:00:00');
             $debutEnCours = Carbon::parse($enCours->heure_passage);
             $tempsEcoule = now()->diffInMinutes($debutEnCours);
             $tempsRestant = max(0, $dureeEnCours - $tempsEcoule);
             $heureEstimee->addMinutes($tempsRestant);
         }
 
-        $ticketsEnFile = Ticket::whereDate('date_file', $today)
-            ->where('statut', 'en_file')
+        // CHANGEMENT : eager-load reservation.service pour la boucle
+        $ticketsEnFile = Ticket::with(['reservation.service'])
+            ->whereDate('date_file', $today)
+            ->whereIn('statut', ['en_file', 'retard_decale'])
             ->orderBy('position')
             ->get();
 
         foreach ($ticketsEnFile as $t) {
-            $heureEstimee->addMinutes($this->timeToMinutes($t->service->duree ?? '00:00:00'));
+            // CHANGEMENT : $t->service->duree → $t->reservation->service->duree
+            $heureEstimee->addMinutes($this->timeToMinutes($t->reservation->service->duree ?? '00:00:00'));
         }
 
         $ticket->update([
@@ -258,6 +356,26 @@ class DashboardController extends Controller
         ]);
 
         return back()->with('succes', 'Ticket ' . $ticket->numero . ' ajouté à la file.');
+    }
+
+    private function appelerAutomatiquement(): ?Ticket
+    {
+        $today = today();
+
+        $suivant = Ticket::whereDate('date_file', $today)
+            ->whereIn('statut', ['en_file', 'retard_decale'])
+            ->orderBy('position')
+            ->first();
+
+        if ($suivant) {
+            $suivant->update([
+                'statut' => 'appele',
+                'heure_passage' => now()->format('H:i:s'),
+            ]);
+            return $suivant;
+        }
+
+        return null;
     }
 
     public function appelerSuivant(Request $request)
@@ -275,21 +393,27 @@ class DashboardController extends Controller
             ]);
         }
 
-        $suivant = Ticket::whereDate('date_file', $today)
-            ->where('statut', 'en_file')
-            ->orderBy('position')
-            ->first();
+        $suivant = $this->appelerAutomatiquement();
 
         if (!$suivant) {
             return back()->with('erreur', 'Aucun ticket en file d\'attente.');
         }
 
-        $suivant->update([
+        return back()->with('succes', 'Ticket ' . $suivant->numero . ' appelé au guichet.');
+    }
+
+    public function demarrerTraitement(Request $request, Ticket $ticket)
+    {
+        if ($ticket->statut !== 'appele') {
+            return back()->with('erreur', 'Ce ticket n\'est pas en attente d\'appel.');
+        }
+
+        $ticket->update([
             'statut' => 'en_cours',
             'heure_passage' => now()->format('H:i:s'),
         ]);
 
-        return back()->with('succes', 'Ticket ' . $suivant->numero . ' appelé au guichet.');
+        return back()->with('succes', 'Traitement démarré pour ' . $ticket->numero);
     }
 
     public function terminerTicket(Request $request, Ticket $ticket)
@@ -303,24 +427,63 @@ class DashboardController extends Controller
             'heure_passage' => now()->format('H:i:s'),
         ]);
 
-        return back()->with('succes', 'Ticket ' . $ticket->numero . ' terminé.');
+        $suivant = $this->appelerAutomatiquement();
+
+        if ($suivant) {
+            return back()->with('succes', 'Ticket ' . $ticket->numero . ' terminé. ' . $suivant->numero . ' appelé automatiquement.');
+        }
+
+        return back()->with('succes', 'Ticket ' . $ticket->numero . ' terminé. File vide.');
     }
 
     public function noShow(Request $request, Ticket $ticket)
     {
-        if (!in_array($ticket->statut, ['en_file', 'appele', 'en_cours'])) {
-            return back()->with('erreur', 'Action impossible sur ce ticket.');
+        if ($ticket->statut !== 'appele') {
+            return back()->with('erreur', 'Action impossible : ce ticket n\'est pas en attente de présentation.');
         }
 
-        $ticket->update(['statut' => 'no_show']);
+        $today = today();
 
-        return back()->with('succes', 'Ticket ' . $ticket->numero . ' marqué comme absent.');
+        if ($ticket->nombre_retards < 3) {
+            $ticket->increment('nombre_retards');
+            $ticket->update(['statut' => 'retard_decale']);
+
+            $suivant = Ticket::whereDate('date_file', $today)
+                ->whereIn('statut', ['en_file', 'retard_decale'])
+                ->where('id', '!=', $ticket->id)
+                ->orderBy('position')
+                ->first();
+
+            if ($suivant) {
+                $tempPosition = $ticket->position;
+                $ticket->update(['position' => $suivant->position]);
+                $suivant->update(['position' => $tempPosition]);
+
+                $suivant->update([
+                    'statut' => 'appele',
+                    'heure_passage' => now()->format('H:i:s'),
+                ]);
+
+                return back()->with('succes', 'Ticket ' . $ticket->numero . ' décalé (' . $ticket->nombre_retards . '/3). ' . $suivant->numero . ' appelé.');
+            }
+
+            return back()->with('succes', 'Ticket ' . $ticket->numero . ' décalé. Aucun suivant.');
+        }
+
+        $ticket->update(['statut' => 'annule']);
+        $suivant = $this->appelerAutomatiquement();
+
+        if ($suivant) {
+            return back()->with('succes', 'Ticket ' . $ticket->numero . ' annulé (3 absences). ' . $suivant->numero . ' appelé.');
+        }
+
+        return back()->with('succes', 'Ticket ' . $ticket->numero . ' annulé. File vide.');
     }
 
     public function retirerDeFile(Request $request, Ticket $ticket)
     {
-        if ($ticket->statut !== 'en_file') {
-            return back()->with('erreur', 'Ce ticket n\'est pas en file.');
+        if (!in_array($ticket->statut, ['en_file', 'retard_decale'])) {
+            return back()->with('erreur', 'Ce ticket ne peut pas être retiré de la file.');
         }
 
         $ticket->update([
@@ -330,38 +493,5 @@ class DashboardController extends Controller
         ]);
 
         return back()->with('succes', 'Ticket retiré de la file.');
-    }
-
-    // --- AUTRES VUES MANAGER ---
-
-    public function droiteUsager () {
-        return view('manager.connexionmanager.droiteusager');
-    }
-
-    public function droiteCategorie () {
-        return view('manager.connexionmanager.droitecategorie');
-    }
-
-    public function droiteHistorique () {
-        return view('manager.connexionmanager.droitehistorique');
-    }
-
-    public function droiteConnexion () {
-        return view('manager.connexionmanager.droiteconnexion');
-    }
-
-    // --- HELPERS ---
-
-    private function minutesToTime(int $minutes): string
-    {
-        $h = intdiv($minutes, 60);
-        $m = $minutes % 60;
-        return sprintf('%02d:%02d:00', $h, $m);
-    }
-
-    private function timeToMinutes(string $time): int
-    {
-        list($h, $m) = explode(':', $time);
-        return ((int) $h * 60) + (int) $m;
     }
 }

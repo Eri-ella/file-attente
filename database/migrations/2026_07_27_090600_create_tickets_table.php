@@ -10,26 +10,27 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-
-            // --- NOUVEAUTÉS intégrées ici ---
-            $table->foreignId('reservation_id')->nullable()->constrained('reservations')->onDelete('cascade');
-            $table->string('numero', 191)->unique();
-            $table->enum('statut', ['en_attente', 'en_file', 'appele', 'en_cours', 'termine', 'annule', 'no_show'])->default('en_attente');
+            
+            $table->foreignId('reservation_id')->constrained('reservations')->onDelete('cascade');
+            
+            // Numéro sans contrainte unique seule
+            $table->string('numero', 191);
+            
+            $table->enum('statut', [
+                'en_attente', 'en_file', 'appele', 'en_cours',
+                'termine', 'annule', 'no_show', 'retard_decale'
+            ])->default('en_attente');
+            
             $table->unsignedInteger('position')->nullable();
+            $table->unsignedInteger('nombre_retards')->default(0);
             $table->time('heure_estimee')->nullable();
             $table->time('heure_passage')->nullable();
             $table->date('date_file')->nullable();
-            // ---------------------------------
-
-            $table->foreignId('superclient_id')->nullable()->constrained('superclients');
-            $table->string('client_mail', 191)->nullable();
-            $table->foreignId('service_id')->constrained('services');
+            
             $table->timestamps();
-        });
 
-        // FK explicite (nécessite que clients.mail soit unique)
-        Schema::table('tickets', function (Blueprint $table) {
-            $table->foreign('client_mail')->references('mail')->on('clients')->onDelete('cascade');
+            // Contrainte unique sur (numero, date_file) pour permettre réutilisation journalière
+            $table->unique(['numero', 'date_file']);
         });
     }
 
