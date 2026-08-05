@@ -38,18 +38,12 @@
             <!-- CORRECTION : Un conteneur parent 'relative' dédié uniquement au champ password et son icône -->
             <div class="relative w-full mb-2">
                 <label for="password" class="text-[#222D52] font-medium block">Mot de passe</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="••••••••"
+                <input type="password" id="password" name="password" placeholder="••••••••"
                     class="w-full border border-gray-300 px-3 py-2 text-sm text-gray-800 mt-3 rounded-lg pr-10" 
-                    autocomplete="new-password"
-                    required
-                >
-                <!-- CORRECTION : Positionnement chirurgical de l'icône par rapport au champ de saisie -->
+                    autocomplete="new-password" required>
                 <span class="password-icon absolute right-3 bottom-3 cursor-pointer text-gray-400">
-                    <i data-feather="eye" class="w-5 h-5"></i>
+                    <i data-feather="eye" class="eye-open w-5 h-5"></i>
+                    <i data-feather="eye-off" class="eye-closed w-5 h-5 hidden"></i>
                 </span>
             </div>
 

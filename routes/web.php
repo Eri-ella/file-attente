@@ -28,6 +28,8 @@ Route::get('/ticket/{ticket}', [TicketController::class, 'show'])->name('ticket.
 Route::patch('/ticket/{ticket}/annuler', [TicketController::class, 'annuler'])->name('ticket.annuler');
 
 Route::get('/connexion', [ConnexionClientController::class, 'connexion'])->name('connexion');
+Route::post('/connexion', [ConnexionClientController::class, 'login'])->name('connexion.store');
+Route::post('/deconnexion', [ConnexionClientController::class, 'logout'])->name('logout');
 
 Route::get('/inscription', [ConnexionClientController::class, 'inscription'])->name('inscription');
 Route::post('/inscription', [ConnexionClientController::class, 'register'])->name('inscription.store');

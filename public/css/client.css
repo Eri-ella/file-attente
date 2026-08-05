@@ -27,6 +27,7 @@
 }
 .car1, .car2, .car3, .car4 {
     background-color: #4f629d;
+    opacity: 60%;
 }
 .car1 {
     width: 120px;
@@ -123,4 +124,248 @@
 }
 .card2.show{
     opacity: 1;
+}
+
+#slidedContainer {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+#slidedContainer::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========== STATS ODOMETER ========== */
+
+.odometer-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.75rem; /* équivalent text-6xl */
+    font-weight: 700;
+    line-height: 1.1;
+    height: 1.1em;
+    overflow: hidden;
+    color: var(--primary-color);
+}
+
+.odometer-digit {
+    display: inline-block;
+    height: 1.1em;
+    overflow: hidden;
+    position: relative;
+    width: 0.62em;
+}
+
+.odometer-strip {
+    display: flex;
+    flex-direction: column;
+    transition: transform 2.2s cubic-bezier(0.1, 0.5, 0.2, 1);
+}
+
+.odometer-strip span {
+    display: block;
+    height: 1.1em;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.odometer-suffix {
+    font-size: 0.45em;
+    margin-left: 0.15em;
+    font-weight: 600;
+    color: var(--highlight-color);
+    align-self: flex-start;
+    margin-top: 0.15em;
+}
+
+.stat-card {
+    position: relative;
+    padding: 2.5rem 1rem;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+    transition: transform 0.8s ease 2.2s;
+}
+
+.stat-card.odometer-active::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.stat-card p {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.6s ease 2.4s;
+}
+
+.stat-card.odometer-active p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .odometer-display { font-size: 2.5rem; }
+    .stats-section { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+}
+@media (max-width: 480px) {
+    .stats-section { grid-template-columns: 1fr; }
+    .stats-section > span { border: none; border-bottom: 1px solid var(--primary-color); padding-bottom: 2rem; }
+    .stats-section > span:last-child { border-bottom: none; }
+}
+
+/* ========== TOP SERVICES ODOMETER ========== */
+
+.odometer-display-sm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    height: 1.1em;
+    overflow: hidden;
+    color: var(--primary-color);
+}
+
+.odometer-digit-sm {
+    display: inline-block;
+    height: 1.1em;
+    overflow: hidden;
+    position: relative;
+    width: 0.58em;
+}
+
+.odometer-strip-sm {
+    display: flex;
+    flex-direction: column;
+    transition: transform 1.8s cubic-bezier(0.1, 0.5, 0.2, 1);
+}
+
+.odometer-strip-sm span {
+    display: block;
+    height: 1.1em;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.odometer-suffix-sm {
+    font-size: 0.55em;
+    margin-left: 0.1em;
+    font-weight: 600;
+    color: var(--highlight-color);
+}
+
+/* Entrée des cartes */
+.top-service-center {
+    transform: scale(0.88);
+    opacity: 0;
+    transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.top-service-center.show {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.top-service-side {
+    transform: translateY(40px);
+    opacity: 0;
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.top-service-side.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Icônes avec halo doré au hover */
+.service-icon-wrap {
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.service-icon-wrap::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.4s ease;
+}
+
+.top-service-center .service-icon-wrap:hover,
+.top-service-side .service-icon-wrap:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(210, 181, 137, 0.35);
+}
+
+.top-service-center .service-icon-wrap:hover::after {
+    border-color: var(--highlight-color);
+}
+
+/* Bouton explorer */
+.btn-explore {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-explore::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-explore:hover::before {
+    left: 100%;
+}
+
+.btn-explore:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(210, 181, 137, 0.4);
+}
+
+/* Labels qui fade-in après les chiffres */
+.odometer-display-sm + .text-xs {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.5s ease 2s;
+}
+
+.odometer-active + .text-xs {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #topServicesSection > div.flex {
+        flex-direction: column;
+        align-items: center;
+    }
+    .top-service-side,
+    .top-service-center {
+        width: 90%;
+        max-width: 320px;
+    }
+    .top-service-center {
+        order: -1;
+    }
 }

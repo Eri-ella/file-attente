@@ -44,7 +44,7 @@ class ConnexionController extends Controller
         }
 
         return back()->withErrors([
-        'login_error' => 'Identifiant ou mot de passe incorrect.',
+            'login_error' => 'Identifiant ou mot de passe incorrect.',
         ])->onlyInput('email');
     }
 
@@ -64,7 +64,7 @@ class ConnexionController extends Controller
 
         return $status === Password::RESET_LINK_SENT
             ? back()->with('status', 'Un lien de réinitialisation a été envoyé à cette adresse.')
-            : back()->withErrors(['email' => 'Aucun compte administrateur trouvé avec cet email.']);
+            : back()->withErrors(['email' => 'Aucun compte administrateur trouvé avec cet email.'])->withInput();
     }
 
     public function showResetFormAdmin(Request $request, string $token)
@@ -89,7 +89,7 @@ class ConnexionController extends Controller
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('connexionAdmin')->with('status', 'Mot de passe réinitialisé, vous pouvez vous connecter.')
-            : back()->withErrors(['email' => __($status)]);
+            : back()->withErrors(['email' => __($status)])->withInput();        
     }
     
     public function updateProfilAdmin(Request $request)
@@ -217,7 +217,7 @@ class ConnexionController extends Controller
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('pageManager')->with('status', 'Mot de passe réinitialisé, vous pouvez vous connecter.')
-            : back()->withErrors(['email' => __($status)]);
+            : back()->withErrors(['email' => __($status)])->withInput();
     }
     
     public function updateProfilManager(Request $request)

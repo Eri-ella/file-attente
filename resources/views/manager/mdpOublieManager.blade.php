@@ -24,7 +24,7 @@
             <p class="text-sm text-gray-600 mb-6">Récupérer votre mot de passe en moins de deux étapes</p>
             <div class="flex flex-col gap-3 w-full"> 
                 <label class="text-[#222D52] font-medium ">Adresse e-mail</label>
-                <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color) mail-input" type="email" name="email" id="" placeholder="jeandev@gmail.com">                
+                <input class="border-1 border-(--primary-color) p-2 rounded-lg bg-(--white-color) mail-input" type="email" name="email" placeholder="jeandev@gmail.com" value="{{ old('email') }}">                
             </div>
             <p class="text-xs place-self-end">Un code de réinitialisation sera envoyé à cette adresse.</p>
             <div class="flex flex-col w-full gap-5 mt-5 items-center justify-center">

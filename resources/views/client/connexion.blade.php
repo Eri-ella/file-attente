@@ -15,17 +15,17 @@
             <div class="flex flex-col gap-3 w-full">
                 <label class="text-xl font-medium">Adresse e-mail</label>
                 <input class="border-1 border-w-full p-2 rounded-tl-lg rounded-br-lg bg-(--white-color)" type="text" name="email" id="" placeholder="jeandev@gmail.com" required value="{{ old('email') }}"> 
-                <label class="text-xl font-medium relative">Mot de passe<br>
-                <input class="border-1 border-w-full p-2 w-full rounded-tl-lg rounded-br-lg bg-(--white-color) password" type="password" name="pass" id="" required placeholder="••••••••">                 
-                    <span class="password-icon absolute right-10 top-10">
-                        <i data-feather="eye" class="absolute"></i>
-                        <i data-feather="eye-off" class="absolute"></i>
+                <label class="text-xl font-medium block">Mot de passe</label>
+                <div class="relative w-full">
+                    <input class="border-1 border-w-full p-2 w-full rounded-tl-lg rounded-br-lg bg-(--white-color) password pr-10" 
+                        type="password" name="pass" required placeholder="••••••••">                 
+                    <span class="password-icon absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400">
+                        <i data-feather="eye" class="eye-open w-5 h-5"></i>
+                        <i data-feather="eye-off" class="eye-closed w-5 h-5 hidden"></i>
                     </span>
-                </label>
+                </div>
                 <script src="https://unpkg.com/feather-icons"></script>
-                <script>
-                feather.replace();
-                </script>
+                <script>feather.replace();</script>
             </div>
             <p class="cursor-pointer place-self-end hover:text-(--blue-gradient-color)"><a href="{{ route('passe') }}"> Mot de passe oublié ?</a></p>
             <div class="flex flex-col w-full gap-5 mt-5 items-center justify-center">

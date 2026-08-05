@@ -101,7 +101,8 @@ class ConnexionClientController extends Controller
 
         return $status === Password::RESET_LINK_SENT
             ? back()->with('status', 'Un lien de réinitialisation a été envoyé à cette adresse.')
-            : back()->withErrors(['email' => 'Aucun compte trouvé avec cet email.']);
+            : back()->withErrors(['email' => 'Aucun compte trouvé avec cet email.'])->withInput();
+
     }
 
     public function showResetForm(Request $request, string $token): View
@@ -129,7 +130,7 @@ class ConnexionClientController extends Controller
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('connexion')->with('status', 'Mot de passe réinitialisé, vous pouvez vous connecter.')
-            : back()->withErrors(['email' => __($status)]);
+            : back()->withErrors(['email' => __($status)])->withInput();
     }
 
     public function updateProfil(Request $request): RedirectResponse

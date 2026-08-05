@@ -21,7 +21,7 @@
     </header>
 
     <main>
-        <section class="flex items-center bg-linear-to-b from-(--primary-color) to-(--blue-gradient-color) rounded-b-[100px] text-(--white-color) p-10 gap-10 mb-10 h-[80vh] relative">
+        <section class="flex items-center rounded-b-[100px] text-(--white-color) p-10 gap-10 mb-10 h-[80vh] relative bg-cover bg-center" style="background-image: url('{{ asset('assets/image-bg.png') }}');">
             <div class="flex items-center gap-20">
                 <div class="flex flex-col gap-5 pl-5">
                     <h2 class="text-4xl font-medium">Votre place dans la file d'attente, directement dans votre poche.</h2>
@@ -75,24 +75,23 @@
         
         <section class="flex flex-col text-(--primary-color) gap-6 p-10 mt-5 mb-10">
             <h2 class="text-4xl font-medium">Services</h2>
-            <div class="flex items-center justify-between">
-                <p class="text-xs">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint, voluptatem doloremque.</p>
-                <div class="flex gap-3">
-                    <span class="w-7 h-7 flex justify-center text-(--white-color) rounded-full bg-(--primary-color)">
-                        <button id="buttonLeft">
-                            <iconify-icon icon="solar:arrow-left-linear"></iconify-icon>
-                        </button>
-                    </span>
-                    <span id="buttonRight" class="w-7 h-7 flex justify-center text-(--white-color) rounded-full bg-(--primary-color)">
-                        <button>
-                            <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
-                        </button>
-                    </span>                
-                </div>
+            <!-- Ligne des boutons : ajoute items-center -->
+            <div class="flex items-center gap-3 self-end">
+                <span class="w-7 h-7 flex items-center justify-center text-(--white-color) rounded-full bg-(--primary-color) cursor-pointer">
+                    <button id="buttonLeft" class="flex items-center justify-center bg-transparent border-none text-white cursor-pointer">
+                        <iconify-icon icon="solar:arrow-left-linear"></iconify-icon>
+                    </button>
+                </span>
+                <span id="buttonRight" class="w-7 h-7 flex items-center justify-center text-(--white-color) rounded-full bg-(--primary-color) cursor-pointer">
+                    <button class="flex items-center justify-center bg-transparent border-none text-white cursor-pointer">
+                        <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
+                    </button>
+                </span>                
             </div>
-            <div class="grid grid-flow-col gap-5 overflow-hidden" id="slidedContainer">
+
+            <div class="flex gap-5 overflow-x-auto w-full" id="slidedContainer">
                 @for ($i = 0; $i < 7; $i++)
-                <div class="flex flex-col w-75 h-75 justify-between gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
+                <div class="flex flex-col shrink-0 w-75 h-75 justify-between gap-2 p-5 bg-(--white-color) rounded-tl-lg rounded-br-lg shadow-lg slided-elt">
                     <div class="flex items-center gap-5">
                         <div class="w-20 h-20 flex items-center justify-center text-5xl">
                             <iconify-icon icon="mdi:car"></iconify-icon>
@@ -123,66 +122,94 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-4 text-(--primary-color) p-10 divide-x-1 divide-(--primary-color)">
-            <span class="w-full flex flex-col items-center justify-center card">
-                <h3 class="text-6xl">1284</h3>
-                <p>tickets delivrées ce mois</p>
+        <section class="grid grid-cols-4 text-(--primary-color) p-10 divide-x-1 divide-(--primary-color) stats-section mb-20" id="statsSection">
+            <span class="w-full flex flex-col items-center justify-center card stat-card" data-value="{{ $ticketsMois }}" data-suffix="">
+                <div class="odometer-display"></div>
+                <p>tickets délivrées ce mois</p>
             </span>
-            <span class="w-full flex flex-col items-center justify-center card">
-                <h3 class="text-6xl">8min</h3>
+            <span class="w-full flex flex-col items-center justify-center card stat-card" data-value="{{ $attenteMoyenne }}" data-suffix="min">
+                <div class="odometer-display"></div>
                 <p>attente moyenne</p>
             </span>
-            <span class="w-full flex flex-col items-center justify-center card">
-                <h3 class="text-6xl">14</h3>
+            <span class="w-full flex flex-col items-center justify-center card stat-card" data-value="{{ $nbServices }}" data-suffix="">
+                <div class="odometer-display"></div>
                 <p>services disponibles</p>
             </span>
-            <span class="w-full flex flex-col items-center justify-center card">
-                <h3 class="text-6xl">96%</h3>
+            <span class="w-full flex flex-col items-center justify-center card stat-card" data-value="{{ $pourcentageALHeure }}" data-suffix="%">
+                <div class="odometer-display"></div>
                 <p>clients reçus à l'heure</p>
             </span>
         </section>
 
-        <section class="flex flex-col items-center justify-center text-(--primary-color) mb-10">
+        @php
+        $serviceIcon = function($nom) {
+            $nom = strtolower($nom);
+            if (str_contains($nom, 'passeport')) return 'mdi:passport';
+            if (str_contains($nom, 'carte') || str_contains($nom, 'grise') || str_contains($nom, 'biométrique')) return 'mdi:card-account-details';
+            if (str_contains($nom, 'urbanisme') || str_contains($nom, 'construction')) return 'mdi:home-city';
+            if (str_contains($nom, 'état') || str_contains($nom, 'civil')) return 'mdi:file-document';
+            if (str_contains($nom, 'aide') || str_contains($nom, 'social')) return 'mdi:hand-heart';
+            if (str_contains($nom, 'permis') || str_contains($nom, 'conduire')) return 'mdi:car-key';
+            return 'mdi:office-building';
+        };
+        @endphp
+
+        <section class="flex flex-col items-center justify-center text-(--primary-color) mb-10" id="topServicesSection">
             <h3 class="text-4xl font-medium mb-5">Les services les plus réservés</h3>
-            <div class="flex">
-                <div class="flex flex-col items-center justify-center text-center card2">
-                    <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--white-color) rounded-full">
-                        <iconify-icon icon="mdi:car"></iconify-icon>
+            <div class="flex items-end gap-4">
+                
+                @if(isset($topServices[1]))
+                <!-- 2ème place -->
+                <div class="flex flex-col items-center justify-center text-center card2 top-service-side">
+                    <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--white-color) rounded-full service-icon-wrap">
+                        <iconify-icon icon="{{ $serviceIcon($topServices[1]->nom) }}"></iconify-icon>
                     </div>
-                    <h4 class="font-medium max-w-50">{{ $services[1]->nom}}</h4>
+                    <h4 class="font-medium max-w-50 mt-4">{{ $topServices[1]->nom }}</h4>
+                    <p class="text-xs text-gray-500 mt-1 side-counter" data-value="{{ $topServices[1]->total_reservations }}">{{ $topServices[1]->total_reservations }} réservations</p>
                 </div>
-                <div class="flex flex-col justify-center items-center bg-(--white-color) px-2 py-5 min-h-100 mb-5 shadow-lg rounded-tl-lg rounded-br-lg card2">
+                @endif
+
+                @if(isset($topServices[0]))
+                <!-- 1ère place (mise en avant) -->
+                <div class="flex flex-col justify-center items-center bg-(--white-color) px-2 py-5 min-h-100 mb-5 shadow-lg rounded-tl-lg rounded-br-lg card2 top-service-center">
                     <div class="flex flex-col items-center justify-center text-center">
-                        <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--bg-color) rounded-full mb-5">
-                            <iconify-icon icon="mdi:car"></iconify-icon>
+                        <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--bg-color) rounded-full mb-5 service-icon-wrap">
+                            <iconify-icon icon="{{ $serviceIcon($topServices[0]->nom) }}"></iconify-icon>
                         </div>
-                        <h4 class="font-medium max-w-50">{{ $services[2]->nom}}</h4>
+                        <h4 class="font-medium max-w-50">{{ $topServices[0]->nom }}</h4>
                     </div>
                     <div class="grid grid-cols-3 text-(--primary-color) p-10 divide-x-1 divide-(--primary-color)">
                         <span class="w-full flex flex-col items-center justify-center p-1">
-                            <p>86 %</p>
-                            <p class="text-xs">de reservations</p>
+                            <div class="odometer-display-sm" data-value="{{ $topServices[0]->reservation_pct }}" data-suffix="%"></div>
+                            <p class="text-xs">de réservations</p>
                         </span>
                         <span class="w-full flex flex-col items-center justify-center p-1">
-                            <p>99 %</p>
+                            <div class="odometer-display-sm" data-value="{{ $topServices[0]->satisfaction_pct }}" data-suffix="%"></div>
                             <p class="text-xs">de satisfaction</p>
                         </span>
                         <span class="w-full flex flex-col items-center justify-center p-1">
-                            <p>0 fcfa</p>
+                            <div class="odometer-display-sm" data-value="{{ $topServices[0]->cout ?? 0 }}" data-suffix=" fcfa"></div>
                             <p class="text-xs">à dépenser</p>
                         </span>
                     </div>
-                    <p class="text-xs">Durée moy. {{ $services[2]->duree}} min</p>
+                    <p class="text-xs">Durée moy. {{ $topServices[0]->duree_minutes }} min</p>
                 </div>
-                <div class="flex flex-col items-center justify-center text-center card2">
-                    <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--white-color) rounded-full">
-                        <iconify-icon icon="mdi:car"></iconify-icon>
+                @endif
+
+                @if(isset($topServices[2]))
+                <!-- 3ème place -->
+                <div class="flex flex-col items-center justify-center text-center card2 top-service-side">
+                    <div class="w-30 h-30 flex items-center justify-center text-7xl bg-(--white-color) rounded-full service-icon-wrap">
+                        <iconify-icon icon="{{ $serviceIcon($topServices[2]->nom) }}"></iconify-icon>
                     </div>
-                    <h4 class="font-medium max-w-50">{{ $services[3]->nom}}</h4>
+                    <h4 class="font-medium max-w-50 mt-4">{{ $topServices[2]->nom }}</h4>
+                    <p class="text-xs text-gray-500 mt-1 side-counter" data-value="{{ $topServices[2]->total_reservations }}">{{ $topServices[2]->total_reservations }} réservations</p>
                 </div>
+                @endif
+
             </div>
-            <div>
-                <button class="btn-secondary"><a href="{{ route('tousServices') }}">Explorer les services</a></button>
+            <div class="mt-6">
+                <button class="btn-secondary btn-explore"><a href="{{ route('tousServices') }}">Explorer les services</a></button>
             </div>
         </section>
 

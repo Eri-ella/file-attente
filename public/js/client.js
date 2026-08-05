@@ -35,16 +35,26 @@ function slider () {
     let buttonRight = document.getElementById("buttonRight");
     let slidedContainer = document.getElementById("slidedContainer");
 
+    if (!slidedContainer) return;
+
+    const scrollAmount = 320;
+
     function goBack(){
-        slidedContainer.scrollLeft -= 320;
+        slidedContainer.scrollTo({ 
+            left: slidedContainer.scrollLeft - scrollAmount, 
+            behavior: 'smooth' 
+        });
     }
+    
     function goFor(){
-        // const widthSlider = (width / 4);
-        slidedContainer.scrollLeft += 320;
+        slidedContainer.scrollTo({ 
+            left: slidedContainer.scrollLeft + scrollAmount, 
+            behavior: 'smooth' 
+        });
     }
 
-    buttonLeft.addEventListener("click", () => {goBack()});
-    buttonRight.addEventListener("click", () => {goFor()});
+    if (buttonLeft) buttonLeft.addEventListener("click", goBack);
+    if (buttonRight) buttonRight.addEventListener("click", goFor);
 }
 
 function appearOnScroll () {
@@ -76,10 +86,167 @@ function appearOnScroll () {
     }) 
 }
 
+// ===== STATS ODOMETER =====
+function initStatsOdometer() {
+    const statsSection = document.getElementById('statsSection');
+    if (!statsSection) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Attendre l'entrée des cartes (animation .card.show)
+                setTimeout(() => {
+                    const cards = entry.target.querySelectorAll('.stat-card');
+                    cards.forEach((card, index) => {
+                        setTimeout(() => {
+                            card.classList.add('odometer-active');
+                            animateOdometer(card);
+                        }, index * 250); // Décalage cascade entre les 4 cartes
+                    });
+                }, 400);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.25 });
+
+    observer.observe(statsSection);
+}
+
+function animateOdometer(card) {
+    const display = card.querySelector('.odometer-display');
+    const value = parseInt(card.dataset.value) || 0;
+    const suffix = card.dataset.suffix || '';
+    const digits = String(value).split('');
+    
+    display.innerHTML = '';
+
+    digits.forEach((digit, i) => {
+        const digitContainer = document.createElement('div');
+        digitContainer.className = 'odometer-digit';
+        
+        const strip = document.createElement('div');
+        strip.className = 'odometer-strip';
+        
+        // Colonne de chiffres 0-9 empilés
+        for (let n = 0; n <= 9; n++) {
+            const span = document.createElement('span');
+            span.textContent = n;
+            strip.appendChild(span);
+        }
+        
+        digitContainer.appendChild(strip);
+        display.appendChild(digitContainer);
+
+        // Déclenchement avec délai progressif (effet cascade gauche → droite)
+        setTimeout(() => {
+            strip.style.transform = `translateY(-${parseInt(digit) * 10}%)`;
+        }, 150 + (i * 120));
+    });
+
+    // Suffixe (min, %)
+    if (suffix) {
+        const suffixSpan = document.createElement('span');
+        suffixSpan.className = 'odometer-suffix';
+        suffixSpan.textContent = suffix;
+        display.appendChild(suffixSpan);
+    }
+}
+
+// ===== TOP SERVICES ODOMETER =====
+function initTopServicesOdometer() {
+    const section = document.getElementById('topServicesSection');
+    if (!section) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    // Odomètres de la carte centrale (cascade)
+                    const odometers = section.querySelectorAll('.odometer-display-sm');
+                    odometers.forEach((od, i) => {
+                        setTimeout(() => {
+                            animateOdometerSmall(od);
+                        }, i * 250);
+                    });
+                    
+                    // Compteurs latéraux
+                    const sideCounters = section.querySelectorAll('.side-counter');
+                    sideCounters.forEach((sc, i) => {
+                        setTimeout(() => {
+                            animateSideCounter(sc);
+                        }, 800 + i * 200);
+                    });
+                }, 400);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    observer.observe(section);
+}
+
+function animateOdometerSmall(element) {
+    const value = parseInt(element.dataset.value) || 0;
+    const suffix = element.dataset.suffix || '';
+    const digits = String(value).split('');
+    
+    element.innerHTML = '';
+    element.classList.add('odometer-active');
+
+    digits.forEach((digit, i) => {
+        const digitContainer = document.createElement('div');
+        digitContainer.className = 'odometer-digit-sm';
+        
+        const strip = document.createElement('div');
+        strip.className = 'odometer-strip-sm';
+        
+        for (let n = 0; n <= 9; n++) {
+            const span = document.createElement('span');
+            span.textContent = n;
+            strip.appendChild(span);
+        }
+        
+        digitContainer.appendChild(strip);
+        element.appendChild(digitContainer);
+
+        setTimeout(() => {
+            strip.style.transform = `translateY(-${parseInt(digit) * 10}%)`;
+        }, 150 + (i * 120));
+    });
+
+    if (suffix) {
+        const suffixSpan = document.createElement('span');
+        suffixSpan.className = 'odometer-suffix-sm';
+        suffixSpan.textContent = suffix;
+        element.appendChild(suffixSpan);
+    }
+}
+
+function animateSideCounter(element) {
+    const finalValue = parseInt(element.dataset.value) || 0;
+    const textNode = document.createTextNode('');
+    element.innerHTML = '';
+    element.appendChild(textNode);
+    
+    let current = 0;
+    const duration = 1200;
+    const stepTime = Math.max(10, Math.floor(duration / finalValue));
+    
+    const timer = setInterval(() => {
+        current++;
+        textNode.nodeValue = current + ' réservations';
+        if (current >= finalValue) {
+            clearInterval(timer);
+        }
+    }, stepTime);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     changeTime();
     slider();
     appearOnScroll();
+    initStatsOdometer();
+    initTopServicesOdometer();
 });
 
 // service
@@ -181,23 +348,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // profil connexion 
 function togglePassword() {
-    const eye = document.querySelector('.feather-eye');
-    const eyeOff = document.querySelector('.feather-eye-off');
-    const password = document.querySelector('.password');
-
-    if (eye && eyeOff && password) {
-        eye.addEventListener("click", () => {
-        eye.style.display = "none";
-        eyeOff.style.display = "block";
-        password.type = "text";
+    document.querySelectorAll('.password-icon').forEach(wrap => {
+        const input = wrap.parentElement?.querySelector('input[type="password"], input[type="text"]');
+        const eyeOpen = wrap.querySelector('.eye-open, svg.feather-eye');
+        const eyeClosed = wrap.querySelector('.eye-closed, svg.feather-eye-off');
+        
+        if (!input || !eyeOpen) return;
+        
+        wrap.addEventListener('click', () => {
+            const isPwd = input.type === 'password';
+            input.type = isPwd ? 'text' : 'password';
+            eyeOpen.classList.toggle('hidden', isPwd);
+            if (eyeClosed) eyeClosed.classList.toggle('hidden', !isPwd);
         });
-
-        eyeOff.addEventListener("click", () => {
-        eyeOff.style.display = "none";
-        eye.style.display = "block";
-        password.type = "password";
-        });
-    }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
